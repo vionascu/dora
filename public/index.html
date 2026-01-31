@@ -7,110 +7,70 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="layout">
+  <div class="dashboard">
     <!-- Header -->
     <header class="header">
-      <div class="header-content">
-        <h1>DORA Metrics</h1>
-        <p class="subtitle">Evidence-backed R&D metrics system</p>
-      </div>
-      <div class="header-meta">
-        <span class="last-update">Updated: <span id="update-time">—</span></span>
-      </div>
+      <h1>DORA Metrics Dashboard</h1>
+      <p>Real-time R&D metrics from code analysis</p>
     </header>
 
-    <!-- Main Content -->
-    <main class="main">
-      <!-- Pipeline Status -->
-      <section class="status-bar">
-        <div class="status-bar-content">
-          <div class="status-steps">
-            <div class="step step-done">Collection</div>
-            <div class="step step-done">Calculation</div>
-            <div class="step step-done">Validation</div>
-            <div class="step step-active">Display</div>
+    <!-- Main Container -->
+    <div class="container">
+      <!-- Top KPIs Section -->
+      <section class="kpi-section">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Commits</div>
+            <div class="kpi-value" id="kpi-commits">—</div>
+            <div class="kpi-meta" id="kpi-commits-meta"></div>
           </div>
-          <div class="status-note">Data sourced from calculations/ layer. Truth: git_artifacts/ + ci_artifacts/ → calculations/ → dashboard</div>
-        </div>
-      </section>
-
-      <!-- Global Metrics Grid -->
-      <section class="metrics-section">
-        <h2 class="section-title">Organization Metrics</h2>
-        <div class="metrics-grid" id="global-metrics">
-          <div class="card loading">
-            <div class="card-label">Total Commits</div>
-            <div class="card-value">—</div>
-            <div class="card-unit">across all repositories</div>
+          <div class="kpi-card">
+            <div class="kpi-label">Active Repositories</div>
+            <div class="kpi-value" id="kpi-repos">—</div>
+            <div class="kpi-meta" id="kpi-repos-meta"></div>
           </div>
-          <div class="card loading">
-            <div class="card-label">Repositories</div>
-            <div class="card-value">—</div>
-            <div class="card-unit">in scope</div>
+          <div class="kpi-card">
+            <div class="kpi-label">Contributors</div>
+            <div class="kpi-value" id="kpi-contributors">—</div>
+            <div class="kpi-meta" id="kpi-contributors-meta"></div>
           </div>
-          <div class="card loading">
-            <div class="card-label">Commits/Day (Org)</div>
-            <div class="card-value">—</div>
-            <div class="card-unit">activity metric</div>
+          <div class="kpi-card">
+            <div class="kpi-label">Activity (Commits/Day)</div>
+            <div class="kpi-value" id="kpi-activity">—</div>
+            <div class="kpi-meta" id="kpi-activity-meta"></div>
           </div>
         </div>
       </section>
 
-      <!-- Per-Repo Metrics -->
-      <section class="metrics-section">
-        <h2 class="section-title">Repository Metrics</h2>
-        <div class="repos-grid" id="repos-metrics">
-          <div class="card loading">
-            <div class="card-label">Loading repositories...</div>
-            <div class="card-value">—</div>
-          </div>
+      <!-- Repository Details Section -->
+      <section class="repos-section">
+        <h2>Repository Details</h2>
+        <div class="repos-table-container">
+          <table class="repos-table">
+            <thead>
+              <tr>
+                <th>Repository</th>
+                <th>Commits</th>
+                <th>Contributors</th>
+                <th>Frequency</th>
+                <th>Period</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="repos-tbody">
+              <tr class="loading-row">
+                <td colspan="6">Loading repositories...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
-      <!-- DORA Metrics Section -->
-      <section class="metrics-section">
-        <h2 class="section-title">DORA Metrics (Proxy Calculations)</h2>
-        <p class="section-note">Note: Proxy calculations based on git history. True DORA requires deployment tags and CI event data.</p>
-        <div class="dora-grid" id="dora-metrics">
-          <div class="card loading">
-            <div class="card-label">Deployment Frequency</div>
-            <div class="card-value">—</div>
-            <div class="card-unit">commits/day</div>
-          </div>
-          <div class="card loading">
-            <div class="card-label">Lead Time</div>
-            <div class="card-value">—</div>
-            <div class="card-unit">hours between commits</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Data Integrity Note -->
-      <section class="info-section">
-        <h3>Data Integrity</h3>
-        <p>This dashboard displays <strong>only calculated metrics</strong> from the calculations/ folder. Every value is:</p>
-        <ul class="integrity-list">
-          <li>Traceable to raw git and CI artifacts</li>
-          <li>Validated against approximations</li>
-          <li>Time-stamped with calculation metadata</li>
-          <li>Explicitly marked as N/A if missing source data</li>
-        </ul>
-        <p><strong>Quality gates:</strong> If a value contains "~", "approx", or "estimated", the pipeline fails.</p>
-      </section>
-
-      <!-- Technical Details -->
-      <section class="info-section">
-        <h3>Architecture</h3>
-        <p><strong>Pipeline:</strong> INPUT (ReposInput.md) → COLLECTION (git_artifacts/, ci_artifacts/) → CALCULATION (calculations/) → PRESENTATION (this dashboard)</p>
-        <p><strong>Source Code:</strong> See <a href="https://github.com/vionascu/dora">github.com/vionascu/dora</a></p>
-      </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <p>DORA Metrics Dashboard | Evidence-backed R&D metrics</p>
-      <p class="footer-note">Dashboard reads only from calculations/ folder. No direct access to repositories.</p>
-    </footer>
+      <!-- Data Source -->
+      <footer class="dashboard-footer">
+        <p>Data sourced from calculations/ folder. <a href="../calculations/">View raw data</a></p>
+      </footer>
+    </div>
   </div>
 
   <script src="app.js"></script>

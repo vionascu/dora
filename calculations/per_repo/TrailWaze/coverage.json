@@ -4,5 +4,5 @@
   "value": null,
   "reason": "Coverage data not available (tool: lcov, requires local test run)",
   "method": "Parse lcov output",
-  "calculated_at": "2026-02-01T00:14:41.275541"
+  "calculated_at": "2026-02-01T00:18:30.482959"
 }
