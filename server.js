@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3001;
 const ROOT_DIR = __dirname;
 
 const mimeTypes = {
@@ -33,17 +33,18 @@ const server = http.createServer((req, res) => {
 
   // API endpoint for serving calculation data
   if (pathname.startsWith('/api/')) {
-    const dataPath = pathname.slice(5); // Remove /api/
+    const dataPath = pathname.slice(4); // Remove /api
     const fullPath = path.join(ROOT_DIR, dataPath);
+    const normalized = path.normalize(fullPath);
 
     // Security: prevent directory traversal
-    if (!fullPath.startsWith(ROOT_DIR)) {
-      res.writeHead(403);
-      res.end('Forbidden');
+    if (!normalized.startsWith(ROOT_DIR)) {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Forbidden' }));
       return;
     }
 
-    fs.readFile(fullPath, (err, data) => {
+    fs.readFile(normalized, 'utf8', (err, data) => {
       if (err) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Not found' }));
@@ -61,30 +62,32 @@ const server = http.createServer((req, res) => {
   }
 
   let filePath = path.join(ROOT_DIR, 'public', pathname);
+  const normalized = path.normalize(filePath);
+  const publicDir = path.normalize(path.join(ROOT_DIR, 'public'));
 
   // Security: prevent directory traversal
-  if (!filePath.startsWith(path.join(ROOT_DIR, 'public'))) {
-    res.writeHead(403);
-    res.end('Forbidden');
+  if (!normalized.startsWith(publicDir)) {
+    res.writeHead(403, { 'Content-Type': 'text/html' });
+    res.end('<h1>403 - Forbidden</h1>');
     return;
   }
 
-  fs.stat(filePath, (err, stats) => {
+  fs.stat(normalized, (err, stats) => {
     if (err || !stats.isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/html' });
-      res.end('<h1>404 - Not Found</h1>');
+      res.end('<h1>404 - Not Found</h1><p>' + pathname + '</p>');
       return;
     }
 
-    const ext = path.extname(filePath).toLowerCase();
+    const ext = path.extname(normalized).toLowerCase();
     const contentType = mimeTypes[ext] || 'application/octet-stream';
 
     res.writeHead(200, { 'Content-Type': contentType });
-    fs.createReadStream(filePath).pipe(res);
+    fs.createReadStream(normalized).pipe(res);
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log('\n' + '='.repeat(60));
   console.log('DORA Metrics Dashboard Server');
   console.log('='.repeat(60));
