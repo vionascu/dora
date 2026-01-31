@@ -1,0 +1,10 @@
+{
+  "metric_id": "repo.contributors",
+  "repo": "TrailWaze",
+  "inputs": [
+    "git_artifacts/TrailWaze/authors.json"
+  ],
+  "unique_contributors": 2,
+  "method": "Count unique author emails",
+  "calculated_at": "2026-02-01T00:14:41.275532"
+}

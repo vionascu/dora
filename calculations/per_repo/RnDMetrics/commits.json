@@ -1,0 +1,16 @@
+{
+  "metric_id": "repo.commits",
+  "repo": "RnDMetrics",
+  "time_range": {
+    "start": "2026-01-24",
+    "end": "2026-01-31"
+  },
+  "inputs": [
+    "git_artifacts/RnDMetrics/commits.json"
+  ],
+  "total_commits": 56,
+  "unique_dates": 3,
+  "avg_commits_per_day": 18.67,
+  "method": "Count total commits, divide by unique dates",
+  "calculated_at": "2026-02-01T00:14:41.284725"
+}

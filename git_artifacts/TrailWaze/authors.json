@@ -1,0 +1,10 @@
+{
+  "metric_id": "git.authors.raw",
+  "repo": "TrailWaze",
+  "unique_authors": 2,
+  "authors": [
+    "vic.ionascu@gmail.com",
+    "victor.ionascu@company.com"
+  ],
+  "collected_at": "2026-02-01T00:14:41.088136"
+}

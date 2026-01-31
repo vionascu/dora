@@ -1,0 +1,8 @@
+{
+  "metric_id": "repo.coverage",
+  "repo": "TrailEquip",
+  "value": null,
+  "reason": "Coverage data not available (tool: jacoco, requires local test run)",
+  "method": "Parse jacoco output",
+  "calculated_at": "2026-02-01T00:14:41.266674"
+}

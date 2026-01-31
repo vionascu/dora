@@ -1,0 +1,9 @@
+{
+  "metric_id": "git.authors.raw",
+  "repo": "TrailEquip",
+  "unique_authors": 1,
+  "authors": [
+    "dev@trailequip.local"
+  ],
+  "collected_at": "2026-02-01T00:14:41.042888"
+}

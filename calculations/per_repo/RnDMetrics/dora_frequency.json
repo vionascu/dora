@@ -1,0 +1,12 @@
+{
+  "metric_id": "repo.dora_frequency",
+  "repo": "RnDMetrics",
+  "inputs": [
+    "git_artifacts/RnDMetrics/commits.json"
+  ],
+  "value": 7.0,
+  "unit": "commits/day",
+  "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
+  "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
+  "calculated_at": "2026-02-01T00:14:41.288394"
+}

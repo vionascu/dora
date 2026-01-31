@@ -1,0 +1,13 @@
+{
+  "metric_id": "global.summary",
+  "repos_analyzed": [
+    "TrailEquip",
+    "TrailWaze",
+    "RnDMetrics"
+  ],
+  "repos_total_count": 3,
+  "repos_with_issues": [],
+  "total_commits": 228,
+  "unique_repos_with_contributors": 3,
+  "calculated_at": "2026-02-01T00:14:41.308099"
+}

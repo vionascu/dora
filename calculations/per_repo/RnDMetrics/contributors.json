@@ -1,0 +1,10 @@
+{
+  "metric_id": "repo.contributors",
+  "repo": "RnDMetrics",
+  "inputs": [
+    "git_artifacts/RnDMetrics/authors.json"
+  ],
+  "unique_contributors": 1,
+  "method": "Count unique author emails",
+  "calculated_at": "2026-02-01T00:14:41.288053"
+}

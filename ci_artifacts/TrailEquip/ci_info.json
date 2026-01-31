@@ -1,0 +1,9 @@
+{
+  "metric_id": "ci.info.raw",
+  "repo": "TrailEquip",
+  "language": "java",
+  "coverage_tool": "jacoco",
+  "status": "initialized",
+  "note": "Run local tests to populate coverage data",
+  "collected_at": "2026-02-01T00:14:41.167808"
+}

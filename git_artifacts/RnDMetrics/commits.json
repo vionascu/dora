@@ -1,0 +1,401 @@
+{
+  "metric_id": "git.commits.raw",
+  "repo": "RnDMetrics",
+  "branch": "main",
+  "total_commits": 56,
+  "commits": [
+    {
+      "hash": "3a04837ba906cbac5f5ecf6a31388052779fb2c8",
+      "timestamp": "2026-01-31 20:25:08 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix Executive View tab switching and handle missing DORA metrics"
+    },
+    {
+      "hash": "83804a7f55ffe66cd573cc735abb1003a8ba3e8d",
+      "timestamp": "2026-01-31 20:20:45 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Redesign Executive View for CEO-friendly dashboard with collapsible sections"
+    },
+    {
+      "hash": "46f6a38df065401002c07cbca539b816aaf5058e",
+      "timestamp": "2026-01-31 20:13:50 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add DORA metrics and CEO-friendly dashboard"
+    },
+    {
+      "hash": "5a8e692d5647f4c49472361d7ab32e4b3eaff3ee",
+      "timestamp": "2026-01-31 19:31:20 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix Trail-Equip epic display and improve dashboard UX"
+    },
+    {
+      "hash": "d8f346fdb13687fca9972029b46f79344f9cbf2a",
+      "timestamp": "2026-01-31 19:12:41 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add epic breakdown display to dashboard with per-epic test metrics"
+    },
+    {
+      "hash": "285949e56a120640bea0e06fd576b660b06e2cc1",
+      "timestamp": "2026-01-31 19:11:49 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add comprehensive epic and user story breakdown metrics"
+    },
+    {
+      "hash": "d44b71ec05f1a87fe59fb2e71e6ec89c183f5767",
+      "timestamp": "2026-01-31 18:50:21 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix velocity LOC metrics collection and epic total display"
+    },
+    {
+      "hash": "c200c3d728bac24fc9d1ee1556d625fa37214c8c",
+      "timestamp": "2026-01-31 18:23:10 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Consolidate to use TrailEquip directory exclusively"
+    },
+    {
+      "hash": "871216a334fd88468393cd913c208bac262e1147",
+      "timestamp": "2026-01-31 16:03:19 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Update to use TrailEquip directory structure with coherent dashboard"
+    },
+    {
+      "hash": "4ef2ebd144702b6fa36d901e3d6238d9e3c244a5",
+      "timestamp": "2026-01-31 15:54:17 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Ensure coherent dashboard with only 2 projects"
+    },
+    {
+      "hash": "28a8f48847681211e70d9b2d919438f29bac89e8",
+      "timestamp": "2026-01-31 15:50:19 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Regenerate all metrics with correct data"
+    },
+    {
+      "hash": "754571715b4dd0a8dbf522f0dc2a7c16e984ebb4",
+      "timestamp": "2026-01-31 15:48:05 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix metric naming and project selector for epic metrics"
+    },
+    {
+      "hash": "73fda6429506243f5afca19e9267078d70132415",
+      "timestamp": "2026-01-31 15:43:34 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add trail-equip test and epic metrics from MVP_EPICS.md"
+    },
+    {
+      "hash": "01f20e205c06c07df390524a4b968379d3090eaa",
+      "timestamp": "2026-01-31 15:31:51 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Enhance dashboard UI for test and epic metrics display"
+    },
+    {
+      "hash": "a4af7e17b8bad5cafb7cfdab8c1e4048e879dff0",
+      "timestamp": "2026-01-31 15:31:15 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add comprehensive test and epic metrics collection and validation"
+    },
+    {
+      "hash": "4b0b9702353282b9adf44f5fc30df9965e8de4f1",
+      "timestamp": "2026-01-31 14:14:35 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Implement weekly commit grouping instead of daily averaging"
+    },
+    {
+      "hash": "c4aba24a937e2375a29bf9f531fa419cc1f6c470",
+      "timestamp": "2026-01-31 14:10:34 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix project selector extraction logic - handle variable metric ID lengths"
+    },
+    {
+      "hash": "7b6a0951511bcd8f57cb34da521809b407884931",
+      "timestamp": "2026-01-31 14:05:02 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix workflow: copy metrics files to public root, not subdirectory"
+    },
+    {
+      "hash": "85e69aa3e401b098e60cf937cc421b5b4a31bac5",
+      "timestamp": "2026-01-31 14:03:02 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix metrics naming and dashboard - extract full project names correctly"
+    },
+    {
+      "hash": "c24ac901f37a048c3b567f778581ee09bd63b74e",
+      "timestamp": "2026-01-31 13:57:29 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add QUICK_START.md - simple user guide for metrics system"
+    },
+    {
+      "hash": "b11fa23d79dbb81c36a7153ad2c78c2b8ee54950",
+      "timestamp": "2026-01-31 13:56:30 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Complete metrics collection for both projects (trailwaze and trail-equip)"
+    },
+    {
+      "hash": "0f43aedb1c96c80954a1f41e4004ae9b1a2f5472",
+      "timestamp": "2026-01-31 13:53:51 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add simple projects.json input system for easy project management"
+    },
+    {
+      "hash": "ada383a7a77f2ef483edcd2295bb330c78619df5",
+      "timestamp": "2026-01-31 13:48:35 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Disable conflicting pages-build-deployment workflow - deployment handled by metrics.yml"
+    },
+    {
+      "hash": "411a08c627dc0858ad50f5f4617d5d572987dae3",
+      "timestamp": "2026-01-31 13:46:43 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Rebuild dashboard with fully functional date/time filtering and project selector"
+    },
+    {
+      "hash": "a87526b1adc701589ba51e2a074fe8cd2dd8b69b",
+      "timestamp": "2026-01-31 13:40:11 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix derived metrics computation to handle dot notation in metric IDs"
+    },
+    {
+      "hash": "ff3d55ce9e7a4b32b9fa0ef939608c5b84102600",
+      "timestamp": "2026-01-31 13:28:17 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add project selector and fix time range display in dashboard"
+    },
+    {
+      "hash": "a7f9f3a0af5d9322efbdf125378834a87b7821e4",
+      "timestamp": "2026-01-31 13:20:25 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add quick start guide for dashboard access"
+    },
+    {
+      "hash": "7ed3bda32a51e634232df97a815190eda2459bad",
+      "timestamp": "2026-01-31 13:20:03 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add implementation completion summary"
+    },
+    {
+      "hash": "4324cb018397ff6354a7c13463cb709571cc8090",
+      "timestamp": "2026-01-31 13:19:25 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix deprecated GitHub Actions versions in metrics workflow"
+    },
+    {
+      "hash": "472b0a0fb6e7484805972c6bb50422a779cc1ac8",
+      "timestamp": "2026-01-31 13:17:43 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add GitHub Pages metrics dashboard documentation"
+    },
+    {
+      "hash": "c39c7f502a375dd5a438531bf2ced9a3b6f7d6a5",
+      "timestamp": "2026-01-31 13:17:16 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Update metrics workflow to use evidence-backed collection system"
+    },
+    {
+      "hash": "31464799e4af2b585edbb490ca477d0d6f07667e",
+      "timestamp": "2026-01-31 13:16:43 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add evidence-backed metrics collection system with GitHub Pages deployment"
+    },
+    {
+      "hash": "0ae33c1e356a1bba4fdc3fe06cab0fbba15cb58b",
+      "timestamp": "2026-01-31 13:02:09 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix YAML syntax errors in pages-build-deployment workflow"
+    },
+    {
+      "hash": "99b9f28aff3656c50f9fcfd06a429136d7721492",
+      "timestamp": "2026-01-31 12:59:01 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix YAML syntax errors in metrics workflow"
+    },
+    {
+      "hash": "b27ba3e124793a8493ded14fa7a7feab32436cbc",
+      "timestamp": "2026-01-31 12:55:53 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Update main branch with real data integration fix"
+    },
+    {
+      "hash": "a6b7a391aa4fad2d1488f2014741a1763ddaddc6",
+      "timestamp": "2026-01-31 12:47:09 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add professional dashboard redesign with period selector and velocity analysis"
+    },
+    {
+      "hash": "a230f51f5c6f9c0f72c1190c6d73d9fa8ed18223",
+      "timestamp": "2026-01-31 10:32:54 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add CI/CD automation and GitHub Pages deployment"
+    },
+    {
+      "hash": "fc5dd836377beee20e4e33407d486b6c7ce71ded",
+      "timestamp": "2026-01-28 13:47:56 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add dashboard access guide with setup instructions"
+    },
+    {
+      "hash": "4e6bb042e32f8b88e5a6876deb17323fc6588681",
+      "timestamp": "2026-01-28 13:45:29 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Make dashboard accessible via GitLab Pages"
+    },
+    {
+      "hash": "f0b11458cbbd6727deab878b9b17b43ada3acdb9",
+      "timestamp": "2026-01-28 13:33:08 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add AI vs Human code analysis, code reviews, and refactoring metrics"
+    },
+    {
+      "hash": "37d484bf391b3c5b6b0bb779baa8bf1cc5e01f61",
+      "timestamp": "2026-01-28 13:23:25 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Update RnDMetrics with fresh Trailwaze data and improved dashboard"
+    },
+    {
+      "hash": "806c488f95e2bab60dc585e12b1deff8ba156327",
+      "timestamp": "2026-01-28 11:54:53 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Update with 30 days of historical data"
+    },
+    {
+      "hash": "3cb5fe37f10ca5c7b349479c33981ae7ca99f96c",
+      "timestamp": "2026-01-28 11:49:59 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Rebuild charts"
+    },
+    {
+      "hash": "f8006a9566b01384820558d7231d3d3496ad87a7",
+      "timestamp": "2026-01-28 11:49:51 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix Chart.js instance management for proper chart rendering"
+    },
+    {
+      "hash": "1be34228d317c5eb01f4e83dffd138ffacea0ad5",
+      "timestamp": "2026-01-28 11:40:27 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Rebuild with data"
+    },
+    {
+      "hash": "99d7c11d57611460599dd989da8c0499662198df",
+      "timestamp": "2026-01-28 11:40:17 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix data export format to support historical filtering"
+    },
+    {
+      "hash": "a75da6ed340f8c9c190aa6a45cb522aac43fdb83",
+      "timestamp": "2026-01-28 11:28:36 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Trigger dashboard rebuild"
+    },
+    {
+      "hash": "fa9972006167e54d909803814204f6fdb55b3d6f",
+      "timestamp": "2026-01-28 11:22:15 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add historical data filtering and human vs AI code analysis"
+    },
+    {
+      "hash": "0739e5f2eed756d9c689c643c36a2f43320a7144",
+      "timestamp": "2026-01-28 11:16:22 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Add Trailwaze non-intrusive integration documentation"
+    },
+    {
+      "hash": "be6612451b456ed991137dac7b3d5c7615220ca7",
+      "timestamp": "2026-01-28 10:45:31 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Update config with correct repository URL and RnDMetrics branding"
+    },
+    {
+      "hash": "54ec6a2406a3166ebda3c9db0e423e7e4498c96b",
+      "timestamp": "2026-01-28 10:17:20 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Rename project to RnDMetrics and add comprehensive documentation"
+    },
+    {
+      "hash": "fc37cb2f139a58b6497a8b0e1e50eea9da22a8c7",
+      "timestamp": "2026-01-28 10:02:04 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "documentation"
+    },
+    {
+      "hash": "51a6bf8f91a406ca1929b370f9c079d97e425db2",
+      "timestamp": "2026-01-28 09:45:47 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "solving the config.py file"
+    },
+    {
+      "hash": "0723d7412637add320c827f0a64ad6c8c6eccd46",
+      "timestamp": "2026-01-28 09:34:32 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "updates"
+    },
+    {
+      "hash": "0c9d5727310532515a5ef861904fd999462c5991",
+      "timestamp": "2026-01-28 09:34:20 +0100",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "updates"
+    },
+    {
+      "hash": "c86d9171c8ac696171fbedf3f0d4d4eed6478df9",
+      "timestamp": "2026-01-24 10:48:19 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix CI: move metrics data into public/data for Pages"
+    }
+  ],
+  "collected_at": "2026-02-01T00:14:41.108606"
+}

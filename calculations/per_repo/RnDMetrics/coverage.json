@@ -1,0 +1,8 @@
+{
+  "metric_id": "repo.coverage",
+  "repo": "RnDMetrics",
+  "value": null,
+  "reason": "Coverage data not available (tool: pytest-cov, requires local test run)",
+  "method": "Parse pytest-cov output",
+  "calculated_at": "2026-02-01T00:14:41.288064"
+}
