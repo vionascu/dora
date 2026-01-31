@@ -1,0 +1,221 @@
+You are redesigning and re-implementing the entire RnDMetrics dashboard hosted at:
+https://vionascu.github.io/RnDMetrics/
+
+Your mission:
+Transform this into a professional, UX-driven, evidence-backed R&D metrics system
+with a clear data pipeline:
+INPUT → COLLECTION → CALCULATION → DASHBOARD
+
+This is a non-negotiable architecture rule.
+
+================================================================================
+I) CORE ARCHITECTURE PRINCIPLE (MANDATORY)
+================================================================================
+The dashboard MUST NOT read data directly from repositories or CI systems.
+
+Instead, implement a 4-stage pipeline:
+
+1) INPUT
+2) COLLECTION
+3) CALCULATION
+4) PRESENTATION (Dashboard)
+
+Each stage must have its own folder and contract.
+
+================================================================================
+II) INPUT LAYER – ReposInput.md (SOURCE OF TRUTH)
+================================================================================
+Create and use a file called:
+
+ReposInput.md
+
+This file is the ONLY place where external projects are defined.
+
+ReposInput.md contains:
+- GitHub repository URLs
+- Optional branch (default: main)
+- Optional notes (language, CI type, coverage tool)
+
+Example format (MUST PARSE THIS FILE):
+
+--------------------------------------------------
+# RnDMetrics – Repository Inputs
+
+## TrailEquip
+repo: https://github.com/vionascu/TrailEquip
+branch: main
+language: java
+ci: github-actions
+coverage: jacoco
+
+## TrailWaze
+repo: https://github.com/vionascu/TrailWaze
+branch: main
+language: mixed
+ci: github-actions
+coverage: lcov
+
+## RnDMetrics
+repo: https://github.com/vionascu/RnDMetrics
+branch: main
+language: python
+ci: github-actions
+coverage: pytest-cov
+--------------------------------------------------
+
+Rules:
+- Only repositories defined here are processed.
+- If a repo is not listed here, it does not exist for the system.
+- This file represents an explicit managerial decision of scope.
+
+================================================================================
+III) COLLECTION LAYER – raw inputs (ci_artifacts + git data)
+================================================================================
+If folders do not exist, YOU MUST CREATE THEM.
+
+Create:
+ci_artifacts/
+git_artifacts/
+
+Responsibilities:
+- Clone repositories listed in ReposInput.md (read-only).
+- Extract git data:
+  - commits
+  - diffs
+  - authors
+  - timestamps
+- If CI artifacts (tests, coverage) do NOT exist locally:
+  - create ci_artifacts/<repo_name>/
+  - attempt to generate them locally when possible:
+    - run test commands (documented)
+    - generate coverage reports
+  - if generation is not possible, mark metrics as N/A
+  - NEVER guess or fabricate CI data
+
+Store all raw outputs as files:
+- git_artifacts/<repo>/<metric>.json
+- ci_artifacts/<repo>/<metric>.xml|json|txt
+
+No aggregation here. Only collection.
+
+================================================================================
+IV) CALCULATION LAYER – calculations/ (MOST IMPORTANT)
+================================================================================
+Create a dedicated folder:
+
+calculations/
+
+This folder contains ALL normalized, derived metrics.
+
+Rules:
+1) Calculations MUST read ONLY from:
+   - git_artifacts/
+   - ci_artifacts/
+2) Dashboard MUST read ONLY from:
+   - calculations/
+
+Structure:
+calculations/
+  per_repo/
+    TrailEquip/
+      commits.json
+      churn.json
+      tests.json
+      coverage.json
+    TrailWaze/
+      ...
+  global/
+    commits.json
+    coverage.json
+    flow.json
+    quality.json
+  sanity_checks.json
+  capabilities.json
+
+For every calculation file:
+- include metric_id
+- include inputs used (file paths)
+- include formula / logic
+- include time range
+- include repo(s)
+
+Example:
+calculations/global/coverage.json
+{
+  "metric_id": "coverage.percent",
+  "repos": ["TrailEquip","TrailWaze"],
+  "range": {...},
+  "inputs": [
+    "ci_artifacts/TrailEquip/jacoco.xml",
+    "ci_artifacts/TrailWaze/lcov.info"
+  ],
+  "value": 85.2,
+  "method": "weighted by executable LOC"
+}
+
+If a metric cannot be calculated:
+- produce calculations/...json with value = null
+- add reason field explaining missing input
+
+================================================================================
+V) DASHBOARD LAYER – READ-ONLY VIEW
+================================================================================
+The dashboard:
+- MUST NOT access git or CI directly
+- MUST NOT perform calculations
+- MUST ONLY render data from calculations/
+
+Dashboard responsibilities:
+- UX
+- visualization
+- filtering
+- navigation
+- evidence linking
+
+Every metric tile links to:
+- calculation file
+- underlying raw inputs
+
+================================================================================
+VI) UX & DESIGN RULES (SUMMARY)
+================================================================================
+- Calm, executive-grade UX
+- Minimal cards
+- Clear hierarchy
+- Whitespace
+- No emojis
+- No hype language
+- N/A > invented numbers
+
+Use the ASCII mockup below as the UX target.
+
+[ KEEP THE FULL ASCII MOCKUP FROM PREVIOUS PROMPT UNCHANGED HERE ]
+
+================================================================================
+VII) QUALITY & TRUST GATES
+================================================================================
+Implement a quality gate that fails the build if:
+- dashboard references a metric not present in calculations/
+- calculation references missing raw inputs
+- values out of bounds
+- time range mismatch
+- "~", "approx", "estimated" appear anywhere
+
+================================================================================
+VIII) ORDER OF EXECUTION
+================================================================================
+1) Parse ReposInput.md
+2) Clone repos
+3) Create ci_artifacts/ and git_artifacts/
+4) Collect raw data
+5) Generate missing CI artifacts when possible
+6) Produce calculations/
+7) Validate sanity
+8) Render dashboard from calculations/
+9) Generate manifest.json with full traceability
+
+FINAL RULE:
+The dashboard is a VIEW.
+Truth lives in calculations/.
+If something is not calculable, it is explicitly shown as N/A.
+Proceed.

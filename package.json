@@ -1,0 +1,32 @@
+{
+  "name": "dora-metrics",
+  "version": "1.0.0",
+  "description": "DORA Metrics Dashboard - Evidence-backed R&D metrics system",
+  "main": "src/index.js",
+  "scripts": {
+    "collect": "python3 src/scripts/01_collect.py",
+    "calculate": "python3 src/scripts/02_calculate.py",
+    "pipeline": "npm run collect && npm run calculate",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src",
+    "validate": "node src/scripts/03_validate.js"
+  },
+  "keywords": [
+    "dora",
+    "metrics",
+    "r&d",
+    "dashboard"
+  ],
+  "author": "RnD Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.0",
+    "vite": "^5.0.0",
+    "eslint": "^8.54.0"
+  },
+  "dependencies": {
+    "vue": "^3.3.0"
+  }
+}

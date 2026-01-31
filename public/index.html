@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DORA Metrics Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 1.5rem;
+      transition: box-shadow 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .card-value {
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: #000;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-unit {
+      font-size: 0.9rem;
+      color: #999;
+    }
+
+    .card-meta {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f0f0f0;
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    .card-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: #0066cc;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .card-link:hover {
+      text-decoration: underline;
+    }
+
+    .status-loading {
+      color: #999;
+      font-style: italic;
+    }
+
+    .status-na {
+      color: #ccc;
+    }
+
+    .status-ok {
+      color: #28a745;
+    }
+
+    .status-warning {
+      color: #ffc107;
+    }
+
+    .status-error {
+      color: #dc3545;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #000;
+    }
+
+    .info-box {
+      background: #f0f4f8;
+      border-left: 3px solid #0066cc;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 2px;
+    }
+
+    .info-box p {
+      font-size: 0.9rem;
+      color: #333;
+      margin: 0.5rem 0;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: #999;
+      font-size: 0.85rem;
+    }
+
+    .pipeline-status {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .pipeline-step {
+      padding: 0.5rem 1rem;
+      background: #f0f0f0;
+      border-radius: 3px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .pipeline-step.done {
+      background: #e8f5e9;
+      color: #28a745;
+    }
+
+    .pipeline-step.pending {
+      background: #fff3cd;
+      color: #ff6c00;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <h1>DORA Metrics Dashboard</h1>
+      <p>Evidence-backed R&D metrics system</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="info-box">
+      <p><strong>Pipeline Status:</strong></p>
+      <div class="pipeline-status" id="pipeline-status">
+        <span class="pipeline-step">Loading pipeline status...</span>
+      </div>
+    </div>
+
+    <!-- Global Metrics Section -->
+    <div class="section">
+      <h2 class="section-title">Global Metrics</h2>
+      <div class="grid" id="global-metrics">
+        <div class="card">
+          <div class="card-title">Total Commits</div>
+          <div class="card-value status-loading">—</div>
+          <div class="card-unit">across all repositories</div>
+          <div class="card-meta status-loading">Waiting for data collection...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Contributors</div>
+          <div class="card-value status-loading">—</div>
+          <div class="card-unit">unique team members</div>
+          <div class="card-meta status-loading">Waiting for data collection...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Repositories Analyzed</div>
+          <div class="card-value status-loading">—</div>
+          <div class="card-unit">in scope</div>
+          <div class="card-meta status-loading">Waiting for data collection...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-Repo Metrics Section -->
+    <div class="section">
+      <h2 class="section-title">Repository Metrics</h2>
+      <div class="grid" id="repo-metrics">
+        <div class="card">
+          <div class="card-title">Repository Data</div>
+          <div class="card-value status-loading">—</div>
+          <div class="card-unit">loading repositories...</div>
+          <div class="card-meta status-loading">Waiting for data collection...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pipeline Info -->
+    <div class="section">
+      <h2 class="section-title">Data Pipeline</h2>
+      <div class="info-box">
+        <p><strong>How this dashboard works:</strong></p>
+        <ol style="margin-left: 1rem; margin-top: 0.5rem;">
+          <li>INPUT: Repositories defined in ReposInput.md</li>
+          <li>COLLECTION: Git and CI artifacts extracted (git_artifacts/, ci_artifacts/)</li>
+          <li>CALCULATION: Raw data processed into metrics (calculations/)</li>
+          <li>PRESENTATION: This dashboard displays calculated metrics</li>
+        </ol>
+        <p style="margin-top: 1rem;"><strong>To add projects:</strong> Edit ReposInput.md with new repository URLs and run the pipeline.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>DORA Metrics Dashboard | Last updated: <span id="last-updated">loading...</span></p>
+  </div>
+
+  <script>
+    async function loadMetrics() {
+      try {
+        // Load global summary
+        const summaryResponse = await fetch('/data/calculations/global/summary.json')
+          .catch(() => null);
+
+        if (summaryResponse && summaryResponse.ok) {
+          const summary = await summaryResponse.json();
+          updateGlobalMetrics(summary);
+          updatePipelineStatus('done');
+        } else {
+          updatePipelineStatus('pending');
+        }
+
+        // Load per-repo metrics
+        loadRepoMetrics();
+
+        // Update timestamp
+        document.getElementById('last-updated').textContent = new Date().toLocaleString();
+      } catch (err) {
+        console.error('Error loading metrics:', err);
+        updatePipelineStatus('pending');
+      }
+    }
+
+    function updateGlobalMetrics(summary) {
+      if (!summary) return;
+
+      const html = `
+        <div class="card">
+          <div class="card-title">Total Commits</div>
+          <div class="card-value status-ok">${summary.total_commits_across_repos || 0}</div>
+          <div class="card-unit">across all repositories</div>
+          <div class="card-meta">
+            <a href="/data/calculations/global/summary.json" class="card-link">View calculation</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Contributors</div>
+          <div class="card-value status-ok">${summary.unique_contributors || 0}</div>
+          <div class="card-unit">unique team members</div>
+          <div class="card-meta">
+            <a href="/data/calculations/global/summary.json" class="card-link">View calculation</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Repositories Analyzed</div>
+          <div class="card-value status-ok">${summary.repos_analyzed?.length || 0}</div>
+          <div class="card-unit">in scope</div>
+          <div class="card-meta">
+            ${summary.repos_analyzed?.map(r => `<div>${r}</div>`).join('') || 'None yet'}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('global-metrics').innerHTML = html;
+    }
+
+    function updatePipelineStatus(status) {
+      const statusDiv = document.getElementById('pipeline-status');
+      if (status === 'done') {
+        statusDiv.innerHTML = `
+          <span class="pipeline-step done">✓ Data Collection</span>
+          <span class="pipeline-step done">✓ Calculation</span>
+          <span class="pipeline-step done">✓ Validation</span>
+        `;
+      } else {
+        statusDiv.innerHTML = `
+          <span class="pipeline-step pending">⏳ Waiting for data collection...</span>
+          <span class="pipeline-step">Calculation</span>
+          <span class="pipeline-step">Validation</span>
+        `;
+      }
+    }
+
+    function loadRepoMetrics() {
+      const html = `
+        <div class="card">
+          <div class="card-title">Repos Configured</div>
+          <div class="card-value status-ok">3</div>
+          <div class="card-unit">See ReposInput.md</div>
+          <div class="card-meta">
+            <div>TrailEquip (Java)</div>
+            <div>TrailWaze (Mixed)</div>
+            <div>RnDMetrics (Python)</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('repo-metrics').innerHTML = html;
+    }
+
+    // Load metrics when page loads
+    document.addEventListener('DOMContentLoaded', loadMetrics);
+
+    // Reload every 30 seconds
+    setInterval(loadMetrics, 30000);
+  </script>
+</body>
+</html>
