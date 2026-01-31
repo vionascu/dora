@@ -52,9 +52,12 @@ class Collector:
                 subprocess.run(
                     ["git", "clone", "--depth=100", "-b", branch, repo_url, str(clone_path)],
                     capture_output=True,
-                    timeout=30,
+                    timeout=120,
                     check=True
                 )
+            except subprocess.TimeoutExpired:
+                print(f"    ✗ Clone timeout for {repo_name} (network issue)")
+                return
             except subprocess.CalledProcessError as e:
                 print(f"    ✗ Failed to clone {repo_name}: {e}")
                 return

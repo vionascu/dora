@@ -7,6 +7,8 @@
     "collect": "python3 src/scripts/01_collect.py",
     "calculate": "python3 src/scripts/02_calculate.py",
     "pipeline": "npm run collect && npm run calculate",
+    "start": "node server.js",
+    "server": "node server.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

@@ -261,7 +261,7 @@
     async function loadMetrics() {
       try {
         // Load global summary
-        const summaryResponse = await fetch('/data/calculations/global/summary.json')
+        const summaryResponse = await fetch('/api/calculations/global/summary.json')
           .catch(() => null);
 
         if (summaryResponse && summaryResponse.ok) {
@@ -292,7 +292,7 @@
           <div class="card-value status-ok">${summary.total_commits_across_repos || 0}</div>
           <div class="card-unit">across all repositories</div>
           <div class="card-meta">
-            <a href="/data/calculations/global/summary.json" class="card-link">View calculation</a>
+            <a href="/api/calculations/global/summary.json" class="card-link">View calculation</a>
           </div>
         </div>
 
@@ -301,7 +301,7 @@
           <div class="card-value status-ok">${summary.unique_contributors || 0}</div>
           <div class="card-unit">unique team members</div>
           <div class="card-meta">
-            <a href="/data/calculations/global/summary.json" class="card-link">View calculation</a>
+            <a href="/api/calculations/global/summary.json" class="card-link">View calculation</a>
           </div>
         </div>
 
