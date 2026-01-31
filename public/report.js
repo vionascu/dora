@@ -1,153 +1,139 @@
 /**
- * R&D Metrics Report Generator
- * Loads validated data from calculations/ folder
- * Presents as a coherent professional report
+ * R&D Metrics Report - Professional Version
+ * Loads and displays only validated data from calculations/ folder
  */
 
-class Report {
+class MetricsReport {
   constructor() {
-    this.data = {};
+    this.manifest = null;
     this.init();
   }
 
   async init() {
     try {
-      await this.loadData();
-      this.renderReport();
+      // Load and validate manifest first
+      await this.loadManifest();
+      this.renderHeader();
+      this.renderFindings();
+      this.renderRepositories();
     } catch (err) {
-      console.error('Error:', err);
-      this.showError('Failed to load report data');
+      console.error('Report error:', err);
+      this.showError('Failed to load report');
     }
   }
 
-  async loadData() {
-    // Load global data
-    const globalSummary = await this.fetchJSON('../calculations/global/summary.json');
-    const globalCommits = await this.fetchJSON('../calculations/global/commits.json');
-
-    this.data.global = {
-      ...globalSummary,
-      ...globalCommits
-    };
-
-    // Load per-repo data
-    this.data.repos = {};
-    for (const repo of (this.data.global.repos_analyzed || [])) {
-      const repoData = {};
-      repoData.commits = await this.fetchJSON(`../calculations/per_repo/${repo}/commits.json`);
-      repoData.contributors = await this.fetchJSON(`../calculations/per_repo/${repo}/contributors.json`);
-      repoData.coverage = await this.fetchJSON(`../calculations/per_repo/${repo}/coverage.json`);
-      repoData.dora_frequency = await this.fetchJSON(`../calculations/per_repo/${repo}/dora_frequency.json`);
-      repoData.lead_time = await this.fetchJSON(`../calculations/per_repo/${repo}/lead_time.json`);
-
-      this.data.repos[repo] = repoData;
-    }
+  async loadManifest() {
+    const resp = await fetch('../calculations/MANIFEST.json');
+    if (!resp.ok) throw new Error('Manifest not found');
+    this.manifest = await resp.json();
   }
 
-  async fetchJSON(path) {
-    try {
-      const resp = await fetch(path);
-      if (!resp.ok) return null;
-      return await resp.json();
-    } catch (err) {
-      return null;
-    }
-  }
-
-  renderReport() {
-    this.renderDate();
-    this.renderSummary();
-    this.renderRepositories();
-  }
-
-  renderDate() {
-    const elem = document.getElementById('report-date');
-    if (elem) {
+  renderHeader() {
+    // Date
+    const dateElem = document.getElementById('report-date');
+    if (dateElem) {
       const now = new Date();
       const formatted = now.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       });
-      elem.textContent = `Generated ${formatted}`;
+      dateElem.textContent = `Generated ${formatted}`;
+    }
+
+    // Validation badge
+    const badge = document.getElementById('validation-badge');
+    if (badge && this.manifest) {
+      const status = this.manifest.validation_status === 'PASS'
+        ? '✓ All Quality Gates Passed'
+        : '⚠ Validation Issues';
+      badge.textContent = status;
     }
   }
 
-  renderSummary() {
-    const global = this.data.global;
+  renderFindings() {
+    const data = this.manifest;
 
     // Total commits
-    const totalCommits = global.total_commits || 0;
-    this.updateElement('summary-commits', totalCommits);
+    this.updateElement('finding-commits', data.global_metrics.commits.json.total_commits);
 
     // Repos
-    const repoCount = global.repos_analyzed?.length || 0;
-    this.updateElement('summary-repos', repoCount);
+    this.updateElement('finding-repos', data.global_metrics.summary.json.repos_analyzed);
 
     // Contributors
-    let totalContributors = 0;
-    for (const repo of (global.repos_analyzed || [])) {
-      const contrib = this.data.repos[repo]?.contributors?.unique_contributors;
-      if (contrib !== undefined && contrib !== null) {
-        totalContributors += contrib;
-      }
+    let total = 0;
+    for (const repo of Object.keys(data.per_repo_metrics)) {
+      total += data.per_repo_metrics[repo].contributors.unique_contributors || 0;
     }
-    this.updateElement('summary-contributors', totalContributors);
+    this.updateElement('finding-contributors', total);
 
-    // Activity
-    let totalActivity = 0;
-    let countWithActivity = 0;
-    for (const repo of (global.repos_analyzed || [])) {
-      const freq = this.data.repos[repo]?.commits?.avg_commits_per_day;
-      if (freq !== undefined && freq !== null && !isNaN(freq)) {
-        totalActivity += freq;
-        countWithActivity++;
+    // Velocity (average across all repos)
+    let sumVelocity = 0;
+    let count = 0;
+    for (const repo of Object.keys(data.per_repo_metrics)) {
+      const vel = data.per_repo_metrics[repo].commits.avg_commits_per_day;
+      if (vel) {
+        sumVelocity += vel;
+        count++;
       }
     }
-    const avgActivity = countWithActivity > 0 ? (totalActivity / countWithActivity).toFixed(2) : 'N/A';
-    this.updateElement('summary-activity', avgActivity);
+    const avgVel = count > 0 ? (sumVelocity / count).toFixed(2) : 'N/A';
+    this.updateElement('finding-velocity', avgVel);
   }
 
   renderRepositories() {
-    const container = document.getElementById('repos-list');
+    const container = document.getElementById('repos-container');
     if (!container) return;
 
-    const repos = this.data.global.repos_analyzed || [];
-    if (repos.length === 0) {
-      container.innerHTML = '<p style="text-align: center; color: #999;">No repositories found.</p>';
+    const repoData = this.manifest.per_repo_metrics;
+    const repoNames = Object.keys(repoData).sort();
+
+    if (repoNames.length === 0) {
+      container.innerHTML = '<p>No repositories found.</p>';
       return;
     }
 
     let html = '';
-    for (const repo of repos) {
-      const repoData = this.data.repos[repo];
-      if (!repoData || !repoData.commits) continue;
-
-      const commits = repoData.commits.total_commits || 'N/A';
-      const contributors = repoData.contributors?.unique_contributors || 'N/A';
-      const freq = repoData.commits.avg_commits_per_day;
-      const freqDisplay = freq !== undefined && freq !== null ? freq.toFixed(2) : 'N/A';
-      const range = repoData.commits.time_range;
-      const period = range ? `${range.start} to ${range.end}` : 'N/A';
+    for (const repo of repoNames) {
+      const data = repoData[repo];
 
       html += `
-        <div class="repo-card">
-          <div class="repo-name">${repo}</div>
-          <div class="repo-metrics">
-            <div class="repo-metric">
-              <div class="repo-metric-label">Commits</div>
-              <div class="repo-metric-value">${commits}</div>
-            </div>
-            <div class="repo-metric">
-              <div class="repo-metric-label">Contributors</div>
-              <div class="repo-metric-value">${contributors}</div>
-            </div>
-            <div class="repo-metric">
-              <div class="repo-metric-label">Activity/Day</div>
-              <div class="repo-metric-value">${freqDisplay}</div>
-            </div>
-          </div>
-          <div class="repo-period">Period: ${period}</div>
+        <div class="repo-detail-card">
+          <div class="repo-detail-name">${repo}</div>
+          <table class="repo-metrics-table">
+            <tr>
+              <td>Total Commits</td>
+              <td>${data.commits.total_commits}</td>
+            </tr>
+            <tr>
+              <td>Contributors</td>
+              <td>${data.contributors.unique_contributors}</td>
+            </tr>
+            <tr>
+              <td>Daily Activity</td>
+              <td>${data.commits.avg_commits_per_day.toFixed(2)} commits/day</td>
+            </tr>
+            <tr>
+              <td>Active Period</td>
+              <td>${data.commits.period_start} to ${data.commits.period_end}</td>
+            </tr>
+            <tr>
+              <td>Days Active</td>
+              <td>${data.commits.days_active}</td>
+            </tr>
+            <tr>
+              <td>Deployment Frequency</td>
+              <td>${data.dora_frequency.value} ${data.dora_frequency.unit}</td>
+            </tr>
+            <tr>
+              <td>Lead Time</td>
+              <td>${data.lead_time.value} ${data.lead_time.unit}</td>
+            </tr>
+            <tr>
+              <td>Test Coverage</td>
+              <td><em>${data.coverage.value || 'N/A'}</em></td>
+            </tr>
+          </table>
         </div>
       `;
     }
@@ -158,16 +144,25 @@ class Report {
   updateElement(id, value) {
     const elem = document.getElementById(id);
     if (elem) {
-      elem.textContent = typeof value === 'number' ? value.toLocaleString() : value;
+      if (typeof value === 'number') {
+        elem.textContent = value.toLocaleString();
+      } else if (Array.isArray(value)) {
+        elem.textContent = value.length;
+      } else {
+        elem.textContent = value || 'N/A';
+      }
     }
   }
 
   showError(message) {
-    console.error(message);
+    const container = document.getElementById('repos-container');
+    if (container) {
+      container.innerHTML = `<p style="color: red;">Error: ${message}</p>`;
+    }
   }
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  new Report();
+  new MetricsReport();
 });
