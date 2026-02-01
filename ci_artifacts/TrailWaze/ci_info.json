@@ -1,9 +1,0 @@
-{
-  "metric_id": "ci.info.raw",
-  "repo": "TrailWaze",
-  "language": "mixed",
-  "coverage_tool": "lcov",
-  "status": "initialized",
-  "note": "Run local tests to populate coverage data",
-  "collected_at": "2026-02-01T10:23:23.083735"
-}
