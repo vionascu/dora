@@ -1,0 +1,58 @@
+npm test output:
+
+> mobile@1.0.0 test
+> jest --coverage --coverage-reporter=lcov
+
+
+
+npm test error:
+● Validation Error:
+
+  Module /Users/viionascu/Projects/DORA/git_artifacts/TrailWaze/clone/apps/mobile/node_modules/jest-circus/build/runner.js in the testRunner option was not found.
+         <rootDir> is: /Users/viionascu/Projects/DORA/git_artifacts/TrailWaze/clone/apps/mobile
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+
+
+npx jest output:
+
+
+npx jest error:
+● Validation Error:
+
+  Module /Users/viionascu/Projects/DORA/git_artifacts/TrailWaze/clone/apps/mobile/node_modules/jest-circus/build/runner.js in the testRunner option was not found.
+         <rootDir> is: /Users/viionascu/Projects/DORA/git_artifacts/TrailWaze/clone/apps/mobile
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+
+
+npx jest (jasmine) output:
+
+
+npx jest (jasmine) error:
+● Validation Error:
+
+  Module jest-jasmine2 in the testRunner option was not found.
+         <rootDir> is: /Users/viionascu/Projects/DORA/git_artifacts/TrailWaze/clone/apps/mobile
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+
+
+npx jest (custom config) output:
+
+
+npx jest (custom config) error:
+● Validation Error:
+
+  Module /Users/viionascu/Projects/DORA/git_artifacts/TrailWaze/clone/apps/mobile/node_modules/jest-circus/build/runner.js in the testRunner option was not found.
+         <rootDir> is: /Users/viionascu/Projects/DORA/git_artifacts/TrailWaze/clone/apps/mobile
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+

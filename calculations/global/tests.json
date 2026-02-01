@@ -12,11 +12,11 @@
     "start": null,
     "end": null
   },
-  "total_test_files": 8,
+  "total_test_files": 11,
   "total_epics_found": 44,
   "total_user_stories_found": 4,
   "description": "Total test files across all repositories",
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-01T08:07:57.255672Z"
+  "calculated_at": "2026-02-01T08:23:41.739756Z"
 }

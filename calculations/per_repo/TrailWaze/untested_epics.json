@@ -13,7 +13,7 @@
   },
   "coverage_value": null,
   "coverage_reason": "Coverage parsing did not produce a value",
-  "tests_count": 0,
+  "tests_count": 3,
   "epics_without_coverage": [
     "1: Mobile app foundation (React Native + Expo)",
     "2: Offline maps (MapLibre + MBTiles)",
@@ -33,5 +33,5 @@
   ],
   "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
   "reason": null,
-  "calculated_at": "2026-02-01T08:07:57.264171Z"
+  "calculated_at": "2026-02-01T08:23:41.749501Z"
 }

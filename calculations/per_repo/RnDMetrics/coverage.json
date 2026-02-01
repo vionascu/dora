@@ -4,13 +4,15 @@
   "repos": [
     "RnDMetrics"
   ],
-  "inputs": [],
+  "inputs": [
+    "ci_artifacts/RnDMetrics/coverage/pytest/coverage.xml"
+  ],
   "time_range": {
     "start": null,
     "end": null
   },
-  "value": null,
-  "reason": "Coverage data not available (tool: pytest-cov, requires local test run)",
+  "value": 46.68,
+  "reason": null,
   "method": "Parse pytest-cov output",
-  "calculated_at": "2026-02-01T10:07:57.165558"
+  "calculated_at": "2026-02-01T10:23:42.383701"
 }

@@ -1,6 +1,6 @@
 {
   "manifest_id": "dora.manifest",
-  "generated_at": "2026-02-01T08:07:57.369473Z",
+  "generated_at": "2026-02-01T08:23:41.909177Z",
   "validation_status": "PASS",
   "summary": {
     "total_metrics": 29,
@@ -31,7 +31,7 @@
       "total_commits": 228,
       "repos_count": 3,
       "method": "Sum commits across all analyzed repos",
-      "calculated_at": "2026-02-01T10:07:57.195778",
+      "calculated_at": "2026-02-01T10:23:41.660242",
       "calculation_path": "calculations/global/commits.json"
     },
     "contributors.json": {
@@ -53,7 +53,7 @@
       "unique_contributors": 3,
       "method": "Union of author emails across repos",
       "reason": null,
-      "calculated_at": "2026-02-01T10:07:57.196149",
+      "calculated_at": "2026-02-01T10:23:41.660706",
       "calculation_path": "calculations/global/contributors.json"
     },
     "summary.json": {
@@ -82,7 +82,7 @@
       "total_commits": 228,
       "unique_contributors": 3,
       "method": "Aggregate per-repo commit totals and contributors",
-      "calculated_at": "2026-02-01T10:07:57.197170",
+      "calculated_at": "2026-02-01T10:23:41.662083",
       "calculation_path": "calculations/global/summary.json"
     },
     "tests.json": {
@@ -99,13 +99,13 @@
         "start": null,
         "end": null
       },
-      "total_test_files": 8,
+      "total_test_files": 11,
       "total_epics_found": 44,
       "total_user_stories_found": 4,
       "description": "Total test files across all repositories",
       "method": "Scan git_artifacts repositories for test files and epic/story references",
       "reason": null,
-      "calculated_at": "2026-02-01T08:07:57.255672Z",
+      "calculated_at": "2026-02-01T08:23:41.739756Z",
       "calculation_path": "calculations/global/tests.json"
     },
     "untested_epics.json": {
@@ -181,8 +181,8 @@
       "user_stories_without_coverage": {
         "RnDMetrics": [
           "user story",
-          "User story",
-          "user story"
+          "user story",
+          "User story"
         ],
         "TrailEquip": [],
         "TrailWaze": [
@@ -191,7 +191,7 @@
       },
       "method": "List epics/user stories for repos with missing or null coverage",
       "reason": null,
-      "calculated_at": "2026-02-01T08:07:57.256378Z",
+      "calculated_at": "2026-02-01T08:23:41.740940Z",
       "calculation_path": "calculations/global/untested_epics.json"
     },
     "velocity.json": {
@@ -214,7 +214,7 @@
       "unit": "commits/day",
       "method": "Average per-repo avg_commits_per_day",
       "reason": null,
-      "calculated_at": "2026-02-01T10:07:57.196882",
+      "calculated_at": "2026-02-01T10:23:41.661756",
       "calculation_path": "calculations/global/velocity.json"
     }
   },
@@ -240,7 +240,7 @@
         "period_end": "2026-01-31",
         "days_active": 8,
         "method": "Count commits; average by unique active dates; active period from first to last commit date",
-        "calculated_at": "2026-02-01T10:07:57.165021",
+        "calculated_at": "2026-02-01T10:23:41.621183",
         "calculation_path": "calculations/per_repo/RnDMetrics/commits.json"
       },
       "contributors": {
@@ -259,7 +259,7 @@
         },
         "unique_contributors": 1,
         "method": "Count unique author emails",
-        "calculated_at": "2026-02-01T10:07:57.165372",
+        "calculated_at": "2026-02-01T10:23:41.621757",
         "calculation_path": "calculations/per_repo/RnDMetrics/contributors.json"
       },
       "coverage": {
@@ -268,15 +268,17 @@
         "repos": [
           "RnDMetrics"
         ],
-        "inputs": [],
+        "inputs": [
+          "ci_artifacts/RnDMetrics/coverage/pytest/coverage.xml"
+        ],
         "time_range": {
           "start": null,
           "end": null
         },
-        "value": null,
-        "reason": "Coverage data not available (tool: pytest-cov, requires local test run)",
+        "value": 46.68,
+        "reason": null,
         "method": "Parse pytest-cov output",
-        "calculated_at": "2026-02-01T10:07:57.165558",
+        "calculated_at": "2026-02-01T10:23:41.624710",
         "calculation_path": "calculations/per_repo/RnDMetrics/coverage.json"
       },
       "dora_frequency": {
@@ -296,7 +298,7 @@
         "unit": "commits/day",
         "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
         "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-        "calculated_at": "2026-02-01T10:07:57.165876",
+        "calculated_at": "2026-02-01T10:23:41.625182",
         "calculation_path": "calculations/per_repo/RnDMetrics/dora_frequency.json"
       },
       "lead_time": {
@@ -316,7 +318,7 @@
         "unit": "hours",
         "method": "Average time between consecutive commits",
         "note": "Proxy metric. True DORA measures code commit to deployment",
-        "calculated_at": "2026-02-01T10:07:57.166229",
+        "calculated_at": "2026-02-01T10:23:41.625626",
         "calculation_path": "calculations/per_repo/RnDMetrics/lead_time.json"
       },
       "tests": {
@@ -339,7 +341,7 @@
         "sample_test_files": [],
         "method": "Scan git_artifacts repositories for test files and epic/story references",
         "reason": null,
-        "calculated_at": "2026-02-01T08:07:57.258410Z",
+        "calculated_at": "2026-02-01T08:23:41.743483Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/tests.json"
       },
       "untested_epics": {
@@ -355,8 +357,8 @@
           "start": null,
           "end": null
         },
-        "coverage_value": null,
-        "coverage_reason": "Coverage data not available (tool: pytest-cov, requires local test run)",
+        "coverage_value": 46.68,
+        "coverage_reason": null,
         "tests_count": 0,
         "epics_without_coverage": [
           "and user story coverage metrics.",
@@ -394,12 +396,12 @@
         ],
         "user_stories_without_coverage": [
           "user story",
-          "User story",
-          "user story"
+          "user story",
+          "User story"
         ],
         "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
         "reason": null,
-        "calculated_at": "2026-02-01T08:07:57.258417Z",
+        "calculated_at": "2026-02-01T08:23:41.743492Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/untested_epics.json"
       }
     },
@@ -424,7 +426,7 @@
         "period_end": "2026-01-31",
         "days_active": 4,
         "method": "Count commits; average by unique active dates; active period from first to last commit date",
-        "calculated_at": "2026-02-01T10:07:57.172656",
+        "calculated_at": "2026-02-01T10:23:41.634027",
         "calculation_path": "calculations/per_repo/TrailEquip/commits.json"
       },
       "contributors": {
@@ -443,7 +445,7 @@
         },
         "unique_contributors": 1,
         "method": "Count unique author emails",
-        "calculated_at": "2026-02-01T10:07:57.176620",
+        "calculated_at": "2026-02-01T10:23:41.638235",
         "calculation_path": "calculations/per_repo/TrailEquip/contributors.json"
       },
       "coverage": {
@@ -460,7 +462,7 @@
         "value": null,
         "reason": "Coverage data not available (tool: jacoco, requires local test run)",
         "method": "Parse jacoco output",
-        "calculated_at": "2026-02-01T10:07:57.177002",
+        "calculated_at": "2026-02-01T10:23:41.640764",
         "calculation_path": "calculations/per_repo/TrailEquip/coverage.json"
       },
       "dora_frequency": {
@@ -480,7 +482,7 @@
         "unit": "commits/day",
         "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
         "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-        "calculated_at": "2026-02-01T10:07:57.177286",
+        "calculated_at": "2026-02-01T10:23:41.641104",
         "calculation_path": "calculations/per_repo/TrailEquip/dora_frequency.json"
       },
       "lead_time": {
@@ -500,7 +502,7 @@
         "unit": "hours",
         "method": "Average time between consecutive commits",
         "note": "Proxy metric. True DORA measures code commit to deployment",
-        "calculated_at": "2026-02-01T10:07:57.177707",
+        "calculated_at": "2026-02-01T10:23:41.641760",
         "calculation_path": "calculations/per_repo/TrailEquip/lead_time.json"
       },
       "tests": {
@@ -518,8 +520,8 @@
         },
         "test_files": 8,
         "test_frameworks": [
-          "Jest/Mocha",
-          "JUnit"
+          "JUnit",
+          "Jest/Mocha"
         ],
         "epics": 0,
         "user_stories": 0,
@@ -530,7 +532,7 @@
         ],
         "method": "Scan git_artifacts repositories for test files and epic/story references",
         "reason": null,
-        "calculated_at": "2026-02-01T08:07:57.261277Z",
+        "calculated_at": "2026-02-01T08:23:41.746603Z",
         "calculation_path": "calculations/per_repo/TrailEquip/tests.json"
       },
       "untested_epics": {
@@ -553,7 +555,7 @@
         "user_stories_without_coverage": [],
         "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
         "reason": null,
-        "calculated_at": "2026-02-01T08:07:57.261286Z",
+        "calculated_at": "2026-02-01T08:23:41.746612Z",
         "calculation_path": "calculations/per_repo/TrailEquip/untested_epics.json"
       }
     },
@@ -578,7 +580,7 @@
         "period_end": "2026-01-31",
         "days_active": 12,
         "method": "Count commits; average by unique active dates; active period from first to last commit date",
-        "calculated_at": "2026-02-01T10:07:57.182362",
+        "calculated_at": "2026-02-01T10:23:41.646815",
         "calculation_path": "calculations/per_repo/TrailWaze/commits.json"
       },
       "contributors": {
@@ -597,7 +599,7 @@
         },
         "unique_contributors": 2,
         "method": "Count unique author emails",
-        "calculated_at": "2026-02-01T10:07:57.186230",
+        "calculated_at": "2026-02-01T10:23:41.650284",
         "calculation_path": "calculations/per_repo/TrailWaze/contributors.json"
       },
       "coverage": {
@@ -616,7 +618,7 @@
         "value": null,
         "reason": "Coverage parsing did not produce a value",
         "method": "Parse lcov output",
-        "calculated_at": "2026-02-01T10:07:57.187357",
+        "calculated_at": "2026-02-01T10:23:41.651715",
         "calculation_path": "calculations/per_repo/TrailWaze/coverage.json"
       },
       "dora_frequency": {
@@ -636,7 +638,7 @@
         "unit": "commits/day",
         "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
         "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-        "calculated_at": "2026-02-01T10:07:57.187549",
+        "calculated_at": "2026-02-01T10:23:41.651935",
         "calculation_path": "calculations/per_repo/TrailWaze/dora_frequency.json"
       },
       "lead_time": {
@@ -656,7 +658,7 @@
         "unit": "hours",
         "method": "Average time between consecutive commits",
         "note": "Proxy metric. True DORA measures code commit to deployment",
-        "calculated_at": "2026-02-01T10:07:57.187725",
+        "calculated_at": "2026-02-01T10:23:41.652150",
         "calculation_path": "calculations/per_repo/TrailWaze/lead_time.json"
       },
       "tests": {
@@ -672,14 +674,20 @@
           "start": null,
           "end": null
         },
-        "test_files": 0,
-        "test_frameworks": [],
+        "test_files": 3,
+        "test_frameworks": [
+          "JUnit"
+        ],
         "epics": 12,
         "user_stories": 1,
-        "sample_test_files": [],
+        "sample_test_files": [
+          "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/JsonParserTest.java",
+          "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/MethodInvocationTest.java",
+          "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/types/InvocationTest.java"
+        ],
         "method": "Scan git_artifacts repositories for test files and epic/story references",
         "reason": null,
-        "calculated_at": "2026-02-01T08:07:57.264163Z",
+        "calculated_at": "2026-02-01T08:23:41.749493Z",
         "calculation_path": "calculations/per_repo/TrailWaze/tests.json"
       },
       "untested_epics": {
@@ -697,7 +705,7 @@
         },
         "coverage_value": null,
         "coverage_reason": "Coverage parsing did not produce a value",
-        "tests_count": 0,
+        "tests_count": 3,
         "epics_without_coverage": [
           "1: Mobile app foundation (React Native + Expo)",
           "2: Offline maps (MapLibre + MBTiles)",
@@ -717,7 +725,7 @@
         ],
         "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
         "reason": null,
-        "calculated_at": "2026-02-01T08:07:57.264171Z",
+        "calculated_at": "2026-02-01T08:23:41.749501Z",
         "calculation_path": "calculations/per_repo/TrailWaze/untested_epics.json"
       }
     }

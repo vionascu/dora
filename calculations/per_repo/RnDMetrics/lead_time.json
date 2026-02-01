@@ -15,5 +15,5 @@
   "unit": "hours",
   "method": "Average time between consecutive commits",
   "note": "Proxy metric. True DORA measures code commit to deployment",
-  "calculated_at": "2026-02-01T10:07:57.166229"
+  "calculated_at": "2026-02-01T10:23:42.384589"
 }

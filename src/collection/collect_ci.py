@@ -84,8 +84,16 @@ class CICollector:
             p for p in git_clone.rglob("pom.xml")
             if ".git" not in p.parts and "node_modules" not in p.parts
         ]
-        if not pom_files:
-            print(f"      ℹ No pom.xml found")
+        gradle_files = [
+            p for p in git_clone.rglob("build.gradle.kts")
+            if ".git" not in p.parts and "node_modules" not in p.parts
+        ] + [
+            p for p in git_clone.rglob("build.gradle")
+            if ".git" not in p.parts and "node_modules" not in p.parts
+        ]
+
+        if not pom_files and not gradle_files:
+            print(f"      ℹ No pom.xml or build.gradle(.kts) found")
             return
 
         coverage_dir = repo_dir / "coverage" / "jacoco"
@@ -119,6 +127,83 @@ class CICollector:
             except Exception as e:
                 print(f"      ℹ Could not run Maven in {module_dir}: {str(e)}")
 
+        init_script = coverage_dir / "jacoco.init.gradle"
+        if not init_script.exists():
+            init_script.write_text(
+                """
+allprojects {
+  plugins.withId('java') {
+    apply plugin: 'jacoco'
+    tasks.withType(Test).configureEach {
+      finalizedBy 'jacocoTestReport'
+    }
+    tasks.register('jacocoTestReport', JacocoReport) {
+      dependsOn tasks.withType(Test)
+      reports {
+        xml.required = true
+        html.required = false
+        csv.required = false
+      }
+      def mainSourceSets = project.extensions.findByName('sourceSets')
+      if (mainSourceSets != null) {
+        classDirectories.setFrom(files(mainSourceSets.main.output))
+        sourceDirectories.setFrom(files(mainSourceSets.main.allSource.srcDirs))
+      }
+      executionData.setFrom(fileTree(dir: buildDir, includes: ['jacoco/test.exec', 'jacoco/test.exec.*']))
+    }
+  }
+}
+""".strip()
+            )
+
+        gradle_root = git_clone / "gradlew"
+        if gradle_root.exists():
+            try:
+                subprocess.run(
+                    ["./gradlew", "test", "jacocoTestReport", "--init-script", str(init_script)],
+                    cwd=git_clone,
+                    capture_output=True,
+                    timeout=900,
+                    check=False
+                )
+            except subprocess.TimeoutExpired:
+                print("      ℹ Gradle test timeout in repo root")
+            except Exception as e:
+                print(f"      ℹ Could not run Gradle in repo root: {str(e)}")
+
+        for gradle_file in gradle_files:
+            module_dir = gradle_file.parent
+            gradlew = module_dir / "gradlew"
+            if gradlew.exists():
+                try:
+                    subprocess.run(
+                        ["./gradlew", "test", "jacocoTestReport", "--init-script", str(init_script)],
+                        cwd=module_dir,
+                        capture_output=True,
+                        timeout=900,
+                        check=False
+                    )
+                except subprocess.TimeoutExpired:
+                    print(f"      ℹ Gradle test timeout in {module_dir}")
+                except Exception as e:
+                    print(f"      ℹ Could not run Gradle in {module_dir}: {str(e)}")
+
+            report_paths = [
+                module_dir / "build" / "reports" / "jacoco" / "test" / "jacocoTestReport.xml",
+                module_dir / "build" / "reports" / "jacoco" / "test" / "jacocoTestReport.xml"
+            ]
+            for report in report_paths:
+                if report.exists():
+                    module_name = module_dir.relative_to(git_clone).as_posix().replace("/", "_")
+                    if module_name == ".":
+                        module_name = "root"
+                    dest = coverage_dir / f"{module_name}.jacoco.xml"
+                    with open(report, "rb") as src:
+                        with open(dest, "wb") as dst:
+                            dst.write(src.read())
+                    collected += 1
+                    print(f"      ✓ Collected {dest.relative_to(repo_dir)}")
+
         if collected == 0:
             print(f"      ℹ No jacoco.xml files produced")
 
@@ -134,9 +219,24 @@ class CICollector:
             return
 
         try:
+            if requirements_file.exists():
+                subprocess.run(
+                    ["python3", "-m", "pip", "install", "-r", str(requirements_file)],
+                    cwd=git_clone,
+                    capture_output=True,
+                    timeout=600,
+                    check=False
+                )
+            subprocess.run(
+                ["python3", "-m", "pip", "install", "pytest-cov"],
+                cwd=git_clone,
+                capture_output=True,
+                timeout=600,
+                check=False
+            )
             # Run pytest with coverage
             result = subprocess.run(
-                ["python3", "-m", "pytest", "--cov", "--cov-report=xml", "--tb=short"],
+                ["python3", "-m", "pytest", "--cov=.", "--cov-report=xml", "--tb=short"],
                 cwd=git_clone,
                 capture_output=True,
                 timeout=300,
@@ -185,6 +285,13 @@ class CICollector:
                     check=False
                 )
                 subprocess.run(
+                    ["npm", "install", "--no-save", "jest-circus", "jest-jasmine2"],
+                    cwd=module_dir,
+                    capture_output=True,
+                    timeout=600,
+                    check=False
+                )
+                result = subprocess.run(
                     ["npm", "test", "--", "--coverage", "--coverage-reporter=lcov"],
                     cwd=module_dir,
                     capture_output=True,
@@ -194,6 +301,47 @@ class CICollector:
 
                 lcov_path = module_dir / "coverage" / "lcov.info"
                 if lcov_path.exists():
+                    fallback_result = None
+                    jasmine_result = None
+                    config_result = None
+                    if lcov_path.stat().st_size == 0:
+                        fallback_result = subprocess.run(
+                            ["npx", "--no-install", "jest", "--coverage", "--coverageReporters=lcov", "--passWithNoTests"],
+                            cwd=module_dir,
+                            capture_output=True,
+                            timeout=600,
+                            check=False
+                        )
+                        if lcov_path.stat().st_size == 0:
+                            jasmine_result = subprocess.run(
+                                ["npx", "--no-install", "jest", "--coverage", "--coverageReporters=lcov", "--passWithNoTests", "--testRunner=jest-jasmine2"],
+                                cwd=module_dir,
+                                capture_output=True,
+                                timeout=600,
+                                check=False
+                            )
+                    if lcov_path.stat().st_size == 0:
+                        runner_path = (module_dir / "node_modules" / "jest-circus" / "build" / "runner.js").resolve()
+                        if runner_path.exists():
+                            config_path = module_dir / ".dora-jest.config.js"
+                            config_path.write_text(
+                                "\n".join([
+                                    "module.exports = {",
+                                    "  testEnvironment: 'jsdom',",
+                                    "  testMatch: ['**/__tests__/**/*.test.js'],",
+                                    "  moduleFileExtensions: ['js', 'json'],",
+                                    "  transform: {},",
+                                    f"  testRunner: '{runner_path.as_posix()}',",
+                                    "};",
+                                ])
+                            )
+                            config_result = subprocess.run(
+                                ["npx", "--no-install", "jest", "--config", str(config_path.resolve()), "--coverage", "--coverageReporters=lcov", "--passWithNoTests"],
+                                cwd=module_dir,
+                                capture_output=True,
+                                timeout=600,
+                                check=False
+                            )
                     module_name = module_dir.relative_to(git_clone).as_posix().replace("/", "_")
                     if module_name == ".":
                         module_name = "root"
@@ -203,6 +351,28 @@ class CICollector:
                             dst.write(src.read())
                     collected += 1
                     print(f"      ✓ Collected {dest.relative_to(repo_dir)}")
+                    if lcov_path.stat().st_size == 0:
+                        log_path = coverage_dir / f"{module_name}.lcov.log.txt"
+                        with open(log_path, "w") as log:
+                            log.write("npm test output:\n")
+                            log.write(result.stdout.decode(errors="ignore"))
+                            log.write("\n\nnpm test error:\n")
+                            log.write(result.stderr.decode(errors="ignore"))
+                            if fallback_result:
+                                log.write("\n\nnpx jest output:\n")
+                                log.write(fallback_result.stdout.decode(errors="ignore"))
+                                log.write("\n\nnpx jest error:\n")
+                                log.write(fallback_result.stderr.decode(errors="ignore"))
+                            if jasmine_result:
+                                log.write("\n\nnpx jest (jasmine) output:\n")
+                                log.write(jasmine_result.stdout.decode(errors="ignore"))
+                                log.write("\n\nnpx jest (jasmine) error:\n")
+                                log.write(jasmine_result.stderr.decode(errors="ignore"))
+                            if config_result:
+                                log.write("\n\nnpx jest (custom config) output:\n")
+                                log.write(config_result.stdout.decode(errors="ignore"))
+                                log.write("\n\nnpx jest (custom config) error:\n")
+                                log.write(config_result.stderr.decode(errors="ignore"))
             except subprocess.TimeoutExpired:
                 print(f"      ℹ npm test timeout in {module_dir}")
             except Exception as e:

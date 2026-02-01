@@ -178,7 +178,7 @@ class Calculator:
 
         coverage_files = []
         if coverage_tool == "jacoco":
-            coverage_files = list(ci_dir.rglob("*.jacoco.xml"))
+            coverage_files = list(ci_dir.rglob("*.jacoco.xml")) + list(ci_dir.rglob("*jacoco*.xml"))
         elif coverage_tool == "pytest-cov":
             coverage_files = list(ci_dir.rglob("coverage.xml"))
         elif coverage_tool == "lcov":
@@ -230,6 +230,12 @@ class Calculator:
                                     total_lines += int(line.strip().split(":")[1])
                                 elif line.startswith("LH:"):
                                     hit_lines += int(line.strip().split(":")[1])
+                                elif line.startswith("DA:"):
+                                    parts = line.strip().split(":")[1].split(",")
+                                    if len(parts) >= 2:
+                                        total_lines += 1
+                                        if int(parts[1]) > 0:
+                                            hit_lines += 1
                     if total_lines > 0:
                         value = round((hit_lines / total_lines) * 100, 2)
             except Exception as e:

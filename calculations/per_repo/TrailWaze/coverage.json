@@ -14,5 +14,5 @@
   "value": null,
   "reason": "Coverage parsing did not produce a value",
   "method": "Parse lcov output",
-  "calculated_at": "2026-02-01T10:07:57.187357"
+  "calculated_at": "2026-02-01T10:23:42.396849"
 }
