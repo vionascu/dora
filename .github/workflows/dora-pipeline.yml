@@ -76,17 +76,6 @@ jobs:
     - name: "📈 Calculate Test Metrics"
       run: python3 src/calculations/calculate_test_metrics.py
 
-    - name: "✅ Validate Data Quality"
-      run: |
-        echo ""
-        echo "======================================================================"
-        echo "DORA VALIDATION LAYER - Quality Gates"
-        echo "======================================================================"
-        python3 src/validation/validate.py
-
-    - name: "📋 Generate Validation Manifest"
-      run: python3 src/calculations/calculate_test_metrics.py
-
     - name: "📈 Calculate Evolution Metrics"
       run: |
         echo ""
@@ -102,6 +91,17 @@ jobs:
         echo "DORA AI DETECTION - Analyzing for AI-Assisted Development"
         echo "======================================================================"
         python3 src/calculations/detect_ai_patterns.py
+
+    - name: "✅ Validate Data Quality"
+      run: |
+        echo ""
+        echo "======================================================================"
+        echo "DORA VALIDATION LAYER - Quality Gates"
+        echo "======================================================================"
+        python3 src/validation/validate.py
+
+    - name: "📋 Generate Validation Manifest"
+      run: python3 src/calculations/calculate_test_metrics.py
 
     - name: Upload artifacts
       if: always()
