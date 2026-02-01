@@ -23,7 +23,10 @@ class GitHubScanner:
     def scan_for_epics_and_stories(self, repo_path):
         """Search for files containing epic or user story references"""
         repo_name = repo_path.parent.name if repo_path.name == "clone" else repo_path.name
-        
+
+        epics_found = set()
+        stories_found = set()
+
         # Common patterns for epic/story files
         patterns = [
             "**/*epic*",
@@ -36,27 +39,41 @@ class GitHubScanner:
             "**/issues/**",
             "**/*.md"
         ]
-        
+
         for pattern in patterns:
             for file_path in repo_path.glob(pattern):
                 if file_path.is_file() and not any(p in str(file_path) for p in ['.git', '__pycache__', 'node_modules', '.gradle']):
                     try:
                         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                             content = f.read()
-                            
+
                         # Look for epic/story keywords
                         if re.search(r'epic|epic\s*story|us-\d+|user\s*story', content, re.IGNORECASE):
                             rel_path = file_path.relative_to(repo_path)
-                            
-                            # Extract mentions
-                            epics = re.findall(r'[Ee]pic[:\s]+([^\n]+)', content)
-                            stories = re.findall(r'[Uu]ser\s*[Ss]tory|US-\d+|[US]S-\d+', content)
-                            
-                            if epics or stories:
-                                self.results["epics"][repo_name].extend(epics[:3])  # Top 3
-                                self.results["user_stories"][repo_name].extend(list(set(stories))[:5])  # Top 5
+
+                            # Extract EPIC patterns (e.g., "EPIC 1", "EPIC 2", etc.)
+                            epic_matches = re.findall(r'EPIC\s*(\d+)', content, re.IGNORECASE)
+                            for epic_num in epic_matches:
+                                epics_found.add(f"EPIC {epic_num}")
+
+                            # Extract US patterns (e.g., "US1.1", "US1.2", "US2.1", etc.)
+                            us_matches = re.findall(r'US\s*(\d+\.\d+)', content, re.IGNORECASE)
+                            for us_id in us_matches:
+                                stories_found.add(f"US{us_id}")
+
+                            # Also extract generic epic/story keywords
+                            generic_epics = re.findall(r'[Ee]pic[:\s]+([^\n]+)', content)
+                            generic_stories = re.findall(r'[Uu]ser\s*[Ss]tory|US-\d+|[US]S-\d+', content)
+
+                            epics_found.update(generic_epics[:3])
+                            stories_found.update(set(generic_stories)[:5])
                     except:
                         pass
+
+        if epics_found:
+            self.results["epics"][repo_name] = sorted(list(epics_found))
+        if stories_found:
+            self.results["user_stories"][repo_name] = sorted(list(stories_found))
 
     def scan_for_tests(self, repo_path):
         """Search for test files"""
