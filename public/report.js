@@ -126,6 +126,17 @@ class MetricsReport {
   applyDateFilter(from, to) {
     this.dateFilterFrom = from || null;
     this.dateFilterTo = to || null;
+
+    // Show feedback on which filter is active
+    const filterBtn = document.getElementById('apply-date-filter');
+    if (from || to) {
+      filterBtn.textContent = `✓ Filter Active (${from || 'start'} to ${to || 'end'})`;
+      filterBtn.style.background = '#007acc';
+    } else {
+      filterBtn.textContent = 'Apply Filter';
+      filterBtn.style.background = '#28a745';
+    }
+
     this.render();
   }
 
@@ -159,9 +170,9 @@ class MetricsReport {
     const data = this.manifest;
 
     if (this.selectedProject === 'all') {
-      // Show global metrics
-      const globalCommits = data.global_metrics['commits.json'];
-      this.updateElement('finding-commits', globalCommits?.total_commits);
+      // Show global metrics - filtered by date if applicable
+      const filteredCommits = this.getFilteredMetric(data.global_metrics['commits.json']);
+      this.updateElement('finding-commits', filteredCommits?.total_commits);
 
       const globalSummary = data.global_metrics['summary.json'];
       this.updateElement('finding-repos', globalSummary?.repos_analyzed?.length);
@@ -177,7 +188,7 @@ class MetricsReport {
       this.updateElement('finding-epics', globalTests?.total_epics_found);
       this.updateElement('finding-stories', globalTests?.total_user_stories_found);
 
-      this.attachFindingLinks('finding-commits', globalCommits);
+      this.attachFindingLinks('finding-commits', filteredCommits);
       this.attachFindingLinks('finding-repos', globalSummary);
       this.attachFindingLinks('finding-contributors', globalContributors);
       this.attachFindingLinks('finding-velocity', globalVelocity);
@@ -185,7 +196,7 @@ class MetricsReport {
       this.attachFindingLinks('finding-epics', globalTests);
       this.attachFindingLinks('finding-stories', globalTests);
     } else {
-      // Show project-specific metrics
+      // Show project-specific metrics - filtered by date if applicable
       const repoData = data.per_repo_metrics[this.selectedProject];
       if (!repoData) {
         this.updateElement('finding-commits', 'N/A');
@@ -198,22 +209,49 @@ class MetricsReport {
         return;
       }
 
-      this.updateElement('finding-commits', repoData.commits?.total_commits);
+      const filteredCommits = this.getFilteredMetric(repoData.commits);
+      this.updateElement('finding-commits', filteredCommits?.total_commits);
       this.updateElement('finding-repos', '1');
       this.updateElement('finding-contributors', repoData.contributors?.unique_contributors);
-      this.updateElement('finding-velocity', repoData.commits?.avg_commits_per_day);
+      this.updateElement('finding-velocity', filteredCommits?.avg_commits_per_day);
       this.updateElement('finding-tests', repoData.tests?.test_files);
       this.updateElement('finding-epics', repoData.tests?.epics);
       this.updateElement('finding-stories', repoData.tests?.user_stories);
 
-      this.attachFindingLinks('finding-commits', repoData.commits);
+      this.attachFindingLinks('finding-commits', filteredCommits);
       this.attachFindingLinks('finding-repos', { value: 1 });
       this.attachFindingLinks('finding-contributors', repoData.contributors);
-      this.attachFindingLinks('finding-velocity', repoData.commits);
+      this.attachFindingLinks('finding-velocity', filteredCommits);
       this.attachFindingLinks('finding-tests', repoData.tests);
       this.attachFindingLinks('finding-epics', repoData.tests);
       this.attachFindingLinks('finding-stories', repoData.tests);
     }
+  }
+
+  getFilteredMetric(metric) {
+    if (!metric || (!this.dateFilterFrom && !this.dateFilterTo)) {
+      return metric;
+    }
+
+    // If metric has a period_start and period_end, filter based on date range
+    if (metric.period_start && metric.period_end) {
+      const metricStart = metric.period_start;
+      const metricEnd = metric.period_end;
+
+      const filterFrom = this.dateFilterFrom || '1900-01-01';
+      const filterTo = this.dateFilterTo || '2100-12-31';
+
+      // Check if metric is within the selected date range
+      if (metricEnd < filterFrom || metricStart > filterTo) {
+        // Outside range
+        return { ...metric, total_commits: 0, avg_commits_per_day: 0 };
+      }
+
+      // Partial overlap - show original since we don't have granular data
+      return metric;
+    }
+
+    return metric;
   }
 
   renderRepositories() {
