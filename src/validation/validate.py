@@ -39,6 +39,10 @@ class Validator:
         required_fields = ["metric_id", "calculated_at"]
 
         for calc_file in self.calculations.rglob("*.json"):
+            # Skip MANIFEST.json - it's a validation report, not a metric
+            if calc_file.name == "MANIFEST.json":
+                continue
+
             try:
                 with open(calc_file, 'r') as f:
                     data = json.load(f)
@@ -76,6 +80,10 @@ class Validator:
             return
 
         for calc_file in self.calculations.rglob("*.json"):
+            # Skip MANIFEST.json - it's a validation report, not a metric
+            if calc_file.name == "MANIFEST.json":
+                continue
+
             try:
                 with open(calc_file, 'r') as f:
                     data = json.load(f)
