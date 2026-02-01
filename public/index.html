@@ -7,6 +7,33 @@
   <link rel="stylesheet" href="report.css">
 </head>
 <body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h3>Navigation</h3>
+    </div>
+
+    <div class="sidebar-section">
+      <h4>Project Filter</h4>
+      <div class="project-selector">
+        <button class="project-btn active" data-project="all">All Projects</button>
+        <div id="project-list"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <h4>Date Range</h4>
+      <div class="date-filters">
+        <label>From:</label>
+        <input type="date" id="date-from" class="date-input">
+        <label>To:</label>
+        <input type="date" id="date-to" class="date-input">
+        <button class="filter-btn" id="apply-date-filter">Apply Filter</button>
+        <button class="filter-btn secondary" id="reset-date-filter">Reset</button>
+      </div>
+    </div>
+  </aside>
+
   <div class="report">
     <!-- Header -->
     <header class="report-header">

@@ -1,21 +1,24 @@
 /**
- * R&D Metrics Report - Professional Version
+ * R&D Metrics Report - Professional Version with Project & Date Filtering
  * Loads and displays only validated data from calculations/ folder
  */
 
 class MetricsReport {
   constructor() {
     this.manifest = null;
+    this.selectedProject = 'all';
+    this.dateFilterFrom = null;
+    this.dateFilterTo = null;
     this.init();
   }
 
   async init() {
     try {
-      // Load and validate manifest first
       await this.loadManifest();
+      this.setupSidebar();
+      this.setupEventListeners();
       this.renderHeader();
-      this.renderFindings();
-      this.renderRepositories();
+      this.render();
     } catch (err) {
       console.error('Report error:', err);
       this.showError('Failed to load report');
@@ -34,8 +37,92 @@ class MetricsReport {
     this.manifest = await fallback.json();
   }
 
+  setupSidebar() {
+    const projectList = document.getElementById('project-list');
+    const repos = Object.keys(this.manifest.per_repo_metrics).sort();
+
+    repos.forEach(repo => {
+      const btn = document.createElement('button');
+      btn.className = 'project-btn';
+      btn.textContent = repo;
+      btn.dataset.project = repo;
+      btn.addEventListener('click', () => this.selectProject(repo));
+      projectList.appendChild(btn);
+    });
+
+    // Set initial date range based on available data
+    this.setDefaultDateRange();
+  }
+
+  setDefaultDateRange() {
+    const dateFromInput = document.getElementById('date-from');
+    const dateToInput = document.getElementById('date-to');
+
+    // Get min and max dates from all repos
+    let minDate = null;
+    let maxDate = null;
+
+    for (const repo of Object.keys(this.manifest.per_repo_metrics)) {
+      const commits = this.manifest.per_repo_metrics[repo].commits;
+      if (commits && commits.period_start) {
+        if (!minDate || commits.period_start < minDate) {
+          minDate = commits.period_start;
+        }
+      }
+      if (commits && commits.period_end) {
+        if (!maxDate || commits.period_end > maxDate) {
+          maxDate = commits.period_end;
+        }
+      }
+    }
+
+    if (minDate) dateFromInput.value = minDate;
+    if (maxDate) dateToInput.value = maxDate;
+  }
+
+  setupEventListeners() {
+    const applyBtn = document.getElementById('apply-date-filter');
+    const resetBtn = document.getElementById('reset-date-filter');
+
+    applyBtn.addEventListener('click', () => {
+      const from = document.getElementById('date-from').value;
+      const to = document.getElementById('date-to').value;
+      this.applyDateFilter(from, to);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      document.getElementById('date-from').value = '';
+      document.getElementById('date-to').value = '';
+      this.dateFilterFrom = null;
+      this.dateFilterTo = null;
+      this.render();
+    });
+  }
+
+  selectProject(project) {
+    this.selectedProject = project;
+
+    // Update button states
+    document.querySelectorAll('.project-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`[data-project="${project}"]`).classList.add('active');
+
+    this.render();
+  }
+
+  applyDateFilter(from, to) {
+    this.dateFilterFrom = from || null;
+    this.dateFilterTo = to || null;
+    this.render();
+  }
+
+  render() {
+    this.renderFindings();
+    this.renderRepositories();
+  }
+
   renderHeader() {
-    // Date
     const dateElem = document.getElementById('report-date');
     if (dateElem) {
       const now = new Date();
@@ -47,7 +134,6 @@ class MetricsReport {
       dateElem.textContent = `Generated ${formatted}`;
     }
 
-    // Validation badge
     const badge = document.getElementById('validation-badge');
     if (badge && this.manifest) {
       const status = this.manifest.validation_status === 'PASS'
@@ -60,35 +146,62 @@ class MetricsReport {
   renderFindings() {
     const data = this.manifest;
 
-    // Total commits
-    const globalCommits = data.global_metrics['commits.json'];
-    this.updateElement('finding-commits', globalCommits?.total_commits);
+    if (this.selectedProject === 'all') {
+      // Show global metrics
+      const globalCommits = data.global_metrics['commits.json'];
+      this.updateElement('finding-commits', globalCommits?.total_commits);
 
-    // Repos
-    const globalSummary = data.global_metrics['summary.json'];
-    this.updateElement('finding-repos', globalSummary?.repos_analyzed?.length);
+      const globalSummary = data.global_metrics['summary.json'];
+      this.updateElement('finding-repos', globalSummary?.repos_analyzed?.length);
 
-    // Contributors
-    const globalContributors = data.global_metrics['contributors.json'];
-    this.updateElement('finding-contributors', globalContributors?.unique_contributors);
+      const globalContributors = data.global_metrics['contributors.json'];
+      this.updateElement('finding-contributors', globalContributors?.unique_contributors);
 
-    // Velocity (average across all repos)
-    const globalVelocity = data.global_metrics['velocity.json'];
-    this.updateElement('finding-velocity', globalVelocity?.value);
+      const globalVelocity = data.global_metrics['velocity.json'];
+      this.updateElement('finding-velocity', globalVelocity?.value);
 
-    // Test metrics
-    const globalTests = data.global_metrics['tests.json'];
-    this.updateElement('finding-tests', globalTests?.total_test_files);
-    this.updateElement('finding-epics', globalTests?.total_epics_found);
-    this.updateElement('finding-stories', globalTests?.total_user_stories_found);
+      const globalTests = data.global_metrics['tests.json'];
+      this.updateElement('finding-tests', globalTests?.total_test_files);
+      this.updateElement('finding-epics', globalTests?.total_epics_found);
+      this.updateElement('finding-stories', globalTests?.total_user_stories_found);
 
-    this.attachFindingLinks('finding-commits', globalCommits);
-    this.attachFindingLinks('finding-repos', globalSummary);
-    this.attachFindingLinks('finding-contributors', globalContributors);
-    this.attachFindingLinks('finding-velocity', globalVelocity);
-    this.attachFindingLinks('finding-tests', globalTests);
-    this.attachFindingLinks('finding-epics', globalTests);
-    this.attachFindingLinks('finding-stories', globalTests);
+      this.attachFindingLinks('finding-commits', globalCommits);
+      this.attachFindingLinks('finding-repos', globalSummary);
+      this.attachFindingLinks('finding-contributors', globalContributors);
+      this.attachFindingLinks('finding-velocity', globalVelocity);
+      this.attachFindingLinks('finding-tests', globalTests);
+      this.attachFindingLinks('finding-epics', globalTests);
+      this.attachFindingLinks('finding-stories', globalTests);
+    } else {
+      // Show project-specific metrics
+      const repoData = data.per_repo_metrics[this.selectedProject];
+      if (!repoData) {
+        this.updateElement('finding-commits', 'N/A');
+        this.updateElement('finding-repos', '1');
+        this.updateElement('finding-contributors', 'N/A');
+        this.updateElement('finding-velocity', 'N/A');
+        this.updateElement('finding-tests', 'N/A');
+        this.updateElement('finding-epics', 'N/A');
+        this.updateElement('finding-stories', 'N/A');
+        return;
+      }
+
+      this.updateElement('finding-commits', repoData.commits?.total_commits);
+      this.updateElement('finding-repos', '1');
+      this.updateElement('finding-contributors', repoData.contributors?.unique_contributors);
+      this.updateElement('finding-velocity', repoData.commits?.avg_commits_per_day);
+      this.updateElement('finding-tests', repoData.tests?.test_files);
+      this.updateElement('finding-epics', repoData.tests?.epics);
+      this.updateElement('finding-stories', repoData.tests?.user_stories);
+
+      this.attachFindingLinks('finding-commits', repoData.commits);
+      this.attachFindingLinks('finding-repos', { value: 1 });
+      this.attachFindingLinks('finding-contributors', repoData.contributors);
+      this.attachFindingLinks('finding-velocity', repoData.commits);
+      this.attachFindingLinks('finding-tests', repoData.tests);
+      this.attachFindingLinks('finding-epics', repoData.tests);
+      this.attachFindingLinks('finding-stories', repoData.tests);
+    }
   }
 
   renderRepositories() {
@@ -96,7 +209,13 @@ class MetricsReport {
     if (!container) return;
 
     const repoData = this.manifest.per_repo_metrics;
-    const repoNames = Object.keys(repoData).sort();
+    let repoNames;
+
+    if (this.selectedProject === 'all') {
+      repoNames = Object.keys(repoData).sort();
+    } else {
+      repoNames = [this.selectedProject];
+    }
 
     if (repoNames.length === 0) {
       container.innerHTML = '<p>No repositories found.</p>';
@@ -106,6 +225,8 @@ class MetricsReport {
     let html = '';
     for (const repo of repoNames) {
       const data = repoData[repo];
+      if (!data) continue;
+
       const tests = data.tests || {};
 
       html += `
