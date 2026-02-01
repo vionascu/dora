@@ -144,7 +144,7 @@ class AIPatternDetector:
             if mentions:
                 ai_attributed_commits.append({
                     "timestamp": commit.get("timestamp", ""),
-                    "author": commit.get("author", ""),
+                    "author": commit.get("author_name", "") or commit.get("author", ""),
                     "subject": subject,
                     "frameworks": list(mentions.keys())
                 })

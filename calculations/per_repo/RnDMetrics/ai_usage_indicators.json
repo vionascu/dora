@@ -1,0 +1,24 @@
+{
+  "metric_id": "repo.ai_usage_indicators.RnDMetrics",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "git_artifacts/RnDMetrics/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-24",
+    "end": "2026-01-31"
+  },
+  "explicit_ai_mentions": {},
+  "total_ai_attributed_commits": 0,
+  "ai_percentage": 0.0,
+  "bug_fix_commits": 16,
+  "feature_commits": 20,
+  "bug_fix_percentage": 28.57,
+  "feature_percentage": 35.71,
+  "note": "Explicit AI mentions detected from commit messages",
+  "method": "Analyze commit messages for AI framework mentions and work pattern indicators",
+  "calculated_at": "2026-02-01T18:14:08.247247Z"
+}

@@ -1,0 +1,24 @@
+{
+  "metric_id": "repo.code_quality_evolution.RnDMetrics",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "git_artifacts/RnDMetrics/commits.json",
+    "calculations/per_repo/RnDMetrics/coverage.json"
+  ],
+  "time_range": {
+    "start": "2026-01-24",
+    "end": "2026-01-31"
+  },
+  "coverage_percentage": 46.68,
+  "quality_grade": "F",
+  "quality_status": "Critical",
+  "total_commits": 56,
+  "weeks_active": 3,
+  "commits_per_week": 18.67,
+  "maturity_score": 26.14,
+  "method": "Combine coverage metrics with commit activity to assess code quality evolution",
+  "calculated_at": "2026-02-01T18:14:08.250706Z"
+}

@@ -1,0 +1,35 @@
+{
+  "metric_id": "repo.refactorization_activity.RnDMetrics",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "git_artifacts/RnDMetrics/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-24",
+    "end": "2026-01-31"
+  },
+  "refactor_events": {
+    "refactor": 1,
+    "improve": 2,
+    "deprecat": 1
+  },
+  "total_refactor_commits": 4,
+  "refactor_percentage": 7.14,
+  "timeline": {
+    "refactor": [
+      "2026-01-28"
+    ],
+    "improve": [
+      "2026-01-31",
+      "2026-01-28"
+    ],
+    "deprecat": [
+      "2026-01-31"
+    ]
+  },
+  "method": "Analyze commit messages for refactorization-related keywords",
+  "calculated_at": "2026-02-01T18:14:08.246279Z"
+}

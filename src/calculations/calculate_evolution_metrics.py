@@ -101,7 +101,7 @@ class EvolutionMetricsCalculator:
         seen_authors = set()
 
         for commit in sorted(commits, key=lambda c: c.get("timestamp", "")):
-            author = commit.get("author", "")
+            author = commit.get("author_name", "") or commit.get("author", "")  # Support both field names
             timestamp = commit.get("timestamp", "")
             if author and timestamp:
                 date = timestamp.split(" ")[0]
@@ -153,7 +153,7 @@ class EvolutionMetricsCalculator:
                 if keyword in message:
                     refactor_keywords[keyword].append({
                         "timestamp": commit.get("timestamp", ""),
-                        "author": commit.get("author", ""),
+                        "author": commit.get("author_name", "") or commit.get("author", ""),
                         "subject": commit.get("subject", "")
                     })
 

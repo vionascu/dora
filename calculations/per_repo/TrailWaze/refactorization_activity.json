@@ -1,0 +1,26 @@
+{
+  "metric_id": "repo.refactorization_activity.TrailWaze",
+  "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
+  "inputs": [
+    "git_artifacts/TrailWaze/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "refactor_events": {
+    "improve": 1
+  },
+  "total_refactor_commits": 1,
+  "refactor_percentage": 4.55,
+  "timeline": {
+    "improve": [
+      "2026-01-28"
+    ]
+  },
+  "method": "Analyze commit messages for refactorization-related keywords",
+  "calculated_at": "2026-02-01T18:14:08.266745Z"
+}
