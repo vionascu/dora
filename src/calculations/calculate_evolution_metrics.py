@@ -75,12 +75,13 @@ class EvolutionMetricsCalculator:
             except:
                 pass
 
+        date_keys = sorted(commits_by_date.keys())
         return {
             "metric_id": f"repo.velocity_trend.{repo_name}",
             "repo": repo_name,
             "repos": [repo_name],
             "inputs": [str((self.git_artifacts / repo_name / "commits.json").relative_to(self.root_dir))],
-            "time_range": {"start": min(commits_by_date.keys()), "end": max(commits_by_date.keys())},
+            "time_range": {"start": date_keys[0], "end": date_keys[-1]},
             "weekly_data": dict(sorted(commits_by_week.items())),
             "total_commits": len(commits),
             "weeks_active": len(commits_by_week),
@@ -120,7 +121,7 @@ class EvolutionMetricsCalculator:
             "repo": repo_name,
             "repos": [repo_name],
             "inputs": [str((self.git_artifacts / repo_name / "commits.json").relative_to(self.root_dir))],
-            "time_range": {"start": dates[0], "end": dates[-1]},
+            "time_range": {"start": sorted(dates)[0], "end": sorted(dates)[-1]},
             "growth_timeline": dict(sorted(contributors_by_date.items())),
             "total_contributors": len(seen_authors),
             "first_contributor_date": dates[0],
@@ -158,13 +159,14 @@ class EvolutionMetricsCalculator:
 
         total_refactor_commits = sum(len(v) for v in refactor_keywords.values())
 
+        commit_dates = sorted([c.get("timestamp", "")[:10] for c in commits if c.get("timestamp")])
         return {
             "metric_id": f"repo.refactorization_activity.{repo_name}",
             "repo": repo_name,
             "repos": [repo_name],
             "inputs": [str((self.git_artifacts / repo_name / "commits.json").relative_to(self.root_dir))],
-            "time_range": {"start": commits[0].get("timestamp", "")[:10] if commits else None,
-                          "end": commits[-1].get("timestamp", "")[:10] if commits else None},
+            "time_range": {"start": commit_dates[0] if commit_dates else None,
+                          "end": commit_dates[-1] if commit_dates else None},
             "refactor_events": {k: len(v) for k, v in refactor_keywords.items() if v},
             "total_refactor_commits": total_refactor_commits,
             "refactor_percentage": round((total_refactor_commits / len(commits) * 100), 2) if commits else 0,
@@ -269,6 +271,7 @@ class EvolutionMetricsCalculator:
             quality_grade = "F"
             quality_status = "Critical"
 
+        commit_dates = sorted([c.get("timestamp", "")[:10] for c in commits if c.get("timestamp")])
         return {
             "metric_id": f"repo.code_quality_evolution.{repo_name}",
             "repo": repo_name,
@@ -277,8 +280,8 @@ class EvolutionMetricsCalculator:
                 str((self.git_artifacts / repo_name / "commits.json").relative_to(self.root_dir)),
                 str(coverage_file.relative_to(self.root_dir))
             ],
-            "time_range": {"start": commits[0].get("timestamp", "")[:10] if commits else None,
-                          "end": commits[-1].get("timestamp", "")[:10] if commits else None},
+            "time_range": {"start": commit_dates[0] if commit_dates else None,
+                          "end": commit_dates[-1] if commit_dates else None},
             "coverage_percentage": coverage_value,
             "quality_grade": quality_grade,
             "quality_status": quality_status,

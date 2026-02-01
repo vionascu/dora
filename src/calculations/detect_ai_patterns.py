@@ -168,14 +168,15 @@ class AIPatternDetector:
 
         ai_score = min(ai_score, 100)  # Cap at 100
 
+        commit_dates = sorted([c.get("timestamp", "")[:10] for c in commits if c.get("timestamp")])
         return {
             "metric_id": f"repo.ai_analysis.{repo_name}",
             "repo": repo_name,
             "repos": [repo_name],
             "inputs": [str((self.git_artifacts / repo_name / "commits.json").relative_to(self.root_dir))],
             "time_range": {
-                "start": commits[0].get("timestamp", "")[:10] if commits else None,
-                "end": commits[-1].get("timestamp", "")[:10] if commits else None
+                "start": commit_dates[0] if commit_dates else None,
+                "end": commit_dates[-1] if commit_dates else None
             },
             "ai_probability_score": ai_score,
             "ai_score_interpretation": self._interpret_score(ai_score),
@@ -240,10 +241,27 @@ class AIPatternDetector:
 
         avg_ai_score = total_ai_score / len(repo_analyses) if repo_analyses else 0
 
+        # Collect all commit dates for global time range
+        all_dates = []
+        for analysis in repo_analyses.values():
+            if analysis and analysis.get("time_range"):
+                start = analysis["time_range"].get("start")
+                end = analysis["time_range"].get("end")
+                if start:
+                    all_dates.append(start)
+                if end:
+                    all_dates.append(end)
+
+        sorted_dates = sorted(all_dates) if all_dates else []
+
         return {
             "metric_id": "global.ai_usage_analysis",
             "repos": list(repo_analyses.keys()),
             "inputs": [str((self.git_artifacts / repo / "commits.json").relative_to(self.root_dir)) for repo in repo_analyses],
+            "time_range": {
+                "start": sorted_dates[0] if sorted_dates else None,
+                "end": sorted_dates[-1] if sorted_dates else None
+            },
             "global_ai_score": round(avg_ai_score, 2),
             "score_interpretation": self._interpret_score(avg_ai_score),
             "total_ai_commits": total_ai_commits,
