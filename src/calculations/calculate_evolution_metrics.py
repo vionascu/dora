@@ -214,13 +214,14 @@ class EvolutionMetricsCalculator:
 
         explicit_ai_commits = sum(len(v) for v in ai_indicators.values())
 
+        commit_dates = sorted([c.get("timestamp", "")[:10] for c in commits if c.get("timestamp")])
         return {
             "metric_id": f"repo.ai_usage_indicators.{repo_name}",
             "repo": repo_name,
             "repos": [repo_name],
             "inputs": [str((self.git_artifacts / repo_name / "commits.json").relative_to(self.root_dir))],
-            "time_range": {"start": commits[0].get("timestamp", "")[:10] if commits else None,
-                          "end": commits[-1].get("timestamp", "")[:10] if commits else None},
+            "time_range": {"start": commit_dates[0] if commit_dates else None,
+                          "end": commit_dates[-1] if commit_dates else None},
             "explicit_ai_mentions": {k: len(v) for k, v in ai_indicators.items() if v},
             "total_ai_attributed_commits": explicit_ai_commits,
             "ai_percentage": round((explicit_ai_commits / len(commits) * 100), 2) if commits else 0,
