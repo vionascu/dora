@@ -4,16 +4,15 @@
   "description": "DORA Metrics Dashboard - Evidence-backed R&D metrics system",
   "main": "src/index.js",
   "scripts": {
-    "collect": "python3 src/scripts/01_collect.py",
-    "calculate": "python3 src/scripts/02_calculate.py",
-    "pipeline": "npm run collect && npm run calculate",
-    "start": "node server.js",
-    "server": "node server.js",
+    "collect": "python3 src/collection/collect_git.py && python3 src/collection/scan_github_artifacts.py && python3 src/collection/collect_ci.py",
+    "calculate": "python3 src/calculations/calculate.py && python3 src/calculations/calculate_test_metrics.py",
+    "pipeline": "npm run collect && npm run calculate && npm run validate",
+    "start": "vite",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src",
-    "validate": "node src/scripts/03_validate.js"
+    "validate": "python3 src/validation/validate.py"
   },
   "keywords": [
     "dora",

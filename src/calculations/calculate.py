@@ -4,12 +4,9 @@ CALCULATION LAYER - Metrics Computation
 Processes raw git and CI artifacts into normalized, auditable metrics
 """
 
-import os
 import json
-import subprocess
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from collections import defaultdict
 
 class Calculator:
     def __init__(self, root_dir="."):
@@ -17,31 +14,43 @@ class Calculator:
         self.git_artifacts = self.root_dir / "git_artifacts"
         self.ci_artifacts = self.root_dir / "ci_artifacts"
         self.calculations = self.root_dir / "calculations"
-        self.repos_file = self.root_dir / "ReposInput.md"
 
         # Create directory structure
         self.calculations.mkdir(exist_ok=True)
         (self.calculations / "per_repo").mkdir(exist_ok=True)
         (self.calculations / "global").mkdir(exist_ok=True)
 
-    def parse_repos(self):
-        """Parse ReposInput.md"""
+    def _write_json(self, path, payload):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w") as f:
+            json.dump(payload, f, indent=2)
+
+    def _safe_time_range(self, start, end):
+        return {"start": start, "end": end}
+
+    def _repo_inputs(self, repo_name, *relative_paths):
+        inputs = []
+        for rel in relative_paths:
+            if not rel:
+                continue
+            path = self.root_dir / rel
+            if path.exists():
+                inputs.append(str(path.relative_to(self.root_dir)))
+        return inputs
+
+    def list_repos(self):
+        """List repos based on collected artifacts"""
         repos = {}
-        current_repo = None
-
-        if not self.repos_file.exists():
+        if not self.git_artifacts.exists():
             return repos
-
-        with open(self.repos_file, 'r') as f:
-            for line in f:
-                line = line.rstrip()
-                if line.startswith("## "):
-                    current_repo = line.replace("## ", "").strip()
-                    repos[current_repo] = {}
-                elif ": " in line and current_repo:
-                    key, value = line.split(": ", 1)
-                    repos[current_repo][key.strip()] = value.strip()
-
+        for repo_dir in sorted(self.git_artifacts.iterdir()):
+            if not repo_dir.is_dir() or repo_dir.name.startswith("."):
+                continue
+            repos[repo_dir.name] = {}
+            ci_info = self.ci_artifacts / repo_dir.name / "ci_info.json"
+            if ci_info.exists():
+                with open(ci_info, "r") as f:
+                    repos[repo_dir.name].update(json.load(f))
         return repos
 
     def calculate_commits(self, repo_name):
@@ -49,32 +58,72 @@ class Calculator:
         commits_file = self.git_artifacts / repo_name / "commits.json"
 
         if not commits_file.exists():
-            return None
+            return {
+                "metric_id": "repo.commits",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [],
+                "time_range": self._safe_time_range(None, None),
+                "total_commits": None,
+                "unique_dates": None,
+                "avg_commits_per_day": None,
+                "period_start": None,
+                "period_end": None,
+                "days_active": None,
+                "method": "Count commits in git_artifacts commits.json",
+                "reason": "Missing git_artifacts commits.json",
+                "calculated_at": datetime.now().isoformat()
+            }
 
         with open(commits_file, 'r') as f:
             commits_data = json.load(f)
 
         commits = commits_data.get("commits", [])
         if not commits:
-            return None
+            return {
+                "metric_id": "repo.commits",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [str(commits_file.relative_to(self.root_dir))],
+                "time_range": self._safe_time_range(None, None),
+                "total_commits": 0,
+                "unique_dates": 0,
+                "avg_commits_per_day": 0,
+                "period_start": None,
+                "period_end": None,
+                "days_active": 0,
+                "method": "Count commits in git_artifacts commits.json",
+                "reason": "No commits found in git artifacts",
+                "calculated_at": datetime.now().isoformat()
+            }
 
         # Calculate metrics
         dates = [c["timestamp"][:10] for c in commits]
         unique_dates = len(set(dates))
-        time_range = {
-            "start": min(dates) if dates else None,
-            "end": max(dates) if dates else None
-        }
+        period_start = min(dates) if dates else None
+        period_end = max(dates) if dates else None
+        days_active = 0
+        if period_start and period_end:
+            try:
+                start_dt = datetime.fromisoformat(period_start)
+                end_dt = datetime.fromisoformat(period_end)
+                days_active = (end_dt - start_dt).days + 1
+            except ValueError:
+                days_active = unique_dates
 
         result = {
             "metric_id": "repo.commits",
             "repo": repo_name,
-            "time_range": time_range,
+            "repos": [repo_name],
+            "time_range": self._safe_time_range(period_start, period_end),
             "inputs": [str(commits_file.relative_to(self.root_dir))],
             "total_commits": len(commits),
             "unique_dates": unique_dates,
             "avg_commits_per_day": round(len(commits) / max(1, unique_dates), 2) if unique_dates > 0 else 0,
-            "method": "Count total commits, divide by unique dates",
+            "period_start": period_start,
+            "period_end": period_end,
+            "days_active": days_active,
+            "method": "Count commits; average by unique active dates; active period from first to last commit date",
             "calculated_at": datetime.now().isoformat()
         }
 
@@ -83,17 +132,39 @@ class Calculator:
     def calculate_contributors(self, repo_name):
         """Calculate contributor metrics"""
         authors_file = self.git_artifacts / repo_name / "authors.json"
+        timeline_file = self.git_artifacts / repo_name / "timeline.json"
 
         if not authors_file.exists():
-            return None
+            return {
+                "metric_id": "repo.contributors",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [],
+                "time_range": self._safe_time_range(None, None),
+                "unique_contributors": None,
+                "method": "Count unique author emails in git_artifacts authors.json",
+                "reason": "Missing git_artifacts authors.json",
+                "calculated_at": datetime.now().isoformat()
+            }
 
         with open(authors_file, 'r') as f:
             authors_data = json.load(f)
 
+        time_range = self._safe_time_range(None, None)
+        if timeline_file.exists():
+            with open(timeline_file, "r") as f:
+                timeline = json.load(f)
+                time_range = self._safe_time_range(
+                    timeline.get("first_commit"),
+                    timeline.get("last_commit")
+                )
+
         return {
             "metric_id": "repo.contributors",
             "repo": repo_name,
-            "inputs": [str(authors_file.relative_to(self.root_dir))],
+            "repos": [repo_name],
+            "inputs": self._repo_inputs(repo_name, authors_file.relative_to(self.root_dir), timeline_file.relative_to(self.root_dir)),
+            "time_range": time_range,
             "unique_contributors": authors_data.get("unique_authors", 0),
             "method": "Count unique author emails",
             "calculated_at": datetime.now().isoformat()
@@ -101,15 +172,29 @@ class Calculator:
 
     def calculate_coverage_percentage(self, repo_name, config):
         """Attempt to extract coverage percentage if available"""
-        coverage_tool = config.get("coverage", "")
+        coverage_tool = config.get("coverage") or config.get("coverage_tool", "")
         ci_dir = self.ci_artifacts / repo_name
 
-        # This is a placeholder - in production would parse coverage files
+        coverage_file = None
+        if coverage_tool == "jacoco":
+            coverage_file = ci_dir / "jacoco.xml"
+        elif coverage_tool == "pytest-cov":
+            coverage_file = ci_dir / "coverage.xml"
+        elif coverage_tool == "lcov":
+            coverage_file = ci_dir / "lcov.info"
+
+        inputs = []
+        if coverage_file and coverage_file.exists():
+            inputs = [str(coverage_file.relative_to(self.root_dir))]
+
         return {
             "metric_id": "repo.coverage",
             "repo": repo_name,
+            "repos": [repo_name],
+            "inputs": inputs,
+            "time_range": self._safe_time_range(None, None),
             "value": None,
-            "reason": f"Coverage data not available (tool: {coverage_tool}, requires local test run)",
+            "reason": f"Coverage data not available (tool: {coverage_tool}, requires local test run)" if not inputs else "Coverage parsing not implemented",
             "method": f"Parse {coverage_tool} output",
             "calculated_at": datetime.now().isoformat()
         }
@@ -121,14 +206,36 @@ class Calculator:
         commits_file = self.git_artifacts / repo_name / "commits.json"
 
         if not commits_file.exists():
-            return None
+            return {
+                "metric_id": "repo.dora_frequency",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [],
+                "time_range": self._safe_time_range(None, None),
+                "value": None,
+                "unit": "commits/day",
+                "method": "Total commits / days in history (proxy)",
+                "reason": "Missing git_artifacts commits.json",
+                "calculated_at": datetime.now().isoformat()
+            }
 
         with open(commits_file, 'r') as f:
             commits_data = json.load(f)
 
         commits = commits_data.get("commits", [])
         if not commits:
-            return None
+            return {
+                "metric_id": "repo.dora_frequency",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [str(commits_file.relative_to(self.root_dir))],
+                "time_range": self._safe_time_range(None, None),
+                "value": None,
+                "unit": "commits/day",
+                "method": "Total commits / days in history (proxy)",
+                "reason": "No commits found in git artifacts",
+                "calculated_at": datetime.now().isoformat()
+            }
 
         # Get time range
         dates = [c["timestamp"][:10] for c in commits]
@@ -142,7 +249,9 @@ class Calculator:
         return {
             "metric_id": "repo.dora_frequency",
             "repo": repo_name,
+            "repos": [repo_name],
             "inputs": [str(commits_file.relative_to(self.root_dir))],
+            "time_range": self._safe_time_range(min(dates), max(dates)),
             "value": round(deploys_per_day, 3),
             "unit": "commits/day",
             "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
@@ -155,7 +264,18 @@ class Calculator:
         commits_file = self.git_artifacts / repo_name / "commits.json"
 
         if not commits_file.exists():
-            return None
+            return {
+                "metric_id": "repo.dora_lead_time",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [],
+                "time_range": self._safe_time_range(None, None),
+                "value": None,
+                "unit": "hours",
+                "method": "Average time between consecutive commits",
+                "reason": "Missing git_artifacts commits.json",
+                "calculated_at": datetime.now().isoformat()
+            }
 
         with open(commits_file, 'r') as f:
             commits_data = json.load(f)
@@ -165,11 +285,16 @@ class Calculator:
             return {
                 "metric_id": "repo.dora_lead_time",
                 "repo": repo_name,
+                "repos": [repo_name],
                 "value": None,
+                "inputs": [str(commits_file.relative_to(self.root_dir))],
+                "time_range": self._safe_time_range(None, None),
                 "reason": "Less than 2 commits - cannot calculate lead time",
                 "method": "Average time between commits",
                 "calculated_at": datetime.now().isoformat()
             }
+
+        dates = [c["timestamp"][:10] for c in commits if c.get("timestamp")]
 
         # Sort by timestamp
         sorted_commits = sorted(commits, key=lambda x: x["timestamp"])
@@ -205,7 +330,9 @@ class Calculator:
         return {
             "metric_id": "repo.dora_lead_time",
             "repo": repo_name,
+            "repos": [repo_name],
             "inputs": [str(commits_file.relative_to(self.root_dir))],
+            "time_range": self._safe_time_range(min(dates) if dates else None, max(dates) if dates else None),
             "value": avg_hours,
             "unit": "hours",
             "method": "Average time between consecutive commits",
@@ -232,8 +359,7 @@ class Calculator:
         saved_count = 0
         for filename, metric in metrics:
             if metric is not None:
-                with open(repo_calc_dir / filename, 'w') as f:
-                    json.dump(metric, f, indent=2)
+                self._write_json(repo_calc_dir / filename, metric)
                 saved_count += 1
 
         print(f"    ✓ Saved {saved_count} metrics")
@@ -248,6 +374,8 @@ class Calculator:
         total_commits = 0
         repos_analyzed = []
         all_contributors = set()
+        time_range_start = None
+        time_range_end = None
 
         for repo_name in repos:
             repo_calc_dir = self.calculations / "per_repo" / repo_name
@@ -258,39 +386,141 @@ class Calculator:
                     data = json.load(f)
                     total_commits += data.get("total_commits", 0)
                     repos_analyzed.append(repo_name)
+                    time_range = data.get("time_range") or {}
+                    start = time_range.get("start")
+                    end = time_range.get("end")
+                    if start:
+                        time_range_start = min(time_range_start, start) if time_range_start else start
+                    if end:
+                        time_range_end = max(time_range_end, end) if time_range_end else end
 
             # Collect contributors
-            contributors_file = repo_calc_dir / "contributors.json"
-            if contributors_file.exists():
-                with open(contributors_file, 'r') as f:
+            authors_file = self.git_artifacts / repo_name / "authors.json"
+            if authors_file.exists():
+                with open(authors_file, "r") as f:
                     data = json.load(f)
-                    all_contributors.add(repo_name)
+                    for email in data.get("authors", []):
+                        all_contributors.add(email)
 
         # Save global commits
-        with open(global_dir / "commits.json", 'w') as f:
-            json.dump({
+        self._write_json(
+            global_dir / "commits.json",
+            {
                 "metric_id": "global.commits",
                 "repos": repos_analyzed,
                 "inputs": [str((self.calculations / "per_repo" / r / "commits.json").relative_to(self.root_dir)) for r in repos_analyzed],
+                "time_range": self._safe_time_range(time_range_start, time_range_end),
                 "total_commits": total_commits,
                 "repos_count": len(repos_analyzed),
                 "method": "Sum commits across all analyzed repos",
                 "calculated_at": datetime.now().isoformat()
-            }, f, indent=2)
+            }
+        )
+
+        self._write_json(
+            global_dir / "contributors.json",
+            {
+                "metric_id": "global.contributors",
+                "repos": repos_analyzed,
+                "inputs": [str((self.git_artifacts / r / "authors.json").relative_to(self.root_dir)) for r in repos_analyzed if (self.git_artifacts / r / "authors.json").exists()],
+                "time_range": self._safe_time_range(time_range_start, time_range_end),
+                "unique_contributors": len(all_contributors) if all_contributors else None,
+                "method": "Union of author emails across repos",
+                "reason": None if all_contributors else "No authors.json inputs available",
+                "calculated_at": datetime.now().isoformat()
+            }
+        )
+
+        avg_velocity = None
+        velocity_values = []
+        for repo_name in repos_analyzed:
+            repo_commits = self.calculations / "per_repo" / repo_name / "commits.json"
+            if repo_commits.exists():
+                with open(repo_commits, "r") as f:
+                    data = json.load(f)
+                    value = data.get("avg_commits_per_day")
+                    if isinstance(value, (int, float)):
+                        velocity_values.append(value)
+        if velocity_values:
+            avg_velocity = round(sum(velocity_values) / len(velocity_values), 2)
+
+        self._write_json(
+            global_dir / "velocity.json",
+            {
+                "metric_id": "global.velocity",
+                "repos": repos_analyzed,
+                "inputs": [str((self.calculations / "per_repo" / r / "commits.json").relative_to(self.root_dir)) for r in repos_analyzed],
+                "time_range": self._safe_time_range(time_range_start, time_range_end),
+                "value": avg_velocity,
+                "unit": "commits/day",
+                "method": "Average per-repo avg_commits_per_day",
+                "reason": None if avg_velocity is not None else "No per-repo velocity values available",
+                "calculated_at": datetime.now().isoformat()
+            }
+        )
 
         # Save global summary
-        with open(global_dir / "summary.json", 'w') as f:
-            json.dump({
+        self._write_json(
+            global_dir / "summary.json",
+            {
                 "metric_id": "global.summary",
+                "repos": repos_analyzed,
+                "inputs": [
+                    str((self.calculations / "per_repo" / r / "commits.json").relative_to(self.root_dir))
+                    for r in repos_analyzed
+                ],
+                "time_range": self._safe_time_range(time_range_start, time_range_end),
                 "repos_analyzed": repos_analyzed,
                 "repos_total_count": len(repos),
                 "repos_with_issues": [r for r in repos if r not in repos_analyzed],
                 "total_commits": total_commits,
-                "unique_repos_with_contributors": len(all_contributors),
+                "unique_contributors": len(all_contributors) if all_contributors else None,
+                "method": "Aggregate per-repo commit totals and contributors",
                 "calculated_at": datetime.now().isoformat()
-            }, f, indent=2)
+            }
+        )
 
         print(f"    ✓ Saved global metrics for {len(repos_analyzed)} repos")
+
+    def write_system_files(self, repos):
+        """Write required system calculation files"""
+        sanity_checks = {
+            "metric_id": "sanity.checks",
+            "repos": list(repos.keys()),
+            "inputs": [],
+            "time_range": self._safe_time_range(None, None),
+            "checks": {
+                "git_artifacts_present": self.git_artifacts.exists(),
+                "ci_artifacts_present": self.ci_artifacts.exists(),
+                "calculations_present": self.calculations.exists()
+            },
+            "method": "Verify presence of required pipeline directories",
+            "calculated_at": datetime.now().isoformat()
+        }
+        self._write_json(self.calculations / "sanity_checks.json", sanity_checks)
+
+        capabilities = {
+            "metric_id": "capabilities",
+            "repos": list(repos.keys()),
+            "inputs": [],
+            "time_range": self._safe_time_range(None, None),
+            "available_metrics": [
+                "repo.commits",
+                "repo.contributors",
+                "repo.coverage",
+                "repo.dora_frequency",
+                "repo.dora_lead_time",
+                "repo.tests",
+                "global.commits",
+                "global.contributors",
+                "global.velocity",
+                "global.summary",
+                "global.tests"
+            ],
+            "method": "Static capability declaration from calculation outputs",
+            "calculated_at": datetime.now().isoformat()
+        }
+        self._write_json(self.calculations / "capabilities.json", capabilities)
 
     def run(self):
         """Execute calculation pipeline"""
@@ -298,9 +528,9 @@ class Calculator:
         print("DORA CALCULATION LAYER - Metrics Computation")
         print("="*70 + "\n")
 
-        repos = self.parse_repos()
+        repos = self.list_repos()
         if not repos:
-            print("No repositories found in ReposInput.md")
+            print("No repositories found in git_artifacts/")
             return False
 
         print(f"Computing metrics for {len(repos)} repositories\n")
@@ -309,6 +539,7 @@ class Calculator:
             self.save_repo_metrics(repo_name, config)
 
         self.calculate_global_metrics(repos)
+        self.write_system_files(repos)
 
         print(f"\n{'='*70}")
         print("Calculation complete")

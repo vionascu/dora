@@ -1,14 +1,22 @@
 {
   "metric_id": "repo.tests.TrailWaze",
   "repo": "TrailWaze",
-  "test_files": 1,
-  "test_frameworks": [
-    "Jest/Mocha"
+  "repos": [
+    "TrailWaze"
   ],
-  "epics_found": 15,
-  "user_stories_found": 1,
-  "sample_tests": [
-    "clone/apps/mobile/__tests__/mvp-epics.test.js"
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
   ],
-  "calculated_at": "2026-02-01T07:21:20.412585Z"
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "test_files": 0,
+  "test_frameworks": [],
+  "epics": 12,
+  "user_stories": 1,
+  "sample_test_files": [],
+  "method": "Scan git_artifacts repositories for test files and epic/story references",
+  "reason": null,
+  "calculated_at": "2026-02-01T08:00:17.573076Z"
 }

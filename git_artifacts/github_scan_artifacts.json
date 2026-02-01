@@ -10,17 +10,6 @@
       "Commits** - Commits grouped by epic patterns you defined",
       "Patterns",
       "patterns use regular expressions to categorize commits:",
-      "Commits",
-      "Categories:** Authentication, Trail Management, Weather, Recommendations",
-      "Categories:** Mobile, Web, Navigation, Community",
-      "Distribution</div>",
-      "Commits | Categorized | Daily | \u2705 |",
-      "Distribution:** By feature/pattern",
-      "Distribution (Bar chart)",
-      "Distribution** - Commits by feature",
-      "Distribution",
-      "\u251c\u2500 Sortable legend",
-      "Distribution** - By feature/category",
       "Commits** - Commits grouped by epic patterns you defined",
       "Patterns",
       "patterns use regular expressions to categorize commits:",
@@ -52,9 +41,6 @@
       "& User Story validation ensures requirements alignment",
       "1: Mobile app foundation (React Native + Expo)', () => {",
       "2: Offline maps (MapLibre + MBTiles)', () => {",
-      "1: Mobile app foundation (React Native + Expo)",
-      "2: Offline maps (MapLibre + MBTiles)",
-      "3: Local storage (reports, cache, sync)",
       "1: Mobile App Foundation (4 tests)",
       "2: Offline Maps (12 tests)",
       "3: Local Storage (6 tests)",
@@ -75,46 +61,33 @@
   },
   "tests": {
     "RnDMetrics": {
-      "files": [
-        "clone/tests/conftest.py",
-        "clone/tests/test_quality_gates.py",
-        "clone/tests/test_derived_metrics.py",
-        "clone/tests/__init__.py",
-        "clone/tests/test_metrics_calc.py",
-        "clone/tests/test_collect_metrics.py"
-      ],
-      "count": 6
+      "files": [],
+      "count": 0
     },
     "TrailEquip": {
       "files": [
-        "clone/services/trail-service/src/test/java/com/trailequip/trail/domain/DifficultyClassifierTest.java",
-        "clone/services/trail-service/src/test/java/com/trailequip/trail/domain/model/DifficultyTest.java",
-        "clone/services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailExportServiceTest.java",
-        "clone/services/trail-service/src/test/java/com/trailequip/trail/application/service/OSMIngestionServiceTest.java",
-        "clone/services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailNormalizerTest.java",
-        "clone/services/trail-service/src/test/java/com/trailequip/trail/adapter/rest/TrailControllerTest.java",
-        "clone/services/weather-service/src/test/java/com/trailequip/weather/adapter/rest/WeatherControllerTest.java",
-        "clone/services/recommendation-service/src/test/java/com/trailequip/recommendation/adapter/rest/RecommendationControllerTest.java"
+        "services/recommendation-service/src/test/java/com/trailequip/recommendation/adapter/rest/RecommendationControllerTest.java",
+        "services/weather-service/src/test/java/com/trailequip/weather/adapter/rest/WeatherControllerTest.java",
+        "services/trail-service/src/test/java/com/trailequip/trail/adapter/rest/TrailControllerTest.java",
+        "services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailExportServiceTest.java",
+        "services/trail-service/src/test/java/com/trailequip/trail/application/service/OSMIngestionServiceTest.java",
+        "services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailNormalizerTest.java",
+        "services/trail-service/src/test/java/com/trailequip/trail/domain/DifficultyClassifierTest.java",
+        "services/trail-service/src/test/java/com/trailequip/trail/domain/model/DifficultyTest.java"
       ],
       "count": 8
     },
     "TrailWaze": {
-      "files": [
-        "clone/apps/mobile/__tests__/mvp-epics.test.js"
-      ],
-      "count": 1
+      "files": [],
+      "count": 0
     }
   },
   "test_frameworks": {
-    "RnDMetrics": [
-      "unittest"
-    ],
+    "RnDMetrics": [],
     "TrailEquip": [
-      "JUnit",
-      "Jest/Mocha"
+      "Jest/Mocha",
+      "JUnit"
     ],
-    "TrailWaze": [
-      "Jest/Mocha"
-    ]
+    "TrailWaze": []
   }
 }

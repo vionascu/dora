@@ -29,6 +29,10 @@ echo "  Collecting git artifacts..."
 python3 src/collection/collect_git.py
 echo ""
 
+echo "  Scanning repositories for test artifacts..."
+python3 src/collection/scan_github_artifacts.py
+echo ""
+
 echo "  Collecting CI artifacts..."
 python3 src/collection/collect_ci.py
 echo ""
@@ -36,6 +40,7 @@ echo ""
 # Step 3: Calculation
 echo "Step 3: CALCULATION Layer"
 python3 src/calculations/calculate.py
+python3 src/calculations/calculate_test_metrics.py
 echo ""
 
 # Step 4: Validation

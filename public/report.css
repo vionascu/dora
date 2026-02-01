@@ -181,6 +181,22 @@ body {
   text-align: right;
 }
 
+.metric-links {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: #7a7a7a;
+  text-align: right;
+}
+
+.metric-links a {
+  color: #586a7a;
+  text-decoration: none;
+}
+
+.metric-links a:hover {
+  text-decoration: underline;
+}
+
 /* Validation Section */
 .validation-section {
   display: grid;

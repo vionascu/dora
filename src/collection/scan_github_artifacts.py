@@ -22,7 +22,7 @@ class GitHubScanner:
 
     def scan_for_epics_and_stories(self, repo_path):
         """Search for files containing epic or user story references"""
-        repo_name = repo_path.name
+        repo_name = repo_path.parent.name if repo_path.name == "clone" else repo_path.name
         
         # Common patterns for epic/story files
         patterns = [
@@ -60,7 +60,7 @@ class GitHubScanner:
 
     def scan_for_tests(self, repo_path):
         """Search for test files"""
-        repo_name = repo_path.name
+        repo_name = repo_path.parent.name if repo_path.name == "clone" else repo_path.name
         
         # Test file patterns by language
         test_patterns = {
@@ -133,9 +133,13 @@ class GitHubScanner:
         
         for repo_dir in sorted(self.git_artifacts.iterdir()):
             if repo_dir.is_dir() and not repo_dir.name.startswith('.'):
+                clone_dir = repo_dir / "clone"
+                if not clone_dir.exists():
+                    print(f"Skipping {repo_dir.name} (no clone directory)")
+                    continue
                 print(f"Scanning {repo_dir.name}...")
-                self.scan_for_epics_and_stories(repo_dir)
-                self.scan_for_tests(repo_dir)
+                self.scan_for_epics_and_stories(clone_dir)
+                self.scan_for_tests(clone_dir)
                 print(f"  ✓ Scan complete for {repo_dir.name}\n")
         
         results = self.save_results()

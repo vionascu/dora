@@ -1,12 +1,19 @@
 {
   "metric_id": "repo.dora_lead_time",
   "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
   "inputs": [
     "git_artifacts/TrailWaze/commits.json"
   ],
-  "value": 16.06,
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-01-31"
+  },
+  "value": 16.18,
   "unit": "hours",
   "method": "Average time between consecutive commits",
   "note": "Proxy metric. True DORA measures code commit to deployment",
-  "calculated_at": "2026-02-01T09:07:33.351381"
+  "calculated_at": "2026-02-01T10:00:17.486524"
 }

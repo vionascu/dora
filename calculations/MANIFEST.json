@@ -1,178 +1,518 @@
 {
   "manifest_id": "dora.manifest",
-  "generated_at": "2026-02-01T07:21:28.112682Z",
+  "generated_at": "2026-02-01T08:00:17.742999Z",
   "validation_status": "PASS",
   "summary": {
-    "total_metrics": 17,
+    "total_metrics": 25,
     "validation_errors": 0,
+    "validation_warnings": 0,
     "approximations_found": 0,
-    "out_of_bounds_values": 0
+    "out_of_bounds_values": 0,
+    "missing_inputs": 0,
+    "time_range_mismatches": 0
   },
   "global_metrics": {
     "commits.json": {
-      "status": "valid",
       "metric_id": "global.commits",
+      "repos": [
+        "RnDMetrics",
+        "TrailEquip",
+        "TrailWaze"
+      ],
+      "inputs": [
+        "calculations/per_repo/RnDMetrics/commits.json",
+        "calculations/per_repo/TrailEquip/commits.json",
+        "calculations/per_repo/TrailWaze/commits.json"
+      ],
+      "time_range": {
+        "start": "2026-01-20",
+        "end": "2026-01-31"
+      },
       "total_commits": 228,
       "repos_count": 3,
+      "method": "Sum commits across all analyzed repos",
+      "calculated_at": "2026-02-01T10:00:17.502981",
+      "calculation_path": "calculations/global/commits.json"
+    },
+    "contributors.json": {
+      "metric_id": "global.contributors",
+      "repos": [
+        "RnDMetrics",
+        "TrailEquip",
+        "TrailWaze"
+      ],
       "inputs": [
-        "per_repo/TrailEquip/commits.json",
-        "per_repo/TrailWaze/commits.json",
-        "per_repo/RnDMetrics/commits.json"
-      ]
+        "git_artifacts/RnDMetrics/authors.json",
+        "git_artifacts/TrailEquip/authors.json",
+        "git_artifacts/TrailWaze/authors.json"
+      ],
+      "time_range": {
+        "start": "2026-01-20",
+        "end": "2026-01-31"
+      },
+      "unique_contributors": 3,
+      "method": "Union of author emails across repos",
+      "reason": null,
+      "calculated_at": "2026-02-01T10:00:17.505466",
+      "calculation_path": "calculations/global/contributors.json"
     },
     "summary.json": {
-      "status": "valid",
       "metric_id": "global.summary",
-      "repos_analyzed": 3,
-      "repos_total": 3,
-      "issues": 0
+      "repos": [
+        "RnDMetrics",
+        "TrailEquip",
+        "TrailWaze"
+      ],
+      "inputs": [
+        "calculations/per_repo/RnDMetrics/commits.json",
+        "calculations/per_repo/TrailEquip/commits.json",
+        "calculations/per_repo/TrailWaze/commits.json"
+      ],
+      "time_range": {
+        "start": "2026-01-20",
+        "end": "2026-01-31"
+      },
+      "repos_analyzed": [
+        "RnDMetrics",
+        "TrailEquip",
+        "TrailWaze"
+      ],
+      "repos_total_count": 3,
+      "repos_with_issues": [],
+      "total_commits": 228,
+      "unique_contributors": 3,
+      "method": "Aggregate per-repo commit totals and contributors",
+      "calculated_at": "2026-02-01T10:00:17.510684",
+      "calculation_path": "calculations/global/summary.json"
+    },
+    "tests.json": {
+      "metric_id": "global.tests",
+      "repos": [
+        "RnDMetrics",
+        "TrailEquip",
+        "TrailWaze"
+      ],
+      "inputs": [
+        "git_artifacts/github_scan_artifacts.json"
+      ],
+      "time_range": {
+        "start": null,
+        "end": null
+      },
+      "total_test_files": 8,
+      "total_epics_found": 44,
+      "total_user_stories_found": 4,
+      "description": "Total test files across all repositories",
+      "method": "Scan git_artifacts repositories for test files and epic/story references",
+      "reason": null,
+      "calculated_at": "2026-02-01T08:00:17.571690Z",
+      "calculation_path": "calculations/global/tests.json"
+    },
+    "velocity.json": {
+      "metric_id": "global.velocity",
+      "repos": [
+        "RnDMetrics",
+        "TrailEquip",
+        "TrailWaze"
+      ],
+      "inputs": [
+        "calculations/per_repo/RnDMetrics/commits.json",
+        "calculations/per_repo/TrailEquip/commits.json",
+        "calculations/per_repo/TrailWaze/commits.json"
+      ],
+      "time_range": {
+        "start": "2026-01-20",
+        "end": "2026-01-31"
+      },
+      "value": 20.27,
+      "unit": "commits/day",
+      "method": "Average per-repo avg_commits_per_day",
+      "reason": null,
+      "calculated_at": "2026-02-01T10:00:17.508198",
+      "calculation_path": "calculations/global/velocity.json"
     }
   },
   "per_repo_metrics": {
-    "TrailEquip": {
-      "commits": {
-        "status": "valid",
-        "total_commits": 155,
-        "avg_commits_per_day": 38.75,
-        "period_start": "2026-01-28",
-        "period_end": "2026-01-31",
-        "days_active": 4
-      },
-      "contributors": {
-        "status": "valid",
-        "unique_contributors": 1
-      },
-      "coverage": {
-        "status": "valid",
-        "value": null,
-        "reason": "Coverage data not available (tool: jacoco, requires local test run)"
-      },
-      "dora_frequency": {
-        "status": "valid",
-        "value": 38.75,
-        "unit": "commits/day"
-      },
-      "lead_time": {
-        "status": "valid",
-        "value": 0.5,
-        "unit": "hours"
-      }
-    },
-    "TrailWaze": {
-      "commits": {
-        "status": "valid",
-        "total_commits": 17,
-        "avg_commits_per_day": 3.4,
-        "period_start": "2026-01-20",
-        "period_end": "2026-01-31",
-        "days_active": 5
-      },
-      "contributors": {
-        "status": "valid",
-        "unique_contributors": 2
-      },
-      "coverage": {
-        "status": "valid",
-        "value": null,
-        "reason": "Coverage data not available (tool: lcov, requires local test run)"
-      },
-      "dora_frequency": {
-        "status": "valid",
-        "value": 1.417,
-        "unit": "commits/day"
-      },
-      "lead_time": {
-        "status": "valid",
-        "value": 16.06,
-        "unit": "hours"
-      }
-    },
     "RnDMetrics": {
       "commits": {
-        "status": "valid",
+        "metric_id": "repo.commits",
+        "repo": "RnDMetrics",
+        "repos": [
+          "RnDMetrics"
+        ],
+        "time_range": {
+          "start": "2026-01-24",
+          "end": "2026-01-31"
+        },
+        "inputs": [
+          "git_artifacts/RnDMetrics/commits.json"
+        ],
         "total_commits": 56,
+        "unique_dates": 3,
         "avg_commits_per_day": 18.67,
         "period_start": "2026-01-24",
         "period_end": "2026-01-31",
-        "days_active": 3
+        "days_active": 8,
+        "method": "Count commits; average by unique active dates; active period from first to last commit date",
+        "calculated_at": "2026-02-01T10:00:17.445442",
+        "calculation_path": "calculations/per_repo/RnDMetrics/commits.json"
       },
       "contributors": {
-        "status": "valid",
-        "unique_contributors": 1
+        "metric_id": "repo.contributors",
+        "repo": "RnDMetrics",
+        "repos": [
+          "RnDMetrics"
+        ],
+        "inputs": [
+          "git_artifacts/RnDMetrics/authors.json",
+          "git_artifacts/RnDMetrics/timeline.json"
+        ],
+        "time_range": {
+          "start": "2026-01-24",
+          "end": "2026-01-31"
+        },
+        "unique_contributors": 1,
+        "method": "Count unique author emails",
+        "calculated_at": "2026-02-01T10:00:17.449962",
+        "calculation_path": "calculations/per_repo/RnDMetrics/contributors.json"
       },
       "coverage": {
-        "status": "valid",
+        "metric_id": "repo.coverage",
+        "repo": "RnDMetrics",
+        "repos": [
+          "RnDMetrics"
+        ],
+        "inputs": [],
+        "time_range": {
+          "start": null,
+          "end": null
+        },
         "value": null,
-        "reason": "Coverage data not available (tool: pytest-cov, requires local test run)"
+        "reason": "Coverage data not available (tool: pytest-cov, requires local test run)",
+        "method": "Parse pytest-cov output",
+        "calculated_at": "2026-02-01T10:00:17.449991",
+        "calculation_path": "calculations/per_repo/RnDMetrics/coverage.json"
       },
       "dora_frequency": {
-        "status": "valid",
+        "metric_id": "repo.dora_frequency",
+        "repo": "RnDMetrics",
+        "repos": [
+          "RnDMetrics"
+        ],
+        "inputs": [
+          "git_artifacts/RnDMetrics/commits.json"
+        ],
+        "time_range": {
+          "start": "2026-01-24",
+          "end": "2026-01-31"
+        },
         "value": 7.0,
-        "unit": "commits/day"
+        "unit": "commits/day",
+        "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
+        "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
+        "calculated_at": "2026-02-01T10:00:17.450211",
+        "calculation_path": "calculations/per_repo/RnDMetrics/dora_frequency.json"
       },
       "lead_time": {
-        "status": "valid",
-        "value": 3.23,
-        "unit": "hours"
-      }
-    }
-  },
-  "validation_rules": {
-    "no_approximations": "\u2713 PASS - No '~', 'approx', or 'estimated' found",
-    "no_missing_fields": "\u2713 PASS - All required fields present (metric_id, calculated_at)",
-    "no_out_of_bounds": "\u2713 PASS - No negative values, coverage \u2264 100%",
-    "data_completeness": "\u2713 PASS - All 3 repos have commits and contributors data"
-  },
-  "data_quality_notes": [
-    "Coverage metrics are N/A - requires local test runs to generate (jacoco, lcov, pytest-cov)",
-    "All commit data derived from actual git repositories via git_artifacts/",
-    "DORA metrics are calculated from git timestamps (proxy metrics)",
-    "Lead time shows hours between consecutive commits",
-    "No calculated values contain approximations"
-  ],
-  "testing_metrics": {
-    "global": {
-      "total_test_files": 15,
-      "total_epics_found": 58,
-      "total_user_stories_found": 4
-    },
-    "per_repo": {
-      "RnDMetrics": {
-        "test_files": 6,
-        "test_frameworks": [
-          "unittest"
+        "metric_id": "repo.dora_lead_time",
+        "repo": "RnDMetrics",
+        "repos": [
+          "RnDMetrics"
         ],
-        "epics": 43,
-        "user_stories": 3,
-        "sample_test_files": [
-          "clone/tests/conftest.py",
-          "clone/tests/test_quality_gates.py"
-        ]
+        "inputs": [
+          "git_artifacts/RnDMetrics/commits.json"
+        ],
+        "time_range": {
+          "start": "2026-01-24",
+          "end": "2026-01-31"
+        },
+        "value": 3.23,
+        "unit": "hours",
+        "method": "Average time between consecutive commits",
+        "note": "Proxy metric. True DORA measures code commit to deployment",
+        "calculated_at": "2026-02-01T10:00:17.450467",
+        "calculation_path": "calculations/per_repo/RnDMetrics/lead_time.json"
       },
-      "TrailEquip": {
+      "tests": {
+        "metric_id": "repo.tests.RnDMetrics",
+        "repo": "RnDMetrics",
+        "repos": [
+          "RnDMetrics"
+        ],
+        "inputs": [
+          "git_artifacts/github_scan_artifacts.json"
+        ],
+        "time_range": {
+          "start": null,
+          "end": null
+        },
+        "test_files": 0,
+        "test_frameworks": [],
+        "epics": 32,
+        "user_stories": 3,
+        "sample_test_files": [],
+        "method": "Scan git_artifacts repositories for test files and epic/story references",
+        "reason": null,
+        "calculated_at": "2026-02-01T08:00:17.572520Z",
+        "calculation_path": "calculations/per_repo/RnDMetrics/tests.json"
+      }
+    },
+    "TrailEquip": {
+      "commits": {
+        "metric_id": "repo.commits",
+        "repo": "TrailEquip",
+        "repos": [
+          "TrailEquip"
+        ],
+        "time_range": {
+          "start": "2026-01-28",
+          "end": "2026-01-31"
+        },
+        "inputs": [
+          "git_artifacts/TrailEquip/commits.json"
+        ],
+        "total_commits": 155,
+        "unique_dates": 4,
+        "avg_commits_per_day": 38.75,
+        "period_start": "2026-01-28",
+        "period_end": "2026-01-31",
+        "days_active": 4,
+        "method": "Count commits; average by unique active dates; active period from first to last commit date",
+        "calculated_at": "2026-02-01T10:00:17.464688",
+        "calculation_path": "calculations/per_repo/TrailEquip/commits.json"
+      },
+      "contributors": {
+        "metric_id": "repo.contributors",
+        "repo": "TrailEquip",
+        "repos": [
+          "TrailEquip"
+        ],
+        "inputs": [
+          "git_artifacts/TrailEquip/authors.json",
+          "git_artifacts/TrailEquip/timeline.json"
+        ],
+        "time_range": {
+          "start": "2026-01-28",
+          "end": "2026-01-31"
+        },
+        "unique_contributors": 1,
+        "method": "Count unique author emails",
+        "calculated_at": "2026-02-01T10:00:17.468486",
+        "calculation_path": "calculations/per_repo/TrailEquip/contributors.json"
+      },
+      "coverage": {
+        "metric_id": "repo.coverage",
+        "repo": "TrailEquip",
+        "repos": [
+          "TrailEquip"
+        ],
+        "inputs": [],
+        "time_range": {
+          "start": null,
+          "end": null
+        },
+        "value": null,
+        "reason": "Coverage data not available (tool: jacoco, requires local test run)",
+        "method": "Parse jacoco output",
+        "calculated_at": "2026-02-01T10:00:17.468510",
+        "calculation_path": "calculations/per_repo/TrailEquip/coverage.json"
+      },
+      "dora_frequency": {
+        "metric_id": "repo.dora_frequency",
+        "repo": "TrailEquip",
+        "repos": [
+          "TrailEquip"
+        ],
+        "inputs": [
+          "git_artifacts/TrailEquip/commits.json"
+        ],
+        "time_range": {
+          "start": "2026-01-28",
+          "end": "2026-01-31"
+        },
+        "value": 38.75,
+        "unit": "commits/day",
+        "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
+        "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
+        "calculated_at": "2026-02-01T10:00:17.468822",
+        "calculation_path": "calculations/per_repo/TrailEquip/dora_frequency.json"
+      },
+      "lead_time": {
+        "metric_id": "repo.dora_lead_time",
+        "repo": "TrailEquip",
+        "repos": [
+          "TrailEquip"
+        ],
+        "inputs": [
+          "git_artifacts/TrailEquip/commits.json"
+        ],
+        "time_range": {
+          "start": "2026-01-28",
+          "end": "2026-01-31"
+        },
+        "value": 0.51,
+        "unit": "hours",
+        "method": "Average time between consecutive commits",
+        "note": "Proxy metric. True DORA measures code commit to deployment",
+        "calculated_at": "2026-02-01T10:00:17.469292",
+        "calculation_path": "calculations/per_repo/TrailEquip/lead_time.json"
+      },
+      "tests": {
+        "metric_id": "repo.tests.TrailEquip",
+        "repo": "TrailEquip",
+        "repos": [
+          "TrailEquip"
+        ],
+        "inputs": [
+          "git_artifacts/github_scan_artifacts.json"
+        ],
+        "time_range": {
+          "start": null,
+          "end": null
+        },
         "test_files": 8,
         "test_frameworks": [
-          "JUnit",
-          "Jest/Mocha"
+          "Jest/Mocha",
+          "JUnit"
         ],
         "epics": 0,
         "user_stories": 0,
         "sample_test_files": [
-          "clone/services/trail-service/src/test/java/com/trailequip/trail/domain/DifficultyClassifierTest.java",
-          "clone/services/trail-service/src/test/java/com/trailequip/trail/domain/model/DifficultyTest.java"
-        ]
-      },
-      "TrailWaze": {
-        "test_files": 1,
-        "test_frameworks": [
-          "Jest/Mocha"
+          "services/recommendation-service/src/test/java/com/trailequip/recommendation/adapter/rest/RecommendationControllerTest.java",
+          "services/weather-service/src/test/java/com/trailequip/weather/adapter/rest/WeatherControllerTest.java",
+          "services/trail-service/src/test/java/com/trailequip/trail/adapter/rest/TrailControllerTest.java"
         ],
-        "epics": 15,
+        "method": "Scan git_artifacts repositories for test files and epic/story references",
+        "reason": null,
+        "calculated_at": "2026-02-01T08:00:17.572816Z",
+        "calculation_path": "calculations/per_repo/TrailEquip/tests.json"
+      }
+    },
+    "TrailWaze": {
+      "commits": {
+        "metric_id": "repo.commits",
+        "repo": "TrailWaze",
+        "repos": [
+          "TrailWaze"
+        ],
+        "time_range": {
+          "start": "2026-01-20",
+          "end": "2026-01-31"
+        },
+        "inputs": [
+          "git_artifacts/TrailWaze/commits.json"
+        ],
+        "total_commits": 17,
+        "unique_dates": 5,
+        "avg_commits_per_day": 3.4,
+        "period_start": "2026-01-20",
+        "period_end": "2026-01-31",
+        "days_active": 12,
+        "method": "Count commits; average by unique active dates; active period from first to last commit date",
+        "calculated_at": "2026-02-01T10:00:17.481200",
+        "calculation_path": "calculations/per_repo/TrailWaze/commits.json"
+      },
+      "contributors": {
+        "metric_id": "repo.contributors",
+        "repo": "TrailWaze",
+        "repos": [
+          "TrailWaze"
+        ],
+        "inputs": [
+          "git_artifacts/TrailWaze/authors.json",
+          "git_artifacts/TrailWaze/timeline.json"
+        ],
+        "time_range": {
+          "start": "2026-01-20",
+          "end": "2026-01-31"
+        },
+        "unique_contributors": 2,
+        "method": "Count unique author emails",
+        "calculated_at": "2026-02-01T10:00:17.486135",
+        "calculation_path": "calculations/per_repo/TrailWaze/contributors.json"
+      },
+      "coverage": {
+        "metric_id": "repo.coverage",
+        "repo": "TrailWaze",
+        "repos": [
+          "TrailWaze"
+        ],
+        "inputs": [],
+        "time_range": {
+          "start": null,
+          "end": null
+        },
+        "value": null,
+        "reason": "Coverage data not available (tool: lcov, requires local test run)",
+        "method": "Parse lcov output",
+        "calculated_at": "2026-02-01T10:00:17.486159",
+        "calculation_path": "calculations/per_repo/TrailWaze/coverage.json"
+      },
+      "dora_frequency": {
+        "metric_id": "repo.dora_frequency",
+        "repo": "TrailWaze",
+        "repos": [
+          "TrailWaze"
+        ],
+        "inputs": [
+          "git_artifacts/TrailWaze/commits.json"
+        ],
+        "time_range": {
+          "start": "2026-01-20",
+          "end": "2026-01-31"
+        },
+        "value": 1.417,
+        "unit": "commits/day",
+        "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
+        "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
+        "calculated_at": "2026-02-01T10:00:17.486345",
+        "calculation_path": "calculations/per_repo/TrailWaze/dora_frequency.json"
+      },
+      "lead_time": {
+        "metric_id": "repo.dora_lead_time",
+        "repo": "TrailWaze",
+        "repos": [
+          "TrailWaze"
+        ],
+        "inputs": [
+          "git_artifacts/TrailWaze/commits.json"
+        ],
+        "time_range": {
+          "start": "2026-01-20",
+          "end": "2026-01-31"
+        },
+        "value": 16.18,
+        "unit": "hours",
+        "method": "Average time between consecutive commits",
+        "note": "Proxy metric. True DORA measures code commit to deployment",
+        "calculated_at": "2026-02-01T10:00:17.486524",
+        "calculation_path": "calculations/per_repo/TrailWaze/lead_time.json"
+      },
+      "tests": {
+        "metric_id": "repo.tests.TrailWaze",
+        "repo": "TrailWaze",
+        "repos": [
+          "TrailWaze"
+        ],
+        "inputs": [
+          "git_artifacts/github_scan_artifacts.json"
+        ],
+        "time_range": {
+          "start": null,
+          "end": null
+        },
+        "test_files": 0,
+        "test_frameworks": [],
+        "epics": 12,
         "user_stories": 1,
-        "sample_test_files": [
-          "clone/apps/mobile/__tests__/mvp-epics.test.js"
-        ]
+        "sample_test_files": [],
+        "method": "Scan git_artifacts repositories for test files and epic/story references",
+        "reason": null,
+        "calculated_at": "2026-02-01T08:00:17.573076Z",
+        "calculation_path": "calculations/per_repo/TrailWaze/tests.json"
       }
     }
-  }
+  },
+  "errors": [],
+  "warnings": []
 }

@@ -23,9 +23,15 @@ class MetricsReport {
   }
 
   async loadManifest() {
-    const resp = await fetch('./calculations/MANIFEST.json');
-    if (!resp.ok) throw new Error('Manifest not found');
-    this.manifest = await resp.json();
+    const primary = await fetch('../calculations/manifest.json');
+    if (primary.ok) {
+      this.manifest = await primary.json();
+      return;
+    }
+
+    const fallback = await fetch('./calculations/manifest.json');
+    if (!fallback.ok) throw new Error('Manifest not found');
+    this.manifest = await fallback.json();
   }
 
   renderHeader() {
@@ -55,36 +61,34 @@ class MetricsReport {
     const data = this.manifest;
 
     // Total commits
-    this.updateElement('finding-commits', data.global_metrics['commits.json'].total_commits);
+    const globalCommits = data.global_metrics['commits.json'];
+    this.updateElement('finding-commits', globalCommits?.total_commits);
 
     // Repos
-    this.updateElement('finding-repos', data.global_metrics['summary.json'].repos_analyzed);
+    const globalSummary = data.global_metrics['summary.json'];
+    this.updateElement('finding-repos', globalSummary?.repos_analyzed?.length);
 
     // Contributors
-    let total = 0;
-    for (const repo of Object.keys(data.per_repo_metrics)) {
-      total += data.per_repo_metrics[repo].contributors.unique_contributors || 0;
-    }
-    this.updateElement('finding-contributors', total);
+    const globalContributors = data.global_metrics['contributors.json'];
+    this.updateElement('finding-contributors', globalContributors?.unique_contributors);
 
     // Velocity (average across all repos)
-    let sumVelocity = 0;
-    let count = 0;
-    for (const repo of Object.keys(data.per_repo_metrics)) {
-      const vel = data.per_repo_metrics[repo].commits.avg_commits_per_day;
-      if (vel) {
-        sumVelocity += vel;
-        count++;
-      }
-    }
-    const avgVel = count > 0 ? (sumVelocity / count).toFixed(2) : 'N/A';
-    this.updateElement('finding-velocity', avgVel);
+    const globalVelocity = data.global_metrics['velocity.json'];
+    this.updateElement('finding-velocity', globalVelocity?.value);
 
     // Test metrics
-    const testingMetrics = data.testing_metrics?.global || {};
-    this.updateElement('finding-tests', testingMetrics.total_test_files || 0);
-    this.updateElement('finding-epics', testingMetrics.total_epics_found || 0);
-    this.updateElement('finding-stories', testingMetrics.total_user_stories_found || 0);
+    const globalTests = data.global_metrics['tests.json'];
+    this.updateElement('finding-tests', globalTests?.total_test_files);
+    this.updateElement('finding-epics', globalTests?.total_epics_found);
+    this.updateElement('finding-stories', globalTests?.total_user_stories_found);
+
+    this.attachFindingLinks('finding-commits', globalCommits);
+    this.attachFindingLinks('finding-repos', globalSummary);
+    this.attachFindingLinks('finding-contributors', globalContributors);
+    this.attachFindingLinks('finding-velocity', globalVelocity);
+    this.attachFindingLinks('finding-tests', globalTests);
+    this.attachFindingLinks('finding-epics', globalTests);
+    this.attachFindingLinks('finding-stories', globalTests);
   }
 
   renderRepositories() {
@@ -92,7 +96,6 @@ class MetricsReport {
     if (!container) return;
 
     const repoData = this.manifest.per_repo_metrics;
-    const testingData = this.manifest.testing_metrics?.per_repo || {};
     const repoNames = Object.keys(repoData).sort();
 
     if (repoNames.length === 0) {
@@ -103,7 +106,7 @@ class MetricsReport {
     let html = '';
     for (const repo of repoNames) {
       const data = repoData[repo];
-      const tests = testingData[repo] || {};
+      const tests = data.tests || {};
 
       html += `
         <div class="repo-detail-card">
@@ -111,51 +114,51 @@ class MetricsReport {
           <table class="repo-metrics-table">
             <tr>
               <td>Total Commits</td>
-              <td>${data.commits.total_commits}</td>
+              <td>${this.formatValue(data.commits?.total_commits)}${this.renderMetricLinks(data.commits)}</td>
             </tr>
             <tr>
               <td>Contributors</td>
-              <td>${data.contributors.unique_contributors}</td>
+              <td>${this.formatValue(data.contributors?.unique_contributors)}${this.renderMetricLinks(data.contributors)}</td>
             </tr>
             <tr>
               <td>Daily Activity</td>
-              <td>${data.commits.avg_commits_per_day.toFixed(2)} commits/day</td>
+              <td>${this.formatValue(data.commits?.avg_commits_per_day, 'commits/day')}${this.renderMetricLinks(data.commits)}</td>
             </tr>
             <tr>
               <td>Active Period</td>
-              <td>${data.commits.period_start} to ${data.commits.period_end}</td>
+              <td>${this.formatRange(data.commits?.period_start, data.commits?.period_end)}${this.renderMetricLinks(data.commits)}</td>
             </tr>
             <tr>
               <td>Days Active</td>
-              <td>${data.commits.days_active}</td>
+              <td>${this.formatValue(data.commits?.days_active)}${this.renderMetricLinks(data.commits)}</td>
             </tr>
             <tr>
               <td>Deployment Frequency</td>
-              <td>${data.dora_frequency.value} ${data.dora_frequency.unit}</td>
+              <td>${this.formatValue(data.dora_frequency?.value, data.dora_frequency?.unit)}${this.renderMetricLinks(data.dora_frequency)}</td>
             </tr>
             <tr>
               <td>Lead Time</td>
-              <td>${data.lead_time.value} ${data.lead_time.unit}</td>
+              <td>${this.formatValue(data.lead_time?.value, data.lead_time?.unit)}${this.renderMetricLinks(data.lead_time)}</td>
             </tr>
             <tr>
               <td>Test Files</td>
-              <td>${tests.test_files || 0}</td>
+              <td>${this.formatValue(tests.test_files)}${this.renderMetricLinks(tests)}</td>
             </tr>
             <tr>
               <td>Test Frameworks</td>
-              <td>${tests.test_frameworks ? tests.test_frameworks.join(', ') : 'N/A'}</td>
+              <td>${this.formatList(tests.test_frameworks)}${this.renderMetricLinks(tests)}</td>
             </tr>
             <tr>
               <td>Epics Found</td>
-              <td>${tests.epics || 0}</td>
+              <td>${this.formatValue(tests.epics)}${this.renderMetricLinks(tests)}</td>
             </tr>
             <tr>
               <td>User Stories</td>
-              <td>${tests.user_stories || 0}</td>
+              <td>${this.formatValue(tests.user_stories)}${this.renderMetricLinks(tests)}</td>
             </tr>
             <tr>
               <td>Test Coverage</td>
-              <td><em>${data.coverage.value || 'N/A'}</em></td>
+              <td><em>${this.formatValue(data.coverage?.value)}${this.renderMetricLinks(data.coverage)}</em></td>
             </tr>
           </table>
         </div>
@@ -168,14 +171,61 @@ class MetricsReport {
   updateElement(id, value) {
     const elem = document.getElementById(id);
     if (elem) {
-      if (typeof value === 'number') {
-        elem.textContent = value.toLocaleString();
-      } else if (Array.isArray(value)) {
-        elem.textContent = value.length;
-      } else {
-        elem.textContent = value || 'N/A';
-      }
+      elem.textContent = this.formatValue(value);
     }
+  }
+
+  formatValue(value, unit) {
+    if (value === null || value === undefined) return 'N/A';
+    if (typeof value === 'number') {
+      const formatted = Number.isFinite(value) ? value.toLocaleString() : 'N/A';
+      return unit ? `${formatted} ${unit}` : formatted;
+    }
+    if (Array.isArray(value)) return value.length.toLocaleString();
+    if (value === '') return 'N/A';
+    return unit ? `${value} ${unit}` : value;
+  }
+
+  formatRange(start, end) {
+    if (!start || !end) return 'N/A';
+    return `${start} to ${end}`;
+  }
+
+  formatList(list) {
+    if (!Array.isArray(list) || list.length === 0) return 'N/A';
+    return list.join(', ');
+  }
+
+  attachFindingLinks(id, metric) {
+    const valueElem = document.getElementById(id);
+    if (!valueElem || !metric) return;
+    const card = valueElem.closest('.finding-card');
+    if (!card) return;
+    const existing = card.querySelector('.metric-links');
+    if (existing) return;
+    const links = document.createElement('div');
+    links.className = 'metric-links';
+    links.innerHTML = this.renderMetricLinks(metric, true);
+    card.appendChild(links);
+  }
+
+  renderMetricLinks(metric, compact = false) {
+    if (!metric) return '';
+    const calc = metric.calculation_path
+      ? `<a href="../${metric.calculation_path}">calc</a>`
+      : 'calc N/A';
+    const inputs = Array.isArray(metric.inputs) && metric.inputs.length > 0
+      ? metric.inputs.map((input) => `<a href="../${input}">${this.basename(input)}</a>`).join(', ')
+      : 'inputs N/A';
+    const label = compact ? '' : '<div class="metric-links">';
+    const tail = compact ? '' : '</div>';
+    return `${label}<span>${calc}</span> <span>${inputs}</span>${tail}`;
+  }
+
+  basename(path) {
+    if (!path) return '';
+    const parts = path.split('/');
+    return parts[parts.length - 1];
   }
 
   showError(message) {

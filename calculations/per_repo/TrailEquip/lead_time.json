@@ -1,12 +1,19 @@
 {
   "metric_id": "repo.dora_lead_time",
   "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
   "inputs": [
     "git_artifacts/TrailEquip/commits.json"
   ],
-  "value": 0.5,
+  "time_range": {
+    "start": "2026-01-28",
+    "end": "2026-01-31"
+  },
+  "value": 0.51,
   "unit": "hours",
   "method": "Average time between consecutive commits",
   "note": "Proxy metric. True DORA measures code commit to deployment",
-  "calculated_at": "2026-02-01T09:07:33.344741"
+  "calculated_at": "2026-02-01T10:00:17.469292"
 }
