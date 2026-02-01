@@ -23,4 +23,9 @@ language: python
 ci: github-actions
 coverage: pytest-cov
 
-https://github.com/vionascu/rlte
+## rlte
+repo: https://github.com/vionascu/rlte
+branch: main
+language: unknown
+ci: github-actions
+coverage: none
