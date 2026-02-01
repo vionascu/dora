@@ -55,10 +55,10 @@ class MetricsReport {
     const data = this.manifest;
 
     // Total commits
-    this.updateElement('finding-commits', data.global_metrics.commits.json.total_commits);
+    this.updateElement('finding-commits', data.global_metrics['commits.json'].total_commits);
 
     // Repos
-    this.updateElement('finding-repos', data.global_metrics.summary.json.repos_analyzed);
+    this.updateElement('finding-repos', data.global_metrics['summary.json'].repos_analyzed);
 
     // Contributors
     let total = 0;
