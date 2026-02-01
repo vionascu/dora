@@ -87,6 +87,22 @@ jobs:
     - name: "📋 Generate Validation Manifest"
       run: python3 src/calculations/calculate_test_metrics.py
 
+    - name: "📈 Calculate Evolution Metrics"
+      run: |
+        echo ""
+        echo "======================================================================"
+        echo "DORA EVOLUTION LAYER - Velocity, Quality & AI Indicators"
+        echo "======================================================================"
+        python3 src/calculations/calculate_evolution_metrics.py
+
+    - name: "🤖 Detect AI Usage Patterns"
+      run: |
+        echo ""
+        echo "======================================================================"
+        echo "DORA AI DETECTION - Analyzing for AI-Assisted Development"
+        echo "======================================================================"
+        python3 src/calculations/detect_ai_patterns.py
+
     - name: Upload artifacts
       if: always()
       uses: actions/upload-artifact@v4

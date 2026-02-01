@@ -150,6 +150,7 @@ class MetricsReport {
   render() {
     this.renderFindings();
     this.renderRepositories();
+    this.renderEvolutionMetrics();
   }
 
   renderHeader() {
@@ -474,6 +475,236 @@ class MetricsReport {
     if (!path) return '';
     const parts = path.split('/');
     return parts[parts.length - 1];
+  }
+
+  renderEvolutionMetrics() {
+    const container = document.getElementById('evolution-container');
+    if (!container) {
+      // Create container if it doesn't exist
+      const reposContainer = document.getElementById('repos-container');
+      if (!reposContainer) return;
+
+      const evolutionDiv = document.createElement('div');
+      evolutionDiv.id = 'evolution-container';
+      evolutionDiv.style.marginTop = '3rem';
+      reposContainer.parentNode.insertBefore(evolutionDiv, reposContainer.nextSibling);
+    }
+
+    const repoData = this.manifest.per_repo_metrics;
+    let repoNames;
+
+    if (this.selectedProject === 'all') {
+      repoNames = Object.keys(repoData).sort();
+    } else {
+      repoNames = [this.selectedProject];
+    }
+
+    let html = '<div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; margin-top: 2rem;">';
+    html += '<h2 style="margin-top: 0;">Project Evolution & Analysis</h2>';
+
+    for (const repo of repoNames) {
+      const data = repoData[repo];
+      if (!data) continue;
+
+      html += `<div style="background: white; padding: 1.5rem; margin: 1rem 0; border-radius: 6px; border-left: 4px solid #007acc;">`;
+      html += `<h3 style="margin-top: 0;">${repo} - Evolution Metrics</h3>`;
+
+      // Velocity Trends
+      const velocity = data.velocity_trend;
+      if (velocity) {
+        html += this.renderVelocityTrend(velocity);
+      }
+
+      // Contributor Growth
+      const contributors = data.contributor_growth;
+      if (contributors) {
+        html += this.renderContributorGrowth(contributors);
+      }
+
+      // Refactorization Activity
+      const refactor = data.refactorization_activity;
+      if (refactor) {
+        html += this.renderRefactorizationActivity(refactor);
+      }
+
+      // Code Quality Evolution
+      const quality = data.code_quality_evolution;
+      if (quality) {
+        html += this.renderQualityEvolution(quality);
+      }
+
+      // AI Analysis
+      const aiAnalysis = data.ai_analysis;
+      if (aiAnalysis) {
+        html += this.renderAIAnalysis(aiAnalysis);
+      }
+
+      html += `</div>`;
+    }
+
+    // Global AI Analysis
+    const globalAI = this.manifest.global_metrics['ai_usage_analysis.json'];
+    if (globalAI && this.selectedProject === 'all') {
+      html += `<div style="background: #fff3cd; padding: 1.5rem; margin: 1rem 0; border-radius: 6px; border-left: 4px solid #ff9800;">`;
+      html += `<h3 style="margin-top: 0;">🤖 Organization-Wide AI Usage Analysis</h3>`;
+      html += this.renderGlobalAIAnalysis(globalAI);
+      html += `</div>`;
+    }
+
+    html += '</div>';
+    document.getElementById('evolution-container').innerHTML = html;
+  }
+
+  renderVelocityTrend(velocity) {
+    const weeksActive = velocity.weeks_active || 0;
+    const avgPerWeek = velocity.avg_commits_per_week || 0;
+    const total = velocity.total_commits || 0;
+
+    return `
+      <div style="margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 4px;">
+        <h4>📈 Velocity Trends</h4>
+        <ul style="margin: 0.5rem 0; line-height: 1.8;">
+          <li><strong>Total Commits:</strong> ${total}</li>
+          <li><strong>Weeks Active:</strong> ${weeksActive}</li>
+          <li><strong>Avg Commits/Week:</strong> ${avgPerWeek}</li>
+          <li><strong>Period:</strong> ${velocity.time_range.start} to ${velocity.time_range.end}</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  renderContributorGrowth(contributors) {
+    const total = contributors.total_contributors || 0;
+    const monthlyAvg = contributors.avg_new_contributors_per_month || 0;
+    const start = contributors.first_contributor_date || 'N/A';
+    const end = contributors.latest_contributor_date || 'N/A';
+
+    return `
+      <div style="margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 4px;">
+        <h4>👥 Team Growth</h4>
+        <ul style="margin: 0.5rem 0; line-height: 1.8;">
+          <li><strong>Total Contributors:</strong> ${total}</li>
+          <li><strong>Avg New/Month:</strong> ${monthlyAvg}</li>
+          <li><strong>First Contributor:</strong> ${start}</li>
+          <li><strong>Latest Contributor:</strong> ${end}</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  renderRefactorizationActivity(refactor) {
+    const totalRefactor = refactor.total_refactor_commits || 0;
+    const percentage = refactor.refactor_percentage || 0;
+    const events = refactor.refactor_events || {};
+
+    let eventsList = '';
+    for (const [key, count] of Object.entries(events)) {
+      if (count > 0) {
+        eventsList += `<li>${key}: ${count}</li>`;
+      }
+    }
+
+    return `
+      <div style="margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 4px;">
+        <h4>🔧 Refactorization Activity</h4>
+        <ul style="margin: 0.5rem 0; line-height: 1.8;">
+          <li><strong>Refactor Commits:</strong> ${totalRefactor} (${percentage}%)</li>
+          <li><strong>Activities:</strong></li>
+          <ul style="margin-left: 1.5rem;">${eventsList || '<li>None detected</li>'}</ul>
+        </ul>
+      </div>
+    `;
+  }
+
+  renderQualityEvolution(quality) {
+    const grade = quality.quality_grade || 'N/A';
+    const status = quality.quality_status || 'Unknown';
+    const coverage = quality.coverage_percentage || 0;
+    const commits = quality.total_commits || 0;
+    const maturity = quality.maturity_score || 0;
+
+    const gradeColor = {
+      'A': '#28a745',
+      'B': '#17a2b8',
+      'C': '#ffc107',
+      'D': '#fd7e14',
+      'F': '#dc3545'
+    }[grade] || '#6c757d';
+
+    return `
+      <div style="margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 4px;">
+        <h4>📊 Code Quality Evolution</h4>
+        <ul style="margin: 0.5rem 0; line-height: 1.8;">
+          <li><strong>Quality Grade:</strong> <span style="background: ${gradeColor}; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">${grade}</span></li>
+          <li><strong>Status:</strong> ${status}</li>
+          <li><strong>Coverage:</strong> ${coverage}%</li>
+          <li><strong>Active Commits:</strong> ${commits}</li>
+          <li><strong>Maturity Score:</strong> ${maturity}/100</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  renderAIAnalysis(aiAnalysis) {
+    const score = aiAnalysis.ai_probability_score || 0;
+    const interpretation = aiAnalysis.ai_score_interpretation || 'Unknown';
+    const aiCommits = aiAnalysis.ai_attributed_commits || 0;
+    const percentage = aiAnalysis.ai_commits_percentage || 0;
+    const mentions = aiAnalysis.explicit_ai_mentions || {};
+    const patterns = aiAnalysis.code_pattern_analysis || {};
+
+    let mentionsHTML = '';
+    for (const [framework, count] of Object.entries(mentions)) {
+      if (count > 0) {
+        mentionsHTML += `<li>${framework}: ${count} commit${count > 1 ? 's' : ''}</li>`;
+      }
+    }
+
+    let patternsHTML = '';
+    for (const [pattern, count] of Object.entries(patterns)) {
+      if (count > 0) {
+        patternsHTML += `<li>${pattern}: ${count}</li>`;
+      }
+    }
+
+    const scoreColor = score < 20 ? '#28a745' : score < 40 ? '#17a2b8' : score < 60 ? '#ffc107' : score < 80 ? '#fd7e14' : '#dc3545';
+
+    return `
+      <div style="margin: 1rem 0; padding: 1rem; background: #f0f4ff; border-radius: 4px;">
+        <h4>🤖 AI Usage Indicators</h4>
+        <ul style="margin: 0.5rem 0; line-height: 1.8;">
+          <li><strong>AI Probability Score:</strong> <span style="background: ${scoreColor}; color: white; padding: 4px 8px; border-radius: 3px; font-weight: bold;">${score}/100</span></li>
+          <li><strong>Interpretation:</strong> ${interpretation}</li>
+          <li><strong>AI-Attributed Commits:</strong> ${aiCommits} (${percentage}%)</li>
+          ${mentionsHTML ? `<li><strong>AI Frameworks Mentioned:</strong><ul style="margin-left: 1.5rem;">${mentionsHTML}</ul></li>` : ''}
+          ${patternsHTML ? `<li><strong>Code Patterns Detected:</strong><ul style="margin-left: 1.5rem;">${patternsHTML}</ul></li>` : ''}
+        </ul>
+      </div>
+    `;
+  }
+
+  renderGlobalAIAnalysis(globalAI) {
+    const score = globalAI.ai_probability_score || 0;
+    const interpretation = globalAI.score_interpretation || 'Unknown';
+    const aiCommits = globalAI.total_ai_commits || 0;
+    const percentage = globalAI.global_ai_percentage || 0;
+    const rankings = globalAI.repositories_ranked || [];
+
+    const scoreColor = score < 20 ? '#28a745' : score < 40 ? '#17a2b8' : score < 60 ? '#ffc107' : score < 80 ? '#fd7e14' : '#dc3545';
+
+    let rankingsHTML = '';
+    for (const rank of rankings) {
+      rankingsHTML += `<li>${rank.repo}: ${rank.score}/100 (${rank.ai_commits} commits)</li>`;
+    }
+
+    return `
+      <ul style="margin: 0.5rem 0; line-height: 1.8;">
+        <li><strong>Organization AI Score:</strong> <span style="background: ${scoreColor}; color: white; padding: 4px 8px; border-radius: 3px; font-weight: bold;">${score}/100</span></li>
+        <li><strong>Assessment:</strong> ${interpretation}</li>
+        <li><strong>Total AI Commits:</strong> ${aiCommits} (${percentage}% of all commits)</li>
+        ${rankingsHTML ? `<li><strong>Repository Rankings (by AI usage):</strong><ul style="margin-left: 1.5rem;">${rankingsHTML}</ul></li>` : ''}
+      </ul>
+    `;
   }
 
   showError(message) {
