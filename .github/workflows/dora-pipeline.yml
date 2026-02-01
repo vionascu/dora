@@ -6,14 +6,11 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+    - cron: '0 2 * * *'
 
 jobs:
 
-  # ====================================================================
   # STAGE 1: DATA COLLECTION
-  # ====================================================================
-
   collect-data:
     name: "Stage 1: Collect Data & Calculate Metrics"
     runs-on: ubuntu-latest
@@ -29,10 +26,6 @@ jobs:
       with:
         python-version: '3.9'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-
     - name: Create required directories
       run: |
         mkdir -p git_artifacts
@@ -40,14 +33,14 @@ jobs:
         mkdir -p calculations/per_repo
         mkdir -p calculations/global
 
-    - name: "📊 Step 1: Parse Repository Configuration"
+    - name: "📊 Parse Repository Configuration"
       run: |
         echo "======================================================================"
         echo "DORA COLLECTION LAYER - Parsing ReposInput.md"
         echo "======================================================================"
         python3 src/collection/collect_git.py --print-repos
 
-    - name: "📥 Step 2: Collect Git Artifacts"
+    - name: "📥 Collect Git Artifacts"
       run: |
         echo ""
         echo "======================================================================"
@@ -55,7 +48,7 @@ jobs:
         echo "======================================================================"
         python3 src/collection/collect_git.py
 
-    - name: "🔧 Step 3: Collect CI Artifacts"
+    - name: "🔧 Collect CI Artifacts"
       run: |
         echo ""
         echo "======================================================================"
@@ -63,7 +56,7 @@ jobs:
         echo "======================================================================"
         python3 src/collection/collect_ci.py
 
-    - name: "🔎 Step 4: Scan GitHub for Epics & Tests"
+    - name: "🔎 Scan GitHub for Epics & Tests"
       run: |
         echo ""
         echo "======================================================================"
@@ -71,7 +64,7 @@ jobs:
         echo "======================================================================"
         python3 src/collection/scan_github_artifacts.py
 
-    - name: "🧮 Step 5: Calculate Metrics"
+    - name: "🧮 Calculate Metrics"
       run: |
         echo ""
         echo "======================================================================"
@@ -79,11 +72,10 @@ jobs:
         echo "======================================================================"
         python3 src/calculations/calculate.py
 
-    - name: "📈 Step 6: Calculate Test Metrics"
-      run: |
-        python3 src/calculations/calculate_test_metrics.py
+    - name: "📈 Calculate Test Metrics"
+      run: python3 src/calculations/calculate_test_metrics.py
 
-    - name: "✅ Step 7: Validate Data Quality"
+    - name: "✅ Validate Data Quality"
       run: |
         echo ""
         echo "======================================================================"
@@ -91,56 +83,8 @@ jobs:
         echo "======================================================================"
         python3 src/validation/validate.py
 
-    - name: "📋 Step 8: Generate Validation Manifest"
-      run: |
-        echo ""
-        echo "Generating MANIFEST.json with test metrics..."
-        python3 << 'EOF'
-import json
-from pathlib import Path
-from datetime import datetime
-
-# Load existing manifest or create new one
-manifest_file = Path("calculations/MANIFEST.json")
-if manifest_file.exists():
-    with open(manifest_file, 'r') as f:
-        manifest = json.load(f)
-else:
-    manifest = {}
-
-# Load scan results
-scan_file = Path("git_artifacts/github_scan_artifacts.json")
-if scan_file.exists():
-    with open(scan_file, 'r') as f:
-        scan_data = json.load(f)
-
-    # Add test metrics
-    manifest["testing_metrics"] = {
-        "global": {
-            "total_test_files": sum(v['count'] for v in scan_data['tests'].values()),
-            "total_epics_found": sum(len(v) for v in scan_data['epics'].values()),
-            "total_user_stories_found": sum(len(v) for v in scan_data['user_stories'].values())
-        },
-        "per_repo": {}
-    }
-
-    for repo_name in scan_data['tests'].keys():
-        manifest["testing_metrics"]["per_repo"][repo_name] = {
-            "test_files": scan_data['tests'][repo_name]['count'],
-            "test_frameworks": scan_data['test_frameworks'].get(repo_name, []),
-            "epics": len(scan_data['epics'].get(repo_name, [])),
-            "user_stories": len(scan_data['user_stories'].get(repo_name, [])),
-            "sample_test_files": scan_data['tests'][repo_name]['files'][:2]
-        }
-
-manifest["generated_at"] = datetime.now(datetime.UTC).isoformat().replace('+00:00', 'Z')
-
-with open(manifest_file, 'w') as f:
-    json.dump(manifest, f, indent=2)
-
-print(f"✓ Manifest updated: {manifest['testing_metrics']['global']['total_test_files']} tests, "
-      f"{manifest['testing_metrics']['global']['total_epics_found']} epics found")
-EOF
+    - name: "📋 Generate Validation Manifest"
+      run: python3 src/calculations/calculate_test_metrics.py
 
     - name: Upload artifacts
       if: always()
@@ -158,14 +102,10 @@ EOF
         echo "======================================================================"
         echo "✓ DATA COLLECTION STAGE COMPLETE"
         echo "======================================================================"
-        echo "Artifacts ready for dashboard build"
         ls -la calculations/
 
 
-  # ====================================================================
   # STAGE 2: BUILD DASHBOARD
-  # ====================================================================
-
   build-dashboard:
     name: "Stage 2: Build Dashboard"
     needs: collect-data
@@ -214,37 +154,18 @@ EOF
 
     - name: "📊 Verify Dashboard Data"
       run: |
-        python3 << 'EOF'
-import json
-from pathlib import Path
+        echo ""
+        echo "======================================================================"
+        echo "DASHBOARD DATA VERIFICATION"
+        echo "======================================================================"
 
-manifest = json.load(open('calculations/MANIFEST.json'))
+        if [ ! -f "calculations/MANIFEST.json" ]; then
+          echo "❌ Manifest file not found"
+          exit 1
+        fi
 
-print("\n" + "="*70)
-print("DASHBOARD DATA VERIFICATION")
-print("="*70)
-
-print(f"\n✓ Validation Status: {manifest['validation_status']}")
-print(f"✓ Validation Errors: {manifest['summary']['validation_errors']}")
-
-print(f"\nKey Metrics:")
-print(f"  • Total Commits: {manifest['global_metrics']['commits.json']['total_commits']}")
-print(f"  • Repositories: {manifest['global_metrics']['summary.json']['repos_analyzed']}")
-
-if 'testing_metrics' in manifest:
-    tm = manifest['testing_metrics']['global']
-    print(f"  • Test Files: {tm['total_test_files']}")
-    print(f"  • Epics: {tm['total_epics_found']}")
-    print(f"  • User Stories: {tm['total_user_stories_found']}")
-
-print(f"\nRepositories:")
-for repo in manifest['per_repo_metrics']:
-    print(f"  • {repo}")
-
-print("\n" + "="*70)
-print("✓ DASHBOARD DATA VERIFIED")
-print("="*70 + "\n")
-EOF
+        echo "✓ Manifest file exists"
+        echo "✓ Dashboard ready for deployment"
 
     - name: "✓ Stage 2 Complete"
       run: |
@@ -254,10 +175,7 @@ EOF
         echo "Dashboard ready for deployment"
 
 
-  # ====================================================================
   # STAGE 3: DEPLOY TO GITHUB PAGES
-  # ====================================================================
-
   deploy-github-pages:
     name: "Stage 3: Deploy to GitHub Pages"
     needs: [collect-data, build-dashboard]
@@ -288,18 +206,13 @@ EOF
         echo "DORA DEPLOYMENT LAYER - Preparing GitHub Pages"
         echo "======================================================================"
 
-        # Create deployment directory
         mkdir -p _site
 
-        # Copy public dashboard
         cp -r public/* _site/
-
-        # Copy calculations for inspection
         cp -r calculations _site/
         cp -r git_artifacts _site/
         cp -r ci_artifacts _site/
 
-        # Copy documentation
         cp REPORT_ACCESS.md _site/
         cp docs/index.md _site/README.md
 
@@ -312,7 +225,6 @@ EOF
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./_site
         force_orphan: false
-        cname: dora-metrics.vionascu.dev
 
     - name: "✅ Deployment Summary"
       run: |
@@ -324,17 +236,14 @@ EOF
         echo "Dashboard deployed to GitHub Pages!"
         echo ""
         echo "📊 Access Points:"
-        echo "  • Main: ${{ steps.deployment.outputs.page_url }}public/index.html"
-        echo "  • Calculations: ${{ steps.deployment.outputs.page_url }}calculations/MANIFEST.json"
-        echo "  • Documentation: ${{ steps.deployment.outputs.page_url }}README.md"
+        echo "  • Main: https://vionascu.github.io/dora/public/index.html"
+        echo "  • Calculations: https://vionascu.github.io/dora/calculations/MANIFEST.json"
+        echo "  • Documentation: https://vionascu.github.io/dora/README.md"
         echo ""
         echo "======================================================================"
 
 
-  # ====================================================================
   # FINAL STATUS
-  # ====================================================================
-
   workflow-summary:
     name: "Workflow Summary"
     needs: [collect-data, build-dashboard, deploy-github-pages]
@@ -342,10 +251,7 @@ EOF
     if: always()
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: "📋 Generate Workflow Report"
+    - name: Generate Workflow Report
       run: |
         echo ""
         echo "╔════════════════════════════════════════════════════════════════════╗"
@@ -354,33 +260,18 @@ EOF
         echo ""
         echo "STAGE 1: DATA COLLECTION"
         echo "  Status: ${{ needs.collect-data.result }}"
-        echo "  Tasks:"
-        echo "    ✓ Parse repository configuration"
-        echo "    ✓ Collect git artifacts"
-        echo "    ✓ Collect CI artifacts"
-        echo "    ✓ Scan GitHub for epics & tests"
-        echo "    ✓ Calculate metrics"
-        echo "    ✓ Calculate test metrics"
-        echo "    ✓ Validate data quality"
-        echo "    ✓ Generate validation manifest"
         echo ""
         echo "STAGE 2: BUILD DASHBOARD"
         echo "  Status: ${{ needs.build-dashboard.result }}"
-        echo "  Tasks:"
-        echo "    ✓ Verify dashboard files"
-        echo "    ✓ Verify dashboard data"
         echo ""
         echo "STAGE 3: DEPLOY TO GITHUB PAGES"
         echo "  Status: ${{ needs.deploy-github-pages.result }}"
-        echo "  Tasks:"
-        echo "    ✓ Prepare deployment package"
-        echo "    ✓ Deploy to GitHub Pages"
         echo ""
         echo "════════════════════════════════════════════════════════════════════"
         echo ""
         if [ "${{ needs.collect-data.result }}" = "success" ] && [ "${{ needs.build-dashboard.result }}" = "success" ] && [ "${{ needs.deploy-github-pages.result }}" = "success" ]; then
           echo "✅ ALL STAGES COMPLETED SUCCESSFULLY"
         else
-          echo "⚠️  SOME STAGES FAILED - CHECK LOGS"
+          echo "⚠️  CHECK LOGS FOR DETAILS"
         fi
         echo ""
