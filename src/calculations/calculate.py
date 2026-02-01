@@ -176,17 +176,15 @@ class Calculator:
         coverage_tool = config.get("coverage") or config.get("coverage_tool", "")
         ci_dir = self.ci_artifacts / repo_name
 
-        coverage_file = None
+        coverage_files = []
         if coverage_tool == "jacoco":
-            coverage_file = ci_dir / "jacoco.xml"
+            coverage_files = list(ci_dir.rglob("*.jacoco.xml"))
         elif coverage_tool == "pytest-cov":
-            coverage_file = ci_dir / "coverage.xml"
+            coverage_files = list(ci_dir.rglob("coverage.xml"))
         elif coverage_tool == "lcov":
-            coverage_file = ci_dir / "lcov.info"
+            coverage_files = list(ci_dir.rglob("*.lcov.info"))
 
-        inputs = []
-        if coverage_file and coverage_file.exists():
-            inputs = [str(coverage_file.relative_to(self.root_dir))]
+        inputs = [str(f.relative_to(self.root_dir)) for f in coverage_files]
 
         value = None
         reason = None
@@ -195,32 +193,43 @@ class Calculator:
         if inputs:
             try:
                 if coverage_tool == "jacoco":
-                    tree = ET.parse(coverage_file)
-                    root = tree.getroot()
-                    counters = root.findall(".//counter")
-                    for counter in counters:
-                        if counter.get("type") == "LINE":
-                            missed = int(counter.get("missed", 0))
-                            covered = int(counter.get("covered", 0))
-                            total = missed + covered
-                            if total > 0:
-                                value = round((covered / total) * 100, 2)
-                            break
+                    total_missed = 0
+                    total_covered = 0
+                    for coverage_file in coverage_files:
+                        tree = ET.parse(coverage_file)
+                        root = tree.getroot()
+                        counters = root.findall(".//counter")
+                        for counter in counters:
+                            if counter.get("type") == "LINE":
+                                total_missed += int(counter.get("missed", 0))
+                                total_covered += int(counter.get("covered", 0))
+                                break
+                    total = total_missed + total_covered
+                    if total > 0:
+                        value = round((total_covered / total) * 100, 2)
                 elif coverage_tool == "pytest-cov":
-                    tree = ET.parse(coverage_file)
-                    root = tree.getroot()
-                    line_rate = root.get("line-rate")
-                    if line_rate is not None:
-                        value = round(float(line_rate) * 100, 2)
+                    total_lines = 0
+                    total_covered = 0
+                    for coverage_file in coverage_files:
+                        tree = ET.parse(coverage_file)
+                        root = tree.getroot()
+                        lines_valid = root.get("lines-valid")
+                        lines_covered = root.get("lines-covered")
+                        if lines_valid is not None and lines_covered is not None:
+                            total_lines += int(lines_valid)
+                            total_covered += int(lines_covered)
+                    if total_lines > 0:
+                        value = round((total_covered / total_lines) * 100, 2)
                 elif coverage_tool == "lcov":
                     total_lines = 0
                     hit_lines = 0
-                    with open(coverage_file, "r") as f:
-                        for line in f:
-                            if line.startswith("LF:"):
-                                total_lines += int(line.strip().split(":")[1])
-                            elif line.startswith("LH:"):
-                                hit_lines += int(line.strip().split(":")[1])
+                    for coverage_file in coverage_files:
+                        with open(coverage_file, "r") as f:
+                            for line in f:
+                                if line.startswith("LF:"):
+                                    total_lines += int(line.strip().split(":")[1])
+                                elif line.startswith("LH:"):
+                                    hit_lines += int(line.strip().split(":")[1])
                     if total_lines > 0:
                         value = round((hit_lines / total_lines) * 100, 2)
             except Exception as e:

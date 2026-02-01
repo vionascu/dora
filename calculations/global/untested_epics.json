@@ -71,8 +71,8 @@
   "user_stories_without_coverage": {
     "RnDMetrics": [
       "user story",
-      "user story",
-      "User story"
+      "User story",
+      "user story"
     ],
     "TrailEquip": [],
     "TrailWaze": [
@@ -81,5 +81,5 @@
   },
   "method": "List epics/user stories for repos with missing or null coverage",
   "reason": null,
-  "calculated_at": "2026-02-01T08:05:07.813053Z"
+  "calculated_at": "2026-02-01T08:07:57.256378Z"
 }

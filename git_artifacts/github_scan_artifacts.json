@@ -52,8 +52,8 @@
   "user_stories": {
     "RnDMetrics": [
       "user story",
-      "user story",
-      "User story"
+      "User story",
+      "user story"
     ],
     "TrailWaze": [
       "User Story"
@@ -85,8 +85,8 @@
   "test_frameworks": {
     "RnDMetrics": [],
     "TrailEquip": [
-      "JUnit",
-      "Jest/Mocha"
+      "Jest/Mocha",
+      "JUnit"
     ],
     "TrailWaze": []
   }

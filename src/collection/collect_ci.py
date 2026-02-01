@@ -72,6 +72,7 @@ class CICollector:
             self._collect_python_tests(repo_name, git_clone, repo_dir)
         elif language == "mixed":
             self._collect_javascript_tests(repo_name, git_clone, repo_dir)
+            self._collect_java_tests(repo_name, git_clone, repo_dir)
 
         print(f"    ✓ CI initialization complete")
 
@@ -79,32 +80,47 @@ class CICollector:
         """Collect Java test and coverage data"""
         print(f"    → Attempting Java test collection...")
 
-        pom_file = git_clone / "pom.xml"
-        if not pom_file.exists():
+        pom_files = [
+            p for p in git_clone.rglob("pom.xml")
+            if ".git" not in p.parts and "node_modules" not in p.parts
+        ]
+        if not pom_files:
             print(f"      ℹ No pom.xml found")
             return
 
-        try:
-            # Run Maven tests with coverage
-            result = subprocess.run(
-                ["mvn", "clean", "test", "jacoco:report"],
-                cwd=git_clone,
-                capture_output=True,
-                timeout=300,
-                check=False
-            )
+        coverage_dir = repo_dir / "coverage" / "jacoco"
+        coverage_dir.mkdir(parents=True, exist_ok=True)
+        collected = 0
 
-            # Look for jacoco results
-            jacoco_path = git_clone / "target" / "site" / "jacoco" / "jacoco.xml"
-            if jacoco_path.exists():
-                with open(jacoco_path, 'rb') as src:
-                    with open(repo_dir / "jacoco.xml", 'wb') as dst:
-                        dst.write(src.read())
-                print(f"      ✓ Collected jacoco.xml")
-        except subprocess.TimeoutExpired:
-            print(f"      ℹ Maven test timeout (network/build time)")
-        except Exception as e:
-            print(f"      ℹ Could not run Maven: {str(e)}")
+        for pom_file in pom_files:
+            module_dir = pom_file.parent
+            try:
+                subprocess.run(
+                    ["mvn", "clean", "test", "jacoco:report"],
+                    cwd=module_dir,
+                    capture_output=True,
+                    timeout=600,
+                    check=False
+                )
+
+                jacoco_path = module_dir / "target" / "site" / "jacoco" / "jacoco.xml"
+                if jacoco_path.exists():
+                    module_name = module_dir.relative_to(git_clone).as_posix().replace("/", "_")
+                    if module_name == ".":
+                        module_name = "root"
+                    dest = coverage_dir / f"{module_name}.jacoco.xml"
+                    with open(jacoco_path, 'rb') as src:
+                        with open(dest, 'wb') as dst:
+                            dst.write(src.read())
+                    collected += 1
+                    print(f"      ✓ Collected {dest.relative_to(repo_dir)}")
+            except subprocess.TimeoutExpired:
+                print(f"      ℹ Maven test timeout in {module_dir}")
+            except Exception as e:
+                print(f"      ℹ Could not run Maven in {module_dir}: {str(e)}")
+
+        if collected == 0:
+            print(f"      ℹ No jacoco.xml files produced")
 
     def _collect_python_tests(self, repo_name, git_clone, repo_dir):
         """Collect Python test and coverage data"""
@@ -130,10 +146,13 @@ class CICollector:
             # Look for coverage results
             coverage_path = git_clone / "coverage.xml"
             if coverage_path.exists():
+                coverage_dir = repo_dir / "coverage" / "pytest"
+                coverage_dir.mkdir(parents=True, exist_ok=True)
+                dest = coverage_dir / "coverage.xml"
                 with open(coverage_path, 'rb') as src:
-                    with open(repo_dir / "coverage.xml", 'wb') as dst:
+                    with open(dest, 'wb') as dst:
                         dst.write(src.read())
-                print(f"      ✓ Collected coverage.xml")
+                print(f"      ✓ Collected {dest.relative_to(repo_dir)}")
         except subprocess.TimeoutExpired:
             print(f"      ℹ Pytest timeout (network/build time)")
         except Exception as e:
@@ -143,32 +162,54 @@ class CICollector:
         """Collect JavaScript test and coverage data"""
         print(f"    → Attempting JavaScript test collection...")
 
-        package_json = git_clone / "package.json"
-        if not package_json.exists():
+        package_files = [
+            p for p in git_clone.rglob("package.json")
+            if ".git" not in p.parts and "node_modules" not in p.parts
+        ]
+        if not package_files:
             print(f"      ℹ No package.json found")
             return
 
-        try:
-            # Run npm tests with coverage
-            result = subprocess.run(
-                ["npm", "test", "--", "--coverage", "--coverage-reporter=lcov"],
-                cwd=git_clone,
-                capture_output=True,
-                timeout=300,
-                check=False
-            )
+        coverage_dir = repo_dir / "coverage" / "lcov"
+        coverage_dir.mkdir(parents=True, exist_ok=True)
+        collected = 0
 
-            # Look for lcov results
-            lcov_path = git_clone / "coverage" / "lcov.info"
-            if lcov_path.exists():
-                with open(lcov_path, 'r') as src:
-                    with open(repo_dir / "lcov.info", 'w') as dst:
-                        dst.write(src.read())
-                print(f"      ✓ Collected lcov.info")
-        except subprocess.TimeoutExpired:
-            print(f"      ℹ npm test timeout (network/build time)")
-        except Exception as e:
-            print(f"      ℹ Could not run npm test: {str(e)}")
+        for package_json in package_files:
+            module_dir = package_json.parent
+            try:
+                subprocess.run(
+                    ["npm", "install", "--silent"],
+                    cwd=module_dir,
+                    capture_output=True,
+                    timeout=600,
+                    check=False
+                )
+                subprocess.run(
+                    ["npm", "test", "--", "--coverage", "--coverage-reporter=lcov"],
+                    cwd=module_dir,
+                    capture_output=True,
+                    timeout=600,
+                    check=False
+                )
+
+                lcov_path = module_dir / "coverage" / "lcov.info"
+                if lcov_path.exists():
+                    module_name = module_dir.relative_to(git_clone).as_posix().replace("/", "_")
+                    if module_name == ".":
+                        module_name = "root"
+                    dest = coverage_dir / f"{module_name}.lcov.info"
+                    with open(lcov_path, 'r') as src:
+                        with open(dest, 'w') as dst:
+                            dst.write(src.read())
+                    collected += 1
+                    print(f"      ✓ Collected {dest.relative_to(repo_dir)}")
+            except subprocess.TimeoutExpired:
+                print(f"      ℹ npm test timeout in {module_dir}")
+            except Exception as e:
+                print(f"      ℹ Could not run npm test in {module_dir}: {str(e)}")
+
+        if collected == 0:
+            print(f"      ℹ No lcov.info files produced")
 
     def run(self):
         """Execute CI collection pipeline"""

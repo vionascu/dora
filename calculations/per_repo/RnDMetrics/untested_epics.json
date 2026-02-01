@@ -50,10 +50,10 @@
   ],
   "user_stories_without_coverage": [
     "user story",
-    "user story",
-    "User story"
+    "User story",
+    "user story"
   ],
   "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
   "reason": null,
-  "calculated_at": "2026-02-01T08:05:07.815495Z"
+  "calculated_at": "2026-02-01T08:07:57.258417Z"
 }

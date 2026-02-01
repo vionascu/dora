@@ -4,13 +4,15 @@
   "repos": [
     "TrailWaze"
   ],
-  "inputs": [],
+  "inputs": [
+    "ci_artifacts/TrailWaze/coverage/lcov/apps_mobile.lcov.info"
+  ],
   "time_range": {
     "start": null,
     "end": null
   },
   "value": null,
-  "reason": "Coverage data not available (tool: lcov, requires local test run)",
+  "reason": "Coverage parsing did not produce a value",
   "method": "Parse lcov output",
-  "calculated_at": "2026-02-01T10:05:07.747997"
+  "calculated_at": "2026-02-01T10:07:57.187357"
 }
