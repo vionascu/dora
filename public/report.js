@@ -310,6 +310,17 @@ class MetricsReport {
     };
   }
 
+  getUncoveredEpics(repo) {
+    /**Calculate which epics don't have test coverage */
+    const scanData = this.manifest.github_scan_artifacts || {};
+    const allEpics = scanData.epics?.[repo] || [];
+    const coveredEpics = scanData.epic_coverage?.[repo] || [];
+
+    if (!allEpics || allEpics.length === 0) return [];
+
+    return allEpics.filter(epic => !coveredEpics.includes(epic));
+  }
+
   renderRepositories() {
     const container = document.getElementById('repos-container');
     if (!container) return;
@@ -334,6 +345,8 @@ class MetricsReport {
       if (!data) continue;
 
       const tests = data.tests || {};
+      const uncoveredEpics = this.getUncoveredEpics(repo);
+      const dropdownId = `uncovered-${repo.replace(/\s+/g, '-')}`;
 
       html += `
         <div class="repo-detail-card">
@@ -386,6 +399,14 @@ class MetricsReport {
             <tr>
               <td>Test Coverage</td>
               <td><em>${this.formatValue(data.coverage?.value)}${this.renderMetricLinks(data.coverage)}</em></td>
+            </tr>
+            <tr>
+              <td>Uncovered Epics</td>
+              <td>
+                ${uncoveredEpics.length > 0
+                  ? `<details><summary>${uncoveredEpics.length} epic(s) not covered by tests</summary><ul style="margin: 0.5rem 0; padding-left: 1.5rem;">${uncoveredEpics.map(e => `<li>${e}</li>`).join('')}</ul></details>`
+                  : '<span style="color: #28a745;">✓ All epics have test coverage</span>'}
+              </td>
             </tr>
           </table>
         </div>
