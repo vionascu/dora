@@ -327,11 +327,12 @@ allprojects {
                             config_path.write_text(
                                 "\n".join([
                                     "module.exports = {",
+                                    "  rootDir: '.',",
                                     "  testEnvironment: 'jsdom',",
                                     "  testMatch: ['**/__tests__/**/*.test.js'],",
                                     "  moduleFileExtensions: ['js', 'json'],",
                                     "  transform: {},",
-                                    f"  testRunner: '{runner_path.as_posix()}',",
+                                    "  testRunner: 'jest-circus/runner',",
                                     "};",
                                 ])
                             )
