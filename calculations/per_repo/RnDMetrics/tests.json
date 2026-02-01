@@ -1,0 +1,22 @@
+{
+  "metric_id": "repo.tests.RnDMetrics",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "test_files": 0,
+  "test_frameworks": [],
+  "epics": 32,
+  "user_stories": 3,
+  "sample_test_files": [],
+  "method": "Scan git_artifacts repositories for test files and epic/story references",
+  "reason": null,
+  "calculated_at": "2026-02-01T09:07:33.002115Z"
+}

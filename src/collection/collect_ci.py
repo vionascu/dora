@@ -82,7 +82,10 @@ class CICollector:
 
         pom_files = [
             p for p in git_clone.rglob("pom.xml")
-            if ".git" not in p.parts and "node_modules" not in p.parts
+            if ".git" not in p.parts
+            and "node_modules" not in p.parts
+            and "build" not in p.parts
+            and ".gradle" not in p.parts
         ]
         gradle_files = [
             p for p in git_clone.rglob("build.gradle.kts")
@@ -128,48 +131,80 @@ class CICollector:
                 print(f"      ℹ Could not run Maven in {module_dir}: {str(e)}")
 
         init_script = coverage_dir / "jacoco.init.gradle"
-        if not init_script.exists():
-            init_script.write_text(
-                """
-allprojects {
-  plugins.withId('java') {
-    apply plugin: 'jacoco'
-    tasks.withType(Test).configureEach {
+        init_script.write_text(
+            """
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
+gradle.allprojects { project ->
+  project.plugins.withId('java') {
+    project.plugins.apply('jacoco')
+    project.tasks.withType(Test).configureEach {
       finalizedBy 'jacocoTestReport'
     }
-    tasks.register('jacocoTestReport', JacocoReport) {
-      dependsOn tasks.withType(Test)
+    project.tasks.withType(JacocoReport).configureEach {
+      dependsOn project.tasks.withType(Test)
       reports {
-        xml.required = true
-        html.required = false
-        csv.required = false
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
       }
       def mainSourceSets = project.extensions.findByName('sourceSets')
       if (mainSourceSets != null) {
-        classDirectories.setFrom(files(mainSourceSets.main.output))
-        sourceDirectories.setFrom(files(mainSourceSets.main.allSource.srcDirs))
+        classDirectories.setFrom(project.files(mainSourceSets.main.output))
+        sourceDirectories.setFrom(project.files(mainSourceSets.main.allSource.srcDirs))
       }
-      executionData.setFrom(fileTree(dir: buildDir, includes: ['jacoco/test.exec', 'jacoco/test.exec.*']))
+      executionData.setFrom(project.fileTree(dir: project.buildDir, includes: ['jacoco/test.exec', 'jacoco/test.exec.*']))
     }
   }
 }
 """.strip()
-            )
+        )
 
         gradle_root = git_clone / "gradlew"
+        settings_file = None
+        if (git_clone / "settings.gradle.kts").exists():
+            settings_file = git_clone / "settings.gradle.kts"
+        elif (git_clone / "settings.gradle").exists():
+            settings_file = git_clone / "settings.gradle"
+
         if gradle_root.exists():
-            try:
-                subprocess.run(
-                    ["./gradlew", "test", "jacocoTestReport", "--init-script", str(init_script)],
-                    cwd=git_clone,
-                    capture_output=True,
-                    timeout=900,
-                    check=False
-                )
-            except subprocess.TimeoutExpired:
-                print("      ℹ Gradle test timeout in repo root")
-            except Exception as e:
-                print(f"      ℹ Could not run Gradle in repo root: {str(e)}")
+            if settings_file:
+                try:
+                    settings_text = settings_file.read_text()
+                    modules = []
+                    for line in settings_text.splitlines():
+                        line = line.strip()
+                        if line.startswith("include("):
+                            parts = line.replace("include(", "").replace(")", "").replace("\"", "").replace("'", "")
+                            for part in parts.split(","):
+                                name = part.strip()
+                                if name.startswith(":"):
+                                    modules.append(name)
+                    for module in modules:
+                        subprocess.run(
+                            ["./gradlew", f"{module}:test", f"{module}:jacocoTestReport", "--init-script", str(init_script), "--rerun-tasks"],
+                            cwd=git_clone,
+                            capture_output=True,
+                            timeout=900,
+                            check=False
+                        )
+                except subprocess.TimeoutExpired:
+                    print("      ℹ Gradle test timeout in repo root")
+                except Exception as e:
+                    print(f"      ℹ Could not run Gradle in repo root: {str(e)}")
+            else:
+                try:
+                    subprocess.run(
+                        ["./gradlew", "test", "jacocoTestReport", "--init-script", str(init_script), "--rerun-tasks"],
+                        cwd=git_clone,
+                        capture_output=True,
+                        timeout=900,
+                        check=False
+                    )
+                except subprocess.TimeoutExpired:
+                    print("      ℹ Gradle test timeout in repo root")
+                except Exception as e:
+                    print(f"      ℹ Could not run Gradle in repo root: {str(e)}")
 
         for gradle_file in gradle_files:
             module_dir = gradle_file.parent

@@ -1,0 +1,18 @@
+{
+  "metric_id": "repo.coverage",
+  "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
+  "inputs": [
+    "ci_artifacts/TrailWaze/coverage/lcov/apps_mobile.lcov.info"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "value": 0.0,
+  "reason": null,
+  "method": "Parse lcov output",
+  "calculated_at": "2026-02-01T11:07:32.844232"
+}

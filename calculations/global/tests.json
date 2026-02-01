@@ -1,0 +1,22 @@
+{
+  "metric_id": "global.tests",
+  "repos": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "total_test_files": 11,
+  "total_epics_found": 44,
+  "total_user_stories_found": 4,
+  "description": "Total test files across all repositories",
+  "method": "Scan git_artifacts repositories for test files and epic/story references",
+  "reason": null,
+  "calculated_at": "2026-02-01T09:07:32.998460Z"
+}

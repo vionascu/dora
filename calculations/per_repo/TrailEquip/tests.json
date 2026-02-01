@@ -1,0 +1,29 @@
+{
+  "metric_id": "repo.tests.TrailEquip",
+  "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "test_files": 8,
+  "test_frameworks": [
+    "Jest/Mocha",
+    "JUnit"
+  ],
+  "epics": 0,
+  "user_stories": 0,
+  "sample_test_files": [
+    "services/recommendation-service/src/test/java/com/trailequip/recommendation/adapter/rest/RecommendationControllerTest.java",
+    "services/weather-service/src/test/java/com/trailequip/weather/adapter/rest/WeatherControllerTest.java",
+    "services/trail-service/src/test/java/com/trailequip/trail/adapter/rest/TrailControllerTest.java"
+  ],
+  "method": "Scan git_artifacts repositories for test files and epic/story references",
+  "reason": null,
+  "calculated_at": "2026-02-01T09:07:33.004923Z"
+}

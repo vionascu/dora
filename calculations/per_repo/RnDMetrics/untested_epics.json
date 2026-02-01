@@ -1,0 +1,59 @@
+{
+  "metric_id": "repo.untested_epics.RnDMetrics",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "coverage_value": 46.68,
+  "coverage_reason": null,
+  "tests_count": 0,
+  "epics_without_coverage": [
+    "and user story coverage metrics.",
+    "- Number of tests per user story",
+    "and user story coverage.\"\"\"",
+    "coverage data.",
+    "- Tests per user story",
+    "coverage data.\"\"\"",
+    "Commits** - Commits grouped by epic patterns you defined",
+    "Patterns",
+    "patterns use regular expressions to categorize commits:",
+    "Commits** - Commits grouped by epic patterns you defined",
+    "Patterns",
+    "patterns use regular expressions to categorize commits:",
+    "0: Vision & Scope",
+    "1: Security & Read-Only Constraints",
+    "2: Repository Architecture",
+    "tracking",
+    "tracking by commit pattern",
+    "Patterns",
+    "Tracking",
+    "Patterns",
+    "patterns for Trailwaze\"",
+    "patterns to match your workflow",
+    "Commits",
+    "Categories:** Authentication, Trail Management, Weather, Recommendations",
+    "Categories:** Mobile, Web, Navigation, Community",
+    "Commits | Categorized | Daily | \u2705 |",
+    "Distribution:** By feature/pattern",
+    "Distribution (Bar chart)",
+    "Distribution** - Commits by feature",
+    "Distribution",
+    "\u251c\u2500 Sortable legend",
+    "Distribution** - By feature/category"
+  ],
+  "user_stories_without_coverage": [
+    "user story",
+    "user story",
+    "User story"
+  ],
+  "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
+  "reason": null,
+  "calculated_at": "2026-02-01T09:07:33.002122Z"
+}

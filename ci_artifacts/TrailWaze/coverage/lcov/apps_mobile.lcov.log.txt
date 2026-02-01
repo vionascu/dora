@@ -1,0 +1,304 @@
+npm test output:
+
+> mobile@1.0.0 test
+> jest --coverage --coverage-reporter=lcov
+
+----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------|---------|----------|---------|---------|-------------------
+All files |       0 |        0 |       0 |       0 |                   
+----------|---------|----------|---------|---------|-------------------
+
+
+npm test error:
+PASS __tests__/mvp-epics.test.js
+  Epic 1: Mobile app foundation (React Native + Expo)
+    US1.1 - Launch the app on a phone
+      ✓ starts via `npx expo start` without errors (2 ms)
+      ✓ shows the app title and a basic layout on the initial screen (1 ms)
+    US1.2 - Minimal repo structure
+      ✓ has a functional Expo project in apps/mobile
+      ✓ documents npm install and npx expo start in the README (1 ms)
+  Epic 2: Offline maps (MapLibre + MBTiles)
+    US2.1 - See an offline map
+      ✓ loads the map without an internet connection
+      ✓ uses local MBTiles as tile sources (1 ms)
+    US2.2 - Show position on the map
+      ✓ renders the GPS dot on the map
+      ✓ shows a clear message when GPS permission is denied
+    US2.3 - Display GPX tracks
+      ✓ renders GPX tracks on the map
+      ✓ keeps the track visible offline
+    US2.4 - Themed layers (bear, ice, obstacles)
+      ✓ allows toggling layers on and off
+      ✓ renders layers offline
+  Epic 3: Local storage (reports, cache, sync)
+    US3.1 - Save reports locally
+      ✓ stores reports in local SQLite
+      ✓ persists id, type, lat, lon, createdAt, expiresAt (2 ms)
+    US3.2 - Cache tracks and reports
+      ✓ reads tracks and reports offline from cache
+      ✓ invalidates cache after a configurable period
+    US3.3 - Sync queue
+      ✓ creates a syncQueue table with status and retries
+      ✓ processes queue items when connectivity is available
+  Epic 4: Fast backend for sync (Supabase/Firebase)
+    US4.1 - Automatic sync when signal returns
+      ✓ sends syncQueue reports when online
+      ✓ updates status and retries when sync fails
+    US4.2 - New reports from my area
+      ✓ queries reports within a geographic radius
+      ✓ filters reports from the last 24h (1 ms)
+  Epic 5: Weather, wind, alerts
+    US5.1 - Simple forecast for key points
+      ✓ shows weather for predefined coordinates
+      ✓ caches weather data locally to reduce API calls
+    US5.2 - Essential route-level alerts
+      ✓ shows alerts in the UI when new data exists
+      ✓ updates alerts only when connectivity is available
+  Epic 6: Waze-style reporting without signal
+    US6.1 - Fast reporting button
+      ✓ renders a visible "Report" button
+      ✓ auto-captures coordinates and time for a report (1 ms)
+    US6.2 - Choose report type
+      ✓ offers bear, ice, fallen tree, scree, hut full as types
+      ✓ saves the selected type in the report
+    US6.3 - Add photo and text
+      ✓ stores an optional photo locally
+      ✓ stores optional short text locally
+    US6.4 - Automatic expiration (TTL)
+      ✓ sets expiresAt based on report type
+      ✓ hides expired reports (1 ms)
+  App Feature Validation
+    ✓ exports a default App component
+    ✓ WebMap component exists for web platform
+    ✓ App has report types defined (1 ms)
+    ✓ App uses React hooks for state management
+    ✓ package.json includes all required dependencies
+    ✓ jest config is configured for testing
+    ✓ app.json contains Expo configuration (1 ms)
+  Integration Tests
+    Offline-first workflow
+      ✓ app can load without any network
+      ✓ app queues reports when offline
+      ✓ app syncs queued data when coming online
+    Report creation workflow
+      ✓ captures complete report data
+      ✓ validates report before saving
+      ✓ prevents empty reports from being created
+    Map interaction
+      ✓ shows map on app startup
+      ✓ displays user location on map when available
+      ✓ handles map tap events for reporting
+    Permissions handling
+      ✓ requests location permission on startup (1 ms)
+      ✓ handles permission denied gracefully
+      ✓ shows helpful message if permission never granted
+    Error handling
+      ✓ handles invalid report data gracefully
+      ✓ recovers from map rendering errors
+      ✓ shows network errors to user
+
+Test Suites: 1 passed, 1 total
+Tests:       56 passed, 56 total
+Snapshots:   0 total
+Time:        0.31 s
+Ran all test suites.
+
+
+npx jest output:
+
+
+npx jest error:
+PASS __tests__/mvp-epics.test.js
+  Epic 1: Mobile app foundation (React Native + Expo)
+    US1.1 - Launch the app on a phone
+      ✓ starts via `npx expo start` without errors (2 ms)
+      ✓ shows the app title and a basic layout on the initial screen
+    US1.2 - Minimal repo structure
+      ✓ has a functional Expo project in apps/mobile (1 ms)
+      ✓ documents npm install and npx expo start in the README
+  Epic 2: Offline maps (MapLibre + MBTiles)
+    US2.1 - See an offline map
+      ✓ loads the map without an internet connection
+      ✓ uses local MBTiles as tile sources
+    US2.2 - Show position on the map
+      ✓ renders the GPS dot on the map
+      ✓ shows a clear message when GPS permission is denied (1 ms)
+    US2.3 - Display GPX tracks
+      ✓ renders GPX tracks on the map
+      ✓ keeps the track visible offline (1 ms)
+    US2.4 - Themed layers (bear, ice, obstacles)
+      ✓ allows toggling layers on and off
+      ✓ renders layers offline
+  Epic 3: Local storage (reports, cache, sync)
+    US3.1 - Save reports locally
+      ✓ stores reports in local SQLite
+      ✓ persists id, type, lat, lon, createdAt, expiresAt (2 ms)
+    US3.2 - Cache tracks and reports
+      ✓ reads tracks and reports offline from cache
+      ✓ invalidates cache after a configurable period
+    US3.3 - Sync queue
+      ✓ creates a syncQueue table with status and retries
+      ✓ processes queue items when connectivity is available
+  Epic 4: Fast backend for sync (Supabase/Firebase)
+    US4.1 - Automatic sync when signal returns
+      ✓ sends syncQueue reports when online
+      ✓ updates status and retries when sync fails
+    US4.2 - New reports from my area
+      ✓ queries reports within a geographic radius
+      ✓ filters reports from the last 24h
+  Epic 5: Weather, wind, alerts
+    US5.1 - Simple forecast for key points
+      ✓ shows weather for predefined coordinates
+      ✓ caches weather data locally to reduce API calls
+    US5.2 - Essential route-level alerts
+      ✓ shows alerts in the UI when new data exists
+      ✓ updates alerts only when connectivity is available
+  Epic 6: Waze-style reporting without signal
+    US6.1 - Fast reporting button
+      ✓ renders a visible "Report" button
+      ✓ auto-captures coordinates and time for a report (1 ms)
+    US6.2 - Choose report type
+      ✓ offers bear, ice, fallen tree, scree, hut full as types
+      ✓ saves the selected type in the report (1 ms)
+    US6.3 - Add photo and text
+      ✓ stores an optional photo locally
+      ✓ stores optional short text locally
+    US6.4 - Automatic expiration (TTL)
+      ✓ sets expiresAt based on report type
+      ✓ hides expired reports
+  App Feature Validation
+    ✓ exports a default App component
+    ✓ WebMap component exists for web platform (1 ms)
+    ✓ App has report types defined
+    ✓ App uses React hooks for state management
+    ✓ package.json includes all required dependencies
+    ✓ jest config is configured for testing
+    ✓ app.json contains Expo configuration
+  Integration Tests
+    Offline-first workflow
+      ✓ app can load without any network
+      ✓ app queues reports when offline
+      ✓ app syncs queued data when coming online
+    Report creation workflow
+      ✓ captures complete report data (1 ms)
+      ✓ validates report before saving
+      ✓ prevents empty reports from being created
+    Map interaction
+      ✓ shows map on app startup
+      ✓ displays user location on map when available
+      ✓ handles map tap events for reporting
+    Permissions handling
+      ✓ requests location permission on startup
+      ✓ handles permission denied gracefully (1 ms)
+      ✓ shows helpful message if permission never granted
+    Error handling
+      ✓ handles invalid report data gracefully
+      ✓ recovers from map rendering errors
+      ✓ shows network errors to user
+
+Test Suites: 1 passed, 1 total
+Tests:       56 passed, 56 total
+Snapshots:   0 total
+Time:        0.233 s, estimated 1 s
+Ran all test suites.
+
+
+npx jest (jasmine) output:
+
+
+npx jest (jasmine) error:
+PASS __tests__/mvp-epics.test.js
+  Epic 1: Mobile app foundation (React Native + Expo)
+    US1.1 - Launch the app on a phone
+      ✓ starts via `npx expo start` without errors (2 ms)
+      ✓ shows the app title and a basic layout on the initial screen
+    US1.2 - Minimal repo structure
+      ✓ has a functional Expo project in apps/mobile
+      ✓ documents npm install and npx expo start in the README (1 ms)
+  Epic 2: Offline maps (MapLibre + MBTiles)
+    US2.1 - See an offline map
+      ✓ loads the map without an internet connection
+      ✓ uses local MBTiles as tile sources
+    US2.2 - Show position on the map
+      ✓ renders the GPS dot on the map
+      ✓ shows a clear message when GPS permission is denied
+    US2.3 - Display GPX tracks
+      ✓ renders GPX tracks on the map (1 ms)
+      ✓ keeps the track visible offline
+    US2.4 - Themed layers (bear, ice, obstacles)
+      ✓ allows toggling layers on and off
+      ✓ renders layers offline
+  Epic 3: Local storage (reports, cache, sync)
+    US3.1 - Save reports locally
+      ✓ stores reports in local SQLite
+      ✓ persists id, type, lat, lon, createdAt, expiresAt
+    US3.2 - Cache tracks and reports
+      ✓ reads tracks and reports offline from cache
+      ✓ invalidates cache after a configurable period
+    US3.3 - Sync queue
+      ✓ creates a syncQueue table with status and retries
+      ✓ processes queue items when connectivity is available (1 ms)
+  Epic 4: Fast backend for sync (Supabase/Firebase)
+    US4.1 - Automatic sync when signal returns
+      ✓ sends syncQueue reports when online
+      ✓ updates status and retries when sync fails
+    US4.2 - New reports from my area
+      ✓ queries reports within a geographic radius
+      ✓ filters reports from the last 24h
+  Epic 5: Weather, wind, alerts
+    US5.1 - Simple forecast for key points
+      ✓ shows weather for predefined coordinates
+      ✓ caches weather data locally to reduce API calls
+    US5.2 - Essential route-level alerts
+      ✓ shows alerts in the UI when new data exists
+      ✓ updates alerts only when connectivity is available
+  Epic 6: Waze-style reporting without signal
+    US6.1 - Fast reporting button
+      ✓ renders a visible "Report" button
+      ✓ auto-captures coordinates and time for a report (1 ms)
+    US6.2 - Choose report type
+      ✓ offers bear, ice, fallen tree, scree, hut full as types
+      ✓ saves the selected type in the report
+    US6.3 - Add photo and text
+      ✓ stores an optional photo locally
+      ✓ stores optional short text locally
+    US6.4 - Automatic expiration (TTL)
+      ✓ sets expiresAt based on report type
+      ✓ hides expired reports
+  App Feature Validation
+    ✓ exports a default App component (1 ms)
+    ✓ WebMap component exists for web platform
+    ✓ App has report types defined
+    ✓ App uses React hooks for state management
+    ✓ package.json includes all required dependencies (1 ms)
+    ✓ jest config is configured for testing
+    ✓ app.json contains Expo configuration
+  Integration Tests
+    Offline-first workflow
+      ✓ app can load without any network
+      ✓ app queues reports when offline
+      ✓ app syncs queued data when coming online
+    Report creation workflow
+      ✓ captures complete report data
+      ✓ validates report before saving
+      ✓ prevents empty reports from being created
+    Map interaction
+      ✓ shows map on app startup (1 ms)
+      ✓ displays user location on map when available
+      ✓ handles map tap events for reporting
+    Permissions handling
+      ✓ requests location permission on startup
+      ✓ handles permission denied gracefully
+      ✓ shows helpful message if permission never granted
+    Error handling
+      ✓ handles invalid report data gracefully
+      ✓ recovers from map rendering errors (1 ms)
+      ✓ shows network errors to user
+
+Test Suites: 1 passed, 1 total
+Tests:       56 passed, 56 total
+Snapshots:   0 total
+Time:        0.249 s, estimated 1 s
+Ran all test suites.

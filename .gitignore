@@ -5,8 +5,12 @@ dist/
 .DS_Store
 .env
 .env.local
-git_artifacts/
-ci_artifacts/
-calculations/
+git_artifacts/*
+!git_artifacts/**/*.json
+!git_artifacts/**/*.txt
+!git_artifacts/**/*.xml
+!git_artifacts/**/*.info
+git_artifacts/**/clone/
+git_artifacts/**/clone/**
 *.pyc
 __pycache__/

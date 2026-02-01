@@ -1,0 +1,22 @@
+{
+  "metric_id": "repo.untested_epics.TrailWaze",
+  "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "coverage_value": 0.0,
+  "coverage_reason": null,
+  "tests_count": 3,
+  "epics_without_coverage": [],
+  "user_stories_without_coverage": [],
+  "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
+  "reason": null,
+  "calculated_at": "2026-02-01T09:07:33.007816Z"
+}

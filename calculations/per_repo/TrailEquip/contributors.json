@@ -1,0 +1,18 @@
+{
+  "metric_id": "repo.contributors",
+  "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
+  "inputs": [
+    "git_artifacts/TrailEquip/authors.json",
+    "git_artifacts/TrailEquip/timeline.json"
+  ],
+  "time_range": {
+    "start": "2026-01-28",
+    "end": "2026-02-01"
+  },
+  "unique_contributors": 1,
+  "method": "Count unique author emails",
+  "calculated_at": "2026-02-01T11:07:32.821391"
+}

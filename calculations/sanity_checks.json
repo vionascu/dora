@@ -1,0 +1,20 @@
+{
+  "metric_id": "sanity.checks",
+  "repos": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "inputs": [],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "checks": {
+    "git_artifacts_present": true,
+    "ci_artifacts_present": true,
+    "calculations_present": true
+  },
+  "method": "Verify presence of required pipeline directories",
+  "calculated_at": "2026-02-01T11:07:32.872361"
+}

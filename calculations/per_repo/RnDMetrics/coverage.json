@@ -1,0 +1,18 @@
+{
+  "metric_id": "repo.coverage",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "ci_artifacts/RnDMetrics/coverage/pytest/coverage.xml"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "value": 46.68,
+  "reason": null,
+  "method": "Parse pytest-cov output",
+  "calculated_at": "2026-02-01T11:07:32.815047"
+}

@@ -1,0 +1,19 @@
+{
+  "metric_id": "repo.coverage",
+  "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
+  "inputs": [
+    "ci_artifacts/TrailEquip/coverage/jacoco/services_recommendation-service.jacoco.xml",
+    "ci_artifacts/TrailEquip/coverage/jacoco/services_recommendation-service.jacoco.xml"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "value": 100.0,
+  "reason": null,
+  "method": "Parse jacoco output",
+  "calculated_at": "2026-02-01T11:07:32.827458"
+}

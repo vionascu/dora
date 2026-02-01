@@ -1,0 +1,19 @@
+{
+  "metric_id": "repo.dora_frequency",
+  "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
+  "inputs": [
+    "git_artifacts/TrailWaze/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "value": 1.615,
+  "unit": "commits/day",
+  "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
+  "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
+  "calculated_at": "2026-02-01T11:07:32.847324"
+}

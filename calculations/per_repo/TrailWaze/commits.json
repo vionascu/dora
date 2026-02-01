@@ -1,0 +1,22 @@
+{
+  "metric_id": "repo.commits",
+  "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "inputs": [
+    "git_artifacts/TrailWaze/commits.json"
+  ],
+  "total_commits": 21,
+  "unique_dates": 6,
+  "avg_commits_per_day": 3.5,
+  "period_start": "2026-01-20",
+  "period_end": "2026-02-01",
+  "days_active": 13,
+  "method": "Count commits; average by unique active dates; active period from first to last commit date",
+  "calculated_at": "2026-02-01T11:07:32.839101"
+}

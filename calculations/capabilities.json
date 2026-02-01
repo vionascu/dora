@@ -1,0 +1,30 @@
+{
+  "metric_id": "capabilities",
+  "repos": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "inputs": [],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "available_metrics": [
+    "repo.commits",
+    "repo.contributors",
+    "repo.coverage",
+    "repo.dora_frequency",
+    "repo.dora_lead_time",
+    "repo.tests",
+    "repo.untested_epics",
+    "global.commits",
+    "global.contributors",
+    "global.velocity",
+    "global.summary",
+    "global.tests",
+    "global.untested_epics"
+  ],
+  "method": "Static capability declaration from calculation outputs",
+  "calculated_at": "2026-02-01T11:07:32.874475"
+}

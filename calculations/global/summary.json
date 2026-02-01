@@ -1,0 +1,28 @@
+{
+  "metric_id": "global.summary",
+  "repos": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "inputs": [
+    "calculations/per_repo/RnDMetrics/commits.json",
+    "calculations/per_repo/TrailEquip/commits.json",
+    "calculations/per_repo/TrailWaze/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "repos_analyzed": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "repos_total_count": 3,
+  "repos_with_issues": [],
+  "total_commits": 240,
+  "unique_contributors": 3,
+  "method": "Aggregate per-repo commit totals and contributors",
+  "calculated_at": "2026-02-01T11:07:32.871134"
+}
