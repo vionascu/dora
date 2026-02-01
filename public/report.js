@@ -26,15 +26,27 @@ class MetricsReport {
   }
 
   async loadManifest() {
-    const primary = await fetch('../calculations/MANIFEST.json');
-    if (primary.ok) {
-      this.manifest = await primary.json();
-      return;
+    // Try multiple paths to handle different deployment scenarios
+    const paths = [
+      './calculations/MANIFEST.json',           // Same directory (GitHub Pages root)
+      '../calculations/MANIFEST.json',          // Parent directory
+      '/dora/calculations/MANIFEST.json',       // Absolute path under /dora
+      '/calculations/MANIFEST.json'             // Root level
+    ];
+
+    for (const path of paths) {
+      try {
+        const response = await fetch(path, { cache: 'no-cache' });
+        if (response.ok) {
+          this.manifest = await response.json();
+          return;
+        }
+      } catch (err) {
+        continue;
+      }
     }
 
-    const fallback = await fetch('./calculations/MANIFEST.json');
-    if (!fallback.ok) throw new Error('Manifest not found');
-    this.manifest = await fallback.json();
+    throw new Error('Failed to load MANIFEST.json from any path');
   }
 
   setupSidebar() {
