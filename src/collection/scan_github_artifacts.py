@@ -17,7 +17,8 @@ class GitHubScanner:
             "epics": defaultdict(list),
             "user_stories": defaultdict(list),
             "tests": defaultdict(lambda: {"files": [], "count": 0}),
-            "test_frameworks": defaultdict(set)
+            "test_frameworks": defaultdict(set),
+            "epic_coverage": defaultdict(list)  # Track which epics are referenced in tests
         }
 
     def scan_for_epics_and_stories(self, repo_path):
@@ -73,7 +74,7 @@ class GitHubScanner:
     def scan_for_tests(self, repo_path):
         """Search for test files"""
         repo_name = repo_path.parent.name if repo_path.name == "clone" else repo_path.name
-        
+
         # Test file patterns by language
         test_patterns = {
             "java": ["**/*Test.java", "**/*Tests.java", "**/test/**/*.java"],
@@ -81,23 +82,24 @@ class GitHubScanner:
             "python": ["**/test_*.py", "**/*_test.py", "**/tests/**/*.py"],
             "go": ["**/*_test.go"],
         }
-        
+
         # Generic patterns
         generic_patterns = ["**/test/**", "**/tests/**", "**/__tests__/**"]
-        
+
         all_patterns = list(test_patterns.values())[0] + generic_patterns
-        
+
         test_files = []
         test_count = 0
         frameworks = set()
-        
+        covered_epics = set()  # Track which epic numbers are mentioned in tests
+
         for pattern in all_patterns:
             for test_file in repo_path.glob(pattern):
                 if test_file.is_file() and test_file.name not in [f.name for f in test_files]:
                     test_files.append(test_file)
                     test_count += 1
-                    
-                    # Detect test framework
+
+                    # Detect test framework and extract epic references
                     try:
                         with open(test_file, 'r', encoding='utf-8', errors='ignore') as f:
                             content = f.read()
@@ -109,14 +111,24 @@ class GitHubScanner:
                                 frameworks.add('JUnit')
                             if 'describe(' in content or 'it(' in content:
                                 frameworks.add('Jest/Mocha')
+
+                            # Extract epic numbers referenced in test files (e.g., "Epic 1", "US1.1")
+                            epic_refs = re.findall(r'[Ee]pic\s+(\d+)', content)
+                            for epic_num in epic_refs:
+                                covered_epics.add(f"Epic {epic_num}")
+
+                            us_refs = re.findall(r'US\s*(\d+)\.', content, re.IGNORECASE)
+                            for epic_num in us_refs:
+                                covered_epics.add(f"Epic {epic_num}")
                     except:
                         pass
-        
+
         self.results["tests"][repo_name] = {
             "files": [str(f.relative_to(repo_path)) for f in test_files[:10]],
             "count": test_count
         }
         self.results["test_frameworks"][repo_name] = list(frameworks)
+        self.results["epic_coverage"][repo_name] = sorted(list(covered_epics))
 
     def save_results(self):
         """Save scan results"""
@@ -124,7 +136,8 @@ class GitHubScanner:
             "epics": dict(self.results["epics"]),
             "user_stories": dict(self.results["user_stories"]),
             "tests": dict(self.results["tests"]),
-            "test_frameworks": dict(self.results["test_frameworks"])
+            "test_frameworks": dict(self.results["test_frameworks"]),
+            "epic_coverage": dict(self.results["epic_coverage"])  # Epics covered by tests
         }
         
         artifacts_file = self.git_artifacts / "github_scan_artifacts.json"
