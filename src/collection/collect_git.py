@@ -49,7 +49,7 @@ class GitCollector:
         if not clone_path.exists():
             try:
                 subprocess.run(
-                    ["git", "clone", "-b", branch, "--depth=500", repo_url, str(clone_path)],
+                    ["git", "clone", "-b", branch, repo_url, str(clone_path)],
                     capture_output=True,
                     timeout=180,
                     check=True
