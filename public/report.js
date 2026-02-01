@@ -50,6 +50,13 @@ class MetricsReport {
   }
 
   setupSidebar() {
+    // Attach click handler to "All Projects" button
+    const allProjectsBtn = document.querySelector('[data-project="all"]');
+    if (allProjectsBtn) {
+      allProjectsBtn.addEventListener('click', () => this.selectProject('all'));
+    }
+
+    // Create project buttons
     const projectList = document.getElementById('project-list');
     const repos = Object.keys(this.manifest.per_repo_metrics).sort();
 
@@ -170,8 +177,16 @@ class MetricsReport {
     const data = this.manifest;
 
     if (this.selectedProject === 'all') {
-      // Show global metrics - filtered by date if applicable
-      const filteredCommits = this.getFilteredMetric(data.global_metrics['commits.json']);
+      // Show global metrics - with date filtering if applicable
+      let filteredCommits;
+
+      if (this.dateFilterFrom || this.dateFilterTo) {
+        // Aggregate commits from projects that fall within date range
+        filteredCommits = this.getAggregatedCommitsForDateRange();
+      } else {
+        filteredCommits = data.global_metrics['commits.json'];
+      }
+
       this.updateElement('finding-commits', filteredCommits?.total_commits);
 
       const globalSummary = data.global_metrics['summary.json'];
@@ -180,7 +195,13 @@ class MetricsReport {
       const globalContributors = data.global_metrics['contributors.json'];
       this.updateElement('finding-contributors', globalContributors?.unique_contributors);
 
-      const globalVelocity = data.global_metrics['velocity.json'];
+      // Velocity should also be recalculated for date range
+      let globalVelocity;
+      if (this.dateFilterFrom || this.dateFilterTo) {
+        globalVelocity = { value: filteredCommits?.avg_commits_per_day || 0 };
+      } else {
+        globalVelocity = data.global_metrics['velocity.json'];
+      }
       this.updateElement('finding-velocity', globalVelocity?.value);
 
       const globalTests = data.global_metrics['tests.json'];
@@ -252,6 +273,41 @@ class MetricsReport {
     }
 
     return metric;
+  }
+
+  getAggregatedCommitsForDateRange() {
+    // Aggregate commits from all projects that fall within the date range
+    const filterFrom = this.dateFilterFrom || '1900-01-01';
+    const filterTo = this.dateFilterTo || '2100-12-31';
+
+    let totalCommits = 0;
+    let totalDays = 0;
+    let projectsInRange = 0;
+
+    for (const repo of Object.keys(this.manifest.per_repo_metrics)) {
+      const repoData = this.manifest.per_repo_metrics[repo];
+      if (!repoData.commits) continue;
+
+      const repoStart = repoData.commits.period_start;
+      const repoEnd = repoData.commits.period_end;
+
+      // Check if repo data overlaps with date range
+      if (repoEnd >= filterFrom && repoStart <= filterTo) {
+        totalCommits += repoData.commits.total_commits || 0;
+        totalDays += repoData.commits.days_active || 1;
+        projectsInRange++;
+      }
+    }
+
+    const avgCommitsPerDay = totalDays > 0 ? (totalCommits / totalDays) : 0;
+
+    return {
+      total_commits: totalCommits,
+      avg_commits_per_day: Math.round(avgCommitsPerDay * 100) / 100,
+      period_start: filterFrom,
+      period_end: filterTo,
+      method: `Aggregated from ${projectsInRange} project(s) in date range`
+    };
   }
 
   renderRepositories() {
