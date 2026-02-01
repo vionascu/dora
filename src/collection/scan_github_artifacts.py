@@ -51,22 +51,17 @@ class GitHubScanner:
                         if re.search(r'epic|epic\s*story|us-\d+|user\s*story', content, re.IGNORECASE):
                             rel_path = file_path.relative_to(repo_path)
 
-                            # Extract EPIC patterns (e.g., "EPIC 1", "EPIC 2", etc.)
-                            epic_matches = re.findall(r'EPIC\s*(\d+)', content, re.IGNORECASE)
+                            # Extract Epic patterns (e.g., "Epic 1", "Epic 2", "EPIC 1", etc.)
+                            # Matches "## Epic 1:", "Epic 1 -", "Epic 1:", etc.
+                            epic_matches = re.findall(r'[Ee]pic\s+(\d+)', content)
                             for epic_num in epic_matches:
-                                epics_found.add(f"EPIC {epic_num}")
+                                epics_found.add(f"Epic {epic_num}")
 
                             # Extract US patterns (e.g., "US1.1", "US1.2", "US2.1", etc.)
+                            # Matches "US1.1 -", "US2.3 -", etc. with or without space after US
                             us_matches = re.findall(r'US\s*(\d+\.\d+)', content, re.IGNORECASE)
                             for us_id in us_matches:
                                 stories_found.add(f"US{us_id}")
-
-                            # Also extract generic epic/story keywords
-                            generic_epics = re.findall(r'[Ee]pic[:\s]+([^\n]+)', content)
-                            generic_stories = re.findall(r'[Uu]ser\s*[Ss]tory|US-\d+|[US]S-\d+', content)
-
-                            epics_found.update(generic_epics[:3])
-                            stories_found.update(set(generic_stories)[:5])
                     except:
                         pass
 
