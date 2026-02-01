@@ -23,7 +23,7 @@ class MetricsReport {
   }
 
   async loadManifest() {
-    const resp = await fetch('../calculations/MANIFEST.json');
+    const resp = await fetch('./calculations/MANIFEST.json');
     if (!resp.ok) throw new Error('Manifest not found');
     this.manifest = await resp.json();
   }
