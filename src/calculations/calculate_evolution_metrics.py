@@ -114,14 +114,15 @@ class EvolutionMetricsCalculator:
         if not contributors_by_date:
             return None
 
-        dates = sorted(contributors_by_date.keys())
+        # Get time range from all commits, not just dates with new contributors
+        all_dates = sorted(set(c.get("timestamp", "")[:10] for c in commits if c.get("timestamp")))
 
         return {
             "metric_id": f"repo.contributor_growth.{repo_name}",
             "repo": repo_name,
             "repos": [repo_name],
             "inputs": [str((self.git_artifacts / repo_name / "commits.json").relative_to(self.root_dir))],
-            "time_range": {"start": sorted(dates)[0], "end": sorted(dates)[-1]},
+            "time_range": {"start": all_dates[0] if all_dates else None, "end": all_dates[-1] if all_dates else None},
             "growth_timeline": dict(sorted(contributors_by_date.items())),
             "total_contributors": len(seen_authors),
             "first_contributor_date": dates[0],
