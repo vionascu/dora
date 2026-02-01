@@ -27,6 +27,18 @@ class TestMetricsCalculator:
                 repos.append(entry.name)
         return repos
 
+    def _coverage_status(self, repo_name):
+        coverage_file = self.calculations / "per_repo" / repo_name / "coverage.json"
+        if not coverage_file.exists():
+            return None, "Missing calculations coverage.json"
+        with open(coverage_file, "r") as f:
+            data = json.load(f)
+        value = data.get("value")
+        reason = data.get("reason")
+        if value is None:
+            return None, reason or "Coverage value is null"
+        return value, None
+
     def calculate_test_metrics(self):
         """Calculate test-related metrics"""
         
@@ -39,7 +51,7 @@ class TestMetricsCalculator:
 
         results = {}
         repos = self._repo_names()
-        
+
         # Global test metrics
         if scan_data:
             total_test_files = sum(v['count'] for v in scan_data.get('tests', {}).values())
@@ -67,13 +79,31 @@ class TestMetricsCalculator:
         # Save global tests
         self._write_json(self.calculations / "global" / "tests.json", global_tests)
         results['global'] = global_tests
-        
+
+        untested_global = {
+            "metric_id": "global.untested_epics",
+            "repos": repos,
+            "inputs": [str(scan_file.relative_to(self.root_dir))] if scan_data else [],
+            "time_range": {"start": None, "end": None},
+            "repos_without_coverage": [],
+            "epics_without_coverage": {},
+            "user_stories_without_coverage": {},
+            "method": "List epics/user stories for repos with missing or null coverage",
+            "reason": None if scan_data else "Missing github_scan_artifacts.json",
+            "calculated_at": datetime.utcnow().isoformat() + "Z"
+        }
+
         # Per-repo test metrics
         for repo_name in repos:
             test_info = (scan_data or {}).get('tests', {}).get(repo_name, {})
             frameworks = (scan_data or {}).get('test_frameworks', {}).get(repo_name, [])
             epics = (scan_data or {}).get('epics', {}).get(repo_name, [])
             stories = (scan_data or {}).get('user_stories', {}).get(repo_name, [])
+            coverage_value, coverage_reason = self._coverage_status(repo_name)
+            tests_count = test_info.get('count') if scan_data else None
+            no_test_coverage = coverage_value is None or (tests_count == 0)
+            untested_epics = epics if no_test_coverage else []
+            untested_stories = stories if no_test_coverage else []
 
             repo_metrics = {
                 "metric_id": f"repo.tests.{repo_name}",
@@ -81,7 +111,7 @@ class TestMetricsCalculator:
                 "repos": [repo_name],
                 "inputs": [str(scan_file.relative_to(self.root_dir))] if scan_data else [],
                 "time_range": {"start": None, "end": None},
-                "test_files": test_info.get('count') if scan_data else None,
+                "test_files": tests_count,
                 "test_frameworks": frameworks if scan_data else None,
                 "epics": len(epics) if scan_data else None,
                 "user_stories": len(stories) if scan_data else None,
@@ -90,13 +120,37 @@ class TestMetricsCalculator:
                 "reason": None if scan_data else "Missing github_scan_artifacts.json",
                 "calculated_at": datetime.utcnow().isoformat() + "Z"
             }
+
+            untested_metrics = {
+                "metric_id": f"repo.untested_epics.{repo_name}",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [str(scan_file.relative_to(self.root_dir))] if scan_data else [],
+                "time_range": {"start": None, "end": None},
+                "coverage_value": coverage_value,
+                "coverage_reason": coverage_reason,
+                "tests_count": tests_count,
+                "epics_without_coverage": untested_epics,
+                "user_stories_without_coverage": untested_stories,
+                "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
+                "reason": None if scan_data else "Missing github_scan_artifacts.json",
+                "calculated_at": datetime.utcnow().isoformat() + "Z"
+            }
             
             repo_dir = self.calculations / "per_repo" / repo_name
             repo_dir.mkdir(parents=True, exist_ok=True)
             self._write_json(repo_dir / "tests.json", repo_metrics)
+            self._write_json(repo_dir / "untested_epics.json", untested_metrics)
             
             results[repo_name] = repo_metrics
-        
+
+            if no_test_coverage:
+                untested_global["repos_without_coverage"].append(repo_name)
+                untested_global["epics_without_coverage"][repo_name] = untested_epics
+                untested_global["user_stories_without_coverage"][repo_name] = untested_stories
+
+        self._write_json(self.calculations / "global" / "untested_epics.json", untested_global)
+
         return results
 
 if __name__ == "__main__":

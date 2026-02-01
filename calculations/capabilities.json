@@ -17,12 +17,14 @@
     "repo.dora_frequency",
     "repo.dora_lead_time",
     "repo.tests",
+    "repo.untested_epics",
     "global.commits",
     "global.contributors",
     "global.velocity",
     "global.summary",
-    "global.tests"
+    "global.tests",
+    "global.untested_epics"
   ],
   "method": "Static capability declaration from calculation outputs",
-  "calculated_at": "2026-02-01T10:00:17.516344"
+  "calculated_at": "2026-02-01T10:05:07.757672"
 }

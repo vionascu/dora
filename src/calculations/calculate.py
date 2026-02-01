@@ -5,6 +5,7 @@ Processes raw git and CI artifacts into normalized, auditable metrics
 """
 
 import json
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 
@@ -187,15 +188,56 @@ class Calculator:
         if coverage_file and coverage_file.exists():
             inputs = [str(coverage_file.relative_to(self.root_dir))]
 
+        value = None
+        reason = None
+        method = f"Parse {coverage_tool} output"
+
+        if inputs:
+            try:
+                if coverage_tool == "jacoco":
+                    tree = ET.parse(coverage_file)
+                    root = tree.getroot()
+                    counters = root.findall(".//counter")
+                    for counter in counters:
+                        if counter.get("type") == "LINE":
+                            missed = int(counter.get("missed", 0))
+                            covered = int(counter.get("covered", 0))
+                            total = missed + covered
+                            if total > 0:
+                                value = round((covered / total) * 100, 2)
+                            break
+                elif coverage_tool == "pytest-cov":
+                    tree = ET.parse(coverage_file)
+                    root = tree.getroot()
+                    line_rate = root.get("line-rate")
+                    if line_rate is not None:
+                        value = round(float(line_rate) * 100, 2)
+                elif coverage_tool == "lcov":
+                    total_lines = 0
+                    hit_lines = 0
+                    with open(coverage_file, "r") as f:
+                        for line in f:
+                            if line.startswith("LF:"):
+                                total_lines += int(line.strip().split(":")[1])
+                            elif line.startswith("LH:"):
+                                hit_lines += int(line.strip().split(":")[1])
+                    if total_lines > 0:
+                        value = round((hit_lines / total_lines) * 100, 2)
+            except Exception as e:
+                reason = f"Coverage parsing failed: {str(e)}"
+
+        if value is None and reason is None:
+            reason = f"Coverage data not available (tool: {coverage_tool}, requires local test run)" if not inputs else "Coverage parsing did not produce a value"
+
         return {
             "metric_id": "repo.coverage",
             "repo": repo_name,
             "repos": [repo_name],
             "inputs": inputs,
             "time_range": self._safe_time_range(None, None),
-            "value": None,
-            "reason": f"Coverage data not available (tool: {coverage_tool}, requires local test run)" if not inputs else "Coverage parsing not implemented",
-            "method": f"Parse {coverage_tool} output",
+            "value": value,
+            "reason": reason,
+            "method": method,
             "calculated_at": datetime.now().isoformat()
         }
 
@@ -511,11 +553,13 @@ class Calculator:
                 "repo.dora_frequency",
                 "repo.dora_lead_time",
                 "repo.tests",
+                "repo.untested_epics",
                 "global.commits",
                 "global.contributors",
                 "global.velocity",
                 "global.summary",
-                "global.tests"
+                "global.tests",
+                "global.untested_epics"
             ],
             "method": "Static capability declaration from calculation outputs",
             "calculated_at": datetime.now().isoformat()

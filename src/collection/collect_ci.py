@@ -120,7 +120,7 @@ class CICollector:
         try:
             # Run pytest with coverage
             result = subprocess.run(
-                ["python", "-m", "pytest", "--cov", "--cov-report=xml", "--tb=short"],
+                ["python3", "-m", "pytest", "--cov", "--cov-report=xml", "--tb=short"],
                 cwd=git_clone,
                 capture_output=True,
                 timeout=300,

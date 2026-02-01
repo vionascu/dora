@@ -1,5 +1,23 @@
 {
-  "epics": {
+  "metric_id": "global.untested_epics",
+  "repos": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "repos_without_coverage": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "epics_without_coverage": {
     "RnDMetrics": [
       "and user story coverage metrics.",
       "- Number of tests per user story",
@@ -34,6 +52,7 @@
       "\u251c\u2500 Sortable legend",
       "Distribution** - By feature/category"
     ],
+    "TrailEquip": [],
     "TrailWaze": [
       "1: Mobile app foundation (React Native + Expo)",
       "2: Offline maps (MapLibre + MBTiles)",
@@ -49,45 +68,18 @@
       "3: Local storage (reports, cache, sync)"
     ]
   },
-  "user_stories": {
+  "user_stories_without_coverage": {
     "RnDMetrics": [
       "user story",
       "user story",
       "User story"
     ],
+    "TrailEquip": [],
     "TrailWaze": [
       "User Story"
     ]
   },
-  "tests": {
-    "RnDMetrics": {
-      "files": [],
-      "count": 0
-    },
-    "TrailEquip": {
-      "files": [
-        "services/recommendation-service/src/test/java/com/trailequip/recommendation/adapter/rest/RecommendationControllerTest.java",
-        "services/weather-service/src/test/java/com/trailequip/weather/adapter/rest/WeatherControllerTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/adapter/rest/TrailControllerTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailExportServiceTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/application/service/OSMIngestionServiceTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailNormalizerTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/domain/DifficultyClassifierTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/domain/model/DifficultyTest.java"
-      ],
-      "count": 8
-    },
-    "TrailWaze": {
-      "files": [],
-      "count": 0
-    }
-  },
-  "test_frameworks": {
-    "RnDMetrics": [],
-    "TrailEquip": [
-      "JUnit",
-      "Jest/Mocha"
-    ],
-    "TrailWaze": []
-  }
+  "method": "List epics/user stories for repos with missing or null coverage",
+  "reason": null,
+  "calculated_at": "2026-02-01T08:05:07.813053Z"
 }

@@ -12,5 +12,5 @@
   "value": null,
   "reason": "Coverage data not available (tool: pytest-cov, requires local test run)",
   "method": "Parse pytest-cov output",
-  "calculated_at": "2026-02-01T10:00:17.449991"
+  "calculated_at": "2026-02-01T10:05:07.729488"
 }
