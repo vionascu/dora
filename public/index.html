@@ -166,7 +166,7 @@
           <p><code>ReposInput.md</code> → <code>git_artifacts/</code> + <code>ci_artifacts/</code> → <code>calculations/</code> → This Report</p>
 
           <h3>Validation</h3>
-              <p>All data validated against quality gates and stored in <a href="../calculations/manifest.json">manifest.json</a></p>
+              <p>All data validated against quality gates and stored in <a href="./calculations/MANIFEST.json">MANIFEST.json</a></p>
 
           <h3>Metrics Definition</h3>
           <ul style="margin-left: 1rem;">
@@ -176,8 +176,13 @@
           </ul>
 
           <h3>Raw Data Access</h3>
-          <p>View detailed calculations: <a href="./calculations/">calculations/ folder</a></p>
-          <p>View raw artifacts: <a href="./git_artifacts/">git_artifacts/</a> and <a href="./ci_artifacts/">ci_artifacts/</a></p>
+          <p><strong>Metrics:</strong> <a href="./calculations/MANIFEST.json">MANIFEST.json</a> (index of all calculations)</p>
+          <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+            <li><a href="./calculations/global/commits.json">Global commit metrics</a></li>
+            <li><a href="./calculations/global/summary.json">Repository summary</a></li>
+            <li><a href="./calculations/global/tests.json">Global test metrics</a></li>
+          </ul>
+          <p style="margin-top: 0.5rem;"><strong>Per-Repository Data:</strong> Available in <code>./calculations/per_repo/[repo-name]/</code></p>
         </div>
       </section>
 
