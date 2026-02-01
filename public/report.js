@@ -23,13 +23,13 @@ class MetricsReport {
   }
 
   async loadManifest() {
-    const primary = await fetch('../calculations/manifest.json');
+    const primary = await fetch('../calculations/MANIFEST.json');
     if (primary.ok) {
       this.manifest = await primary.json();
       return;
     }
 
-    const fallback = await fetch('./calculations/manifest.json');
+    const fallback = await fetch('./calculations/MANIFEST.json');
     if (!fallback.ok) throw new Error('Manifest not found');
     this.manifest = await fallback.json();
   }
