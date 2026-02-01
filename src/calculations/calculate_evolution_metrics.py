@@ -125,9 +125,9 @@ class EvolutionMetricsCalculator:
             "time_range": {"start": all_dates[0] if all_dates else None, "end": all_dates[-1] if all_dates else None},
             "growth_timeline": dict(sorted(contributors_by_date.items())),
             "total_contributors": len(seen_authors),
-            "first_contributor_date": dates[0],
-            "latest_contributor_date": dates[-1],
-            "avg_new_contributors_per_month": round(len(seen_authors) / (len(set(d[:7] for d in dates)) or 1), 2),
+            "first_contributor_date": all_dates[0] if all_dates else None,
+            "latest_contributor_date": all_dates[-1] if all_dates else None,
+            "avg_new_contributors_per_month": round(len(seen_authors) / (len(set(d[:7] for d in all_dates)) or 1), 2),
             "method": "Track unique contributors cumulative growth over time",
             "calculated_at": datetime.utcnow().isoformat() + "Z"
         }
