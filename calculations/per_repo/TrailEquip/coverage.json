@@ -4,5 +4,5 @@
   "value": null,
   "reason": "Coverage data not available (tool: jacoco, requires local test run)",
   "method": "Parse jacoco output",
-  "calculated_at": "2026-02-01T00:18:30.465439"
+  "calculated_at": "2026-02-01T09:07:33.343855"
 }

@@ -1,6 +1,6 @@
 {
   "manifest_id": "dora.manifest",
-  "generated_at": "2026-02-01T00:30:00Z",
+  "generated_at": "2026-02-01T07:21:28.112682Z",
   "validation_status": "PASS",
   "summary": {
     "total_metrics": 17,
@@ -118,10 +118,10 @@
     }
   },
   "validation_rules": {
-    "no_approximations": "✓ PASS - No '~', 'approx', or 'estimated' found",
-    "no_missing_fields": "✓ PASS - All required fields present (metric_id, calculated_at)",
-    "no_out_of_bounds": "✓ PASS - No negative values, coverage ≤ 100%",
-    "data_completeness": "✓ PASS - All 3 repos have commits and contributors data"
+    "no_approximations": "\u2713 PASS - No '~', 'approx', or 'estimated' found",
+    "no_missing_fields": "\u2713 PASS - All required fields present (metric_id, calculated_at)",
+    "no_out_of_bounds": "\u2713 PASS - No negative values, coverage \u2264 100%",
+    "data_completeness": "\u2713 PASS - All 3 repos have commits and contributors data"
   },
   "data_quality_notes": [
     "Coverage metrics are N/A - requires local test runs to generate (jacoco, lcov, pytest-cov)",
@@ -129,5 +129,50 @@
     "DORA metrics are calculated from git timestamps (proxy metrics)",
     "Lead time shows hours between consecutive commits",
     "No calculated values contain approximations"
-  ]
+  ],
+  "testing_metrics": {
+    "global": {
+      "total_test_files": 15,
+      "total_epics_found": 58,
+      "total_user_stories_found": 4
+    },
+    "per_repo": {
+      "RnDMetrics": {
+        "test_files": 6,
+        "test_frameworks": [
+          "unittest"
+        ],
+        "epics": 43,
+        "user_stories": 3,
+        "sample_test_files": [
+          "clone/tests/conftest.py",
+          "clone/tests/test_quality_gates.py"
+        ]
+      },
+      "TrailEquip": {
+        "test_files": 8,
+        "test_frameworks": [
+          "JUnit",
+          "Jest/Mocha"
+        ],
+        "epics": 0,
+        "user_stories": 0,
+        "sample_test_files": [
+          "clone/services/trail-service/src/test/java/com/trailequip/trail/domain/DifficultyClassifierTest.java",
+          "clone/services/trail-service/src/test/java/com/trailequip/trail/domain/model/DifficultyTest.java"
+        ]
+      },
+      "TrailWaze": {
+        "test_files": 1,
+        "test_frameworks": [
+          "Jest/Mocha"
+        ],
+        "epics": 15,
+        "user_stories": 1,
+        "sample_test_files": [
+          "clone/apps/mobile/__tests__/mvp-epics.test.js"
+        ]
+      }
+    }
+  }
 }

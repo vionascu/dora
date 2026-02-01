@@ -79,6 +79,12 @@ class MetricsReport {
     }
     const avgVel = count > 0 ? (sumVelocity / count).toFixed(2) : 'N/A';
     this.updateElement('finding-velocity', avgVel);
+
+    // Test metrics
+    const testingMetrics = data.testing_metrics?.global || {};
+    this.updateElement('finding-tests', testingMetrics.total_test_files || 0);
+    this.updateElement('finding-epics', testingMetrics.total_epics_found || 0);
+    this.updateElement('finding-stories', testingMetrics.total_user_stories_found || 0);
   }
 
   renderRepositories() {
@@ -86,6 +92,7 @@ class MetricsReport {
     if (!container) return;
 
     const repoData = this.manifest.per_repo_metrics;
+    const testingData = this.manifest.testing_metrics?.per_repo || {};
     const repoNames = Object.keys(repoData).sort();
 
     if (repoNames.length === 0) {
@@ -96,6 +103,7 @@ class MetricsReport {
     let html = '';
     for (const repo of repoNames) {
       const data = repoData[repo];
+      const tests = testingData[repo] || {};
 
       html += `
         <div class="repo-detail-card">
@@ -128,6 +136,22 @@ class MetricsReport {
             <tr>
               <td>Lead Time</td>
               <td>${data.lead_time.value} ${data.lead_time.unit}</td>
+            </tr>
+            <tr>
+              <td>Test Files</td>
+              <td>${tests.test_files || 0}</td>
+            </tr>
+            <tr>
+              <td>Test Frameworks</td>
+              <td>${tests.test_frameworks ? tests.test_frameworks.join(', ') : 'N/A'}</td>
+            </tr>
+            <tr>
+              <td>Epics Found</td>
+              <td>${tests.epics || 0}</td>
+            </tr>
+            <tr>
+              <td>User Stories</td>
+              <td>${tests.user_stories || 0}</td>
             </tr>
             <tr>
               <td>Test Coverage</td>

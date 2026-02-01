@@ -1,0 +1,14 @@
+{
+  "metric_id": "repo.tests.TrailWaze",
+  "repo": "TrailWaze",
+  "test_files": 1,
+  "test_frameworks": [
+    "Jest/Mocha"
+  ],
+  "epics_found": 15,
+  "user_stories_found": 1,
+  "sample_tests": [
+    "clone/apps/mobile/__tests__/mvp-epics.test.js"
+  ],
+  "calculated_at": "2026-02-01T07:21:20.412585Z"
+}

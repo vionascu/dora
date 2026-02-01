@@ -1,0 +1,7 @@
+{
+  "metric_id": "global.tests",
+  "value": 15,
+  "total_epics": 58,
+  "description": "Total test files across all repositories",
+  "calculated_at": "2026-02-01T07:21:20.410547Z"
+}

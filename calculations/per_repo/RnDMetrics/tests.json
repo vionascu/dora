@@ -1,0 +1,16 @@
+{
+  "metric_id": "repo.tests.RnDMetrics",
+  "repo": "RnDMetrics",
+  "test_files": 6,
+  "test_frameworks": [
+    "unittest"
+  ],
+  "epics_found": 43,
+  "user_stories_found": 3,
+  "sample_tests": [
+    "clone/tests/conftest.py",
+    "clone/tests/test_quality_gates.py",
+    "clone/tests/test_derived_metrics.py"
+  ],
+  "calculated_at": "2026-02-01T07:21:20.411854Z"
+}
