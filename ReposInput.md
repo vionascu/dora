@@ -22,10 +22,3 @@ branch: main
 language: python
 ci: github-actions
 coverage: pytest-cov
-
-## rlte
-repo: https://github.com/vionascu/rlte
-branch: main
-language: unknown
-ci: github-actions
-coverage: none
