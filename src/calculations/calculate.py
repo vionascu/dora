@@ -177,8 +177,22 @@ class Calculator:
         # Calculate time diffs
         diffs = []
         for i in range(1, len(sorted_commits)):
-            t1 = datetime.fromisoformat(sorted_commits[i-1]["timestamp"])
-            t2 = datetime.fromisoformat(sorted_commits[i]["timestamp"])
+            # Parse timestamps, handling timezone info
+            ts1 = sorted_commits[i-1]["timestamp"]
+            ts2 = sorted_commits[i]["timestamp"]
+
+            # Remove timezone info if present (e.g., "2026-01-31 20:41:32 +0200" -> "2026-01-31 20:41:32")
+            ts1 = ts1.rsplit(' ', 1)[0] if ' ' in ts1 else ts1
+            ts2 = ts2.rsplit(' ', 1)[0] if ' ' in ts2 else ts2
+
+            try:
+                t1 = datetime.fromisoformat(ts1.replace(' ', 'T'))
+                t2 = datetime.fromisoformat(ts2.replace(' ', 'T'))
+            except:
+                # Fallback to simple split if ISO format fails
+                t1 = datetime.strptime(ts1, "%Y-%m-%d %H:%M:%S")
+                t2 = datetime.strptime(ts2, "%Y-%m-%d %H:%M:%S")
+
             diff_hours = (t2 - t1).total_seconds() / 3600
             if diff_hours >= 0:  # Sanity check
                 diffs.append(diff_hours)
