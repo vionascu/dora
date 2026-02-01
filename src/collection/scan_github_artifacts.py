@@ -52,11 +52,12 @@ class GitHubScanner:
                         if re.search(r'epic|epic\s*story|us-\d+|user\s*story', content, re.IGNORECASE):
                             rel_path = file_path.relative_to(repo_path)
 
-                            # Extract Epic patterns (e.g., "Epic 1", "Epic 2", "EPIC 1", etc.)
-                            # Matches "## Epic 1:", "Epic 1 -", "Epic 1:", etc.
-                            epic_matches = re.findall(r'[Ee]pic\s+(\d+)', content)
-                            for epic_num in epic_matches:
-                                epics_found.add(f"Epic {epic_num}")
+                            # Extract Epic patterns with full names
+                            # Matches "## Epic 1: Mobile app foundation (React Native + Expo)"
+                            epic_matches = re.findall(r'[Ee]pic\s+(\d+):\s*([^\n]+)', content)
+                            for epic_num, epic_name in epic_matches:
+                                epic_title = epic_name.strip()
+                                epics_found.add(f"Epic {epic_num}: {epic_title}")
 
                             # Extract US patterns (e.g., "US1.1", "US1.2", "US2.1", etc.)
                             # Matches "US1.1 -", "US2.3 -", etc. with or without space after US
