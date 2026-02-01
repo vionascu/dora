@@ -322,6 +322,13 @@ class Validator:
                 "calculation_path": str(calc_file.relative_to(self.root_dir))
             }
 
+        # Load github scan artifacts for epic coverage tracking
+        git_artifacts_dir = self.root_dir / "git_artifacts"
+        github_scan_file = git_artifacts_dir / "github_scan_artifacts.json"
+        github_scan_artifacts = {}
+        if github_scan_file.exists():
+            github_scan_artifacts = self._load_json(github_scan_file) or {}
+
         total_metrics = 0
         for calc_file in self.calculations.rglob("*.json"):
             if calc_file.name in ("MANIFEST.json", "manifest.json"):
@@ -343,6 +350,7 @@ class Validator:
             },
             "global_metrics": global_metrics,
             "per_repo_metrics": per_repo_metrics,
+            "github_scan_artifacts": github_scan_artifacts,  # Include epic coverage data
             "errors": self.errors,
             "warnings": self.warnings
         }
