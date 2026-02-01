@@ -18,5 +18,5 @@
   "description": "Total test files across all repositories",
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-01T09:07:32.998460Z"
+  "calculated_at": "2026-02-01T09:23:42.512220Z"
 }

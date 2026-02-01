@@ -11,8 +11,8 @@
     "start": null,
     "end": null
   },
-  "value": 0.0,
+  "value": 0.9,
   "reason": null,
   "method": "Parse lcov output",
-  "calculated_at": "2026-02-01T11:07:32.844232"
+  "calculated_at": "2026-02-01T11:23:42.409075"
 }
