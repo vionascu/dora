@@ -8,6 +8,8 @@ stages:
 
 variables:
   PYTHONPATH: "$CI_PROJECT_DIR"
+  # Token will be injected from CI/CD variables at runtime
+  # GITLAB_TOKEN is set in Settings -> CI/CD -> Variables
 
 # Default configuration for all jobs
 default:
@@ -29,6 +31,8 @@ collect_git:
     - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
     - echo "✅ Dependencies installed"
+    - echo "🔐 Checking GitLab token..."
+    - if [ -z "$GITLAB_TOKEN" ]; then echo "⚠️  Warning: GITLAB_TOKEN not set - clone may fail"; else echo "✅ GITLAB_TOKEN available"; fi
   script:
     - echo "======================================================================"
     - echo "DORA COLLECTION LAYER - Git Data Extraction"
