@@ -1,60 +1,16 @@
-# DORA Repository Configuration
-# This file defines all repositories to be analyzed
-# Schema version: 1.0
-
 repositories:
-  TrailEquip:
-    repo: https://github.com/vionascu/TrailEquip
-    branch: main
-    language: java
-    ci_system: github-actions
-    coverage_tools:
-      - type: jacoco
-        minimum_threshold: 80
-    artifact_patterns:
-      epics:
-        local_patterns:
-          - file: "**/docs/**/*.md"
-            regex: "Epic\\s+(\\d+):\\s*(.+)"
-      stories:
-        local_patterns:
-          - file: "**/docs/**/*.md"
-            regex: "US(\\d+\\.\\d+)"
-
-  TrailWaze:
-    repo: https://github.com/vionascu/TrailWaze
+  aisportal:
+    repo: https://git.ecd.axway.org/aisportal/aisportal.git
     branch: main
     language: mixed
     ci_system: github-actions
-    coverage_tools:
-      - type: lcov
-      - type: jacoco
+    coverage_tools: []
     artifact_patterns:
       epics:
         local_patterns:
-          - file: "**/docs/EPICS.md"
-            regex: "Epic\\s+(\\d+):\\s*(.+)"
-          - file: "**/requirements/**"
-            regex: "EPIC\\s*-\\s*(.+)"
+        - file: '**/docs/**/*.md'
+          regex: Epic\s+(\d+):\s*(.+)
       stories:
         local_patterns:
-          - file: "**/docs/**/*.md"
-            regex: "US(\\d+\\.\\d+)"
-
-  RnDMetrics:
-    repo: https://github.com/vionascu/RnDMetrics
-    branch: main
-    language: python
-    ci_system: github-actions
-    coverage_tools:
-      - type: pytest-cov
-        minimum_threshold: 75
-    artifact_patterns:
-      epics:
-        local_patterns:
-          - file: "**/docs/**/*.md"
-            regex: "Epic\\s+(\\d+):\\s*(.+)"
-      stories:
-        local_patterns:
-          - file: "**/docs/**/*.md"
-            regex: "US(\\d+\\.\\d+)"
+        - file: '**/docs/**/*.md'
+          regex: US(\d+\.\d+)
