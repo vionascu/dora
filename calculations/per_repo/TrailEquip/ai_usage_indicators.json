@@ -20,5 +20,5 @@
   "feature_percentage": 40.49,
   "note": "Explicit AI mentions detected from commit messages",
   "method": "Analyze commit messages for AI framework mentions and work pattern indicators",
-  "calculated_at": "2026-02-03T09:23:54.943005Z"
+  "calculated_at": "2026-02-03T09:27:56.401692Z"
 }
