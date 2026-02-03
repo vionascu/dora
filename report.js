@@ -217,7 +217,15 @@ class MetricsReport {
       this.updateElement('finding-repos', globalSummary?.repos_analyzed?.length);
 
       const globalContributors = data.global_metrics['contributors.json'];
-      this.updateElement('finding-contributors', globalContributors?.unique_contributors);
+      const contributorCount = globalContributors?.unique_contributors;
+
+      if (!contributorCount) {
+        console.warn('⚠️ Contributors data not available in manifest:', { globalContributors });
+      } else {
+        console.log('✅ Team Size (Global Contributors):', contributorCount);
+      }
+
+      this.updateElement('finding-contributors', contributorCount || 'N/A');
 
       // Velocity should also be recalculated for date range
       let globalVelocity;
@@ -257,7 +265,15 @@ class MetricsReport {
       const filteredCommits = this.getFilteredMetric(repoData.commits);
       this.updateElement('finding-commits', filteredCommits?.total_commits);
       this.updateElement('finding-repos', '1');
-      this.updateElement('finding-contributors', repoData.contributors?.unique_contributors);
+
+      const repoContributorCount = repoData.contributors?.unique_contributors;
+      if (!repoContributorCount) {
+        console.warn(`⚠️ Contributor data not available for ${this.selectedProject}:`, { contributors: repoData.contributors });
+      } else {
+        console.log(`✅ Contributors for ${this.selectedProject}:`, repoContributorCount);
+      }
+      this.updateElement('finding-contributors', repoContributorCount || 'N/A');
+
       this.updateElement('finding-velocity', filteredCommits?.avg_commits_per_day);
       this.updateElement('finding-tests', repoData.tests?.test_files);
       this.updateElement('finding-epics', repoData.tests?.epics);
