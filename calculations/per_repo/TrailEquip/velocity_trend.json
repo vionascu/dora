@@ -1,0 +1,22 @@
+{
+  "metric_id": "repo.velocity_trend.TrailEquip",
+  "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
+  "inputs": [
+    "git_artifacts/TrailEquip/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-28",
+    "end": "2026-02-01"
+  },
+  "weekly_data": {
+    "2026-W04": 163
+  },
+  "total_commits": 163,
+  "weeks_active": 1,
+  "avg_commits_per_week": 163.0,
+  "method": "Count commits by ISO week to show velocity trends over time",
+  "calculated_at": "2026-02-01T18:14:08.256378Z"
+}

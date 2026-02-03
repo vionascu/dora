@@ -1,0 +1,30 @@
+{
+  "metric_id": "repo.refactorization_activity.TrailEquip",
+  "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
+  "inputs": [
+    "git_artifacts/TrailEquip/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-28",
+    "end": "2026-02-01"
+  },
+  "refactor_events": {
+    "optimize": 1,
+    "improve": 1
+  },
+  "total_refactor_commits": 2,
+  "refactor_percentage": 1.23,
+  "timeline": {
+    "optimize": [
+      "2026-01-31"
+    ],
+    "improve": [
+      "2026-01-30"
+    ]
+  },
+  "method": "Analyze commit messages for refactorization-related keywords",
+  "calculated_at": "2026-02-01T18:14:08.258309Z"
+}

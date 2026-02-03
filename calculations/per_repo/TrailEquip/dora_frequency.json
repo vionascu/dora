@@ -1,0 +1,19 @@
+{
+  "metric_id": "repo.dora_frequency",
+  "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
+  "inputs": [
+    "git_artifacts/TrailEquip/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-28",
+    "end": "2026-02-01"
+  },
+  "value": 32.6,
+  "unit": "commits/day",
+  "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
+  "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
+  "calculated_at": "2026-02-03T10:04:06.794676"
+}

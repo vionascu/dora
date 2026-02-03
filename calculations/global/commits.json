@@ -1,0 +1,21 @@
+{
+  "metric_id": "global.commits",
+  "repos": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "inputs": [
+    "calculations/per_repo/RnDMetrics/commits.json",
+    "calculations/per_repo/TrailEquip/commits.json",
+    "calculations/per_repo/TrailWaze/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "total_commits": 241,
+  "repos_count": 3,
+  "method": "Sum commits across all analyzed repos",
+  "calculated_at": "2026-02-03T10:04:06.812752"
+}
