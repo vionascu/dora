@@ -1,186 +1,30 @@
 {
-  "epics": {
-    "RnDMetrics": [
-      "Epic 0: Vision & Scope",
-      "Epic 10: Documentation & DoD",
-      "Epic 11: Final Acceptance",
-      "Epic 1: Security & Read-Only Constraints",
-      "Epic 2: Repository Architecture",
-      "Epic 3: Configuration & CLI",
-      "Epic 4: Data Collection Engine",
-      "Epic 5: Metrics Model & Database",
-      "Epic 6: Export & JSON Schema",
-      "Epic 7: Dashboard UI (Vanilla + Chart.js)",
-      "Epic 8: GitLab CI/CD",
-      "Epic 9: Testing & Validation"
-    ],
-    "TrailWaze": [
-      "Epic 1: Foundation | 4/4 | 100% | \u2705 |",
-      "Epic 1: Mobile App Foundation (4 tests)",
-      "Epic 1: Mobile app foundation (React Native + Expo)",
-      "Epic 1: Mobile app foundation (React Native + Expo)', () => {",
-      "Epic 2: Offline Maps (12 tests)",
-      "Epic 2: Offline Maps | 12/12 | 100% | \u2705 |",
-      "Epic 2: Offline maps (MapLibre + MBTiles)",
-      "Epic 2: Offline maps (MapLibre + MBTiles)', () => {",
-      "Epic 3: Local Storage (6 tests)",
-      "Epic 3: Local Storage | 6/6 | 100% | \u2705 |",
-      "Epic 3: Local storage (reports, cache, sync)",
-      "Epic 3: Local storage (reports, cache, sync)', () => {",
-      "Epic 4: Backend Sync | 4/4 | 100% | \u2705 |",
-      "Epic 4: Fast Backend (4 tests)",
-      "Epic 4: Fast backend for sync (Supabase/Firebase)",
-      "Epic 4: Fast backend for sync (Supabase/Firebase)', () => {",
-      "Epic 5: Weather & Alerts (4 tests)",
-      "Epic 5: Weather, wind, alerts",
-      "Epic 5: Weather, wind, alerts', () => {",
-      "Epic 5: Weather/Alerts | 4/4 | 100% | \u2705 |",
-      "Epic 6: Reporting | 8/8 | 100% | \u2705 |",
-      "Epic 6: Waze-Style Reporting (8 tests)",
-      "Epic 6: Waze-style reporting without signal",
-      "Epic 6: Waze-style reporting without signal', () => {"
-    ]
-  },
-  "user_stories": {
-    "RnDMetrics": [
-      "US1.1",
-      "US1.2",
-      "US1.3",
-      "US1.4",
-      "US1.5",
-      "US2.1",
-      "US2.2",
-      "US2.3",
-      "US2.4",
-      "US3.1",
-      "US3.2",
-      "US3.3",
-      "US4.1",
-      "US4.2",
-      "US5.1",
-      "US5.2",
-      "US6.1",
-      "US6.2",
-      "US6.3",
-      "US6.4",
-      "US7.1",
-      "US7.2",
-      "US7.3"
-    ],
-    "TrailEquip": [
-      "US1.1",
-      "US1.2",
-      "US1.3",
-      "US1.4",
-      "US1.5",
-      "US2.1",
-      "US2.2",
-      "US2.3",
-      "US2.4",
-      "US3.1",
-      "US3.2",
-      "US3.3",
-      "US4.1",
-      "US4.2",
-      "US5.1",
-      "US5.2",
-      "US6.1",
-      "US6.2",
-      "US6.3",
-      "US7.1",
-      "US7.2",
-      "US7.3"
-    ],
-    "TrailWaze": [
-      "US1.1",
-      "US1.2",
-      "US2.1",
-      "US2.2",
-      "US2.3",
-      "US2.4",
-      "US3.1",
-      "US3.2",
-      "US3.3",
-      "US4.1",
-      "US4.2",
-      "US5.1",
-      "US5.2",
-      "US6.1",
-      "US6.2",
-      "US6.3",
-      "US6.4"
-    ]
-  },
+  "epics": {},
+  "user_stories": {},
   "tests": {
-    "RnDMetrics": {
+    "aisportal": {
       "files": [
-        "tests/conftest.py",
-        "tests/test_quality_gates.py",
-        "tests/test_derived_metrics.py",
-        "tests/__init__.py",
-        "tests/test_metrics_calc.py",
-        "tests/test_collect_metrics.py",
-        "tests/__pycache__/test_derived_metrics.cpython-314-pytest-9.0.2.pyc",
-        "tests/__pycache__/test_quality_gates.cpython-314-pytest-9.0.2.pyc",
-        "tests/__pycache__/test_collect_metrics.cpython-314-pytest-9.0.2.pyc",
-        "tests/__pycache__/conftest.cpython-314-pytest-9.0.2.pyc"
+        "core/src/test/java/com/axway/ais/portal/core/settings/RestConfigurationTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/repackage/RePackageRestTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/infile/FileRestTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/util/UtilTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/aisconfig/RepositorySnapshotsRestTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/workspace/WorkspaceRestTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/folder/FolderRestTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/release/ReleaseImportExportRestTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/release/ReleaseRestTest.java",
+        "core/src/test/java/com/axway/ais/portal/core/env/EnvironmentsRestTest.java"
       ],
-      "count": 12
-    },
-    "TrailEquip": {
-      "files": [
-        "services/trail-service/src/test/java/com/trailequip/trail/domain/DifficultyClassifierTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/domain/model/DifficultyTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailExportServiceTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/application/service/OSMIngestionServiceTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailNormalizerTest.java",
-        "services/trail-service/src/test/java/com/trailequip/trail/adapter/rest/TrailControllerTest.java",
-        "services/weather-service/src/test/java/com/trailequip/weather/adapter/rest/WeatherControllerTest.java",
-        "services/recommendation-service/src/test/java/com/trailequip/recommendation/adapter/rest/RecommendationControllerTest.java",
-        "services/trail-service/build/test-results/test/TEST-com.trailequip.trail.application.service.TrailExportServiceTest.xml",
-        "services/trail-service/build/test-results/test/TEST-com.trailequip.trail.domain.model.DifficultyTest.xml"
-      ],
-      "count": 128
-    },
-    "TrailWaze": {
-      "files": [
-        "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/JsonParserTest.java",
-        "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/MethodInvocationTest.java",
-        "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/types/InvocationTest.java",
-        "apps/mobile/node_modules/flat/test/test.js",
-        "apps/mobile/node_modules/wcwidth/test/index.js",
-        "apps/mobile/node_modules/has-tostringtag/test/tests.js",
-        "apps/mobile/node_modules/has-tostringtag/test/shams/get-own-property-symbols.js",
-        "apps/mobile/node_modules/has-tostringtag/test/shams/core-js.js",
-        "apps/mobile/node_modules/fast-json-stable-stringify/test/str.js",
-        "apps/mobile/node_modules/fast-json-stable-stringify/test/nested.js"
-      ],
-      "count": 365
+      "count": 45
     }
   },
   "test_frameworks": {
-    "RnDMetrics": [
-      "unittest"
-    ],
-    "TrailEquip": [
-      "Jest/Mocha",
-      "JUnit"
-    ],
-    "TrailWaze": [
-      "Jest/Mocha",
-      "JUnit"
+    "aisportal": [
+      "JUnit",
+      "Jest/Mocha"
     ]
   },
   "epic_coverage": {
-    "RnDMetrics": [],
-    "TrailEquip": [],
-    "TrailWaze": [
-      "Epic 1",
-      "Epic 2",
-      "Epic 3",
-      "Epic 4",
-      "Epic 5",
-      "Epic 6"
-    ]
+    "aisportal": []
   }
 }

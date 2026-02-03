@@ -11,12 +11,19 @@
     "start": null,
     "end": null
   },
-  "test_files": null,
-  "test_frameworks": [],
+  "test_files": 45,
+  "test_frameworks": [
+    "JUnit",
+    "Jest/Mocha"
+  ],
   "epics": 0,
   "user_stories": 0,
-  "sample_test_files": [],
+  "sample_test_files": [
+    "core/src/test/java/com/axway/ais/portal/core/settings/RestConfigurationTest.java",
+    "core/src/test/java/com/axway/ais/portal/core/repackage/RePackageRestTest.java",
+    "core/src/test/java/com/axway/ais/portal/core/infile/FileRestTest.java"
+  ],
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-03T11:41:00.300714Z"
+  "calculated_at": "2026-02-03T16:09:38.726454Z"
 }
