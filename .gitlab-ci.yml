@@ -152,7 +152,7 @@ scheduled_collection:
     - echo "DORA SCHEDULED COLLECTION - Daily Metrics Update"
     - echo "======================================================================"
     - python3 src/collection/collect_git.py
-    - echo "✅ Scheduled collection complete"
+    - echo "Scheduled collection complete"
   artifacts:
     paths:
       - git_artifacts/
