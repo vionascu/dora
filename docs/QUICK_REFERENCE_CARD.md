@@ -87,6 +87,49 @@ Compare to last month:
 
 ---
 
+## 📊 Understanding the Charts
+
+### 📈 Velocity Trend (Line Chart)
+```
+Commits
+   50 │     ╱╲
+      │    ╱  ╲    ╱╲
+   40 │   ╱    ╲  ╱  ╲
+      │  ╱      ╲╱    ╲╱
+   30 │─────────────────
+      │ Jan  Feb  Mar  Apr
+      └────────────────→
+
+↗️ UP = Getting faster (good!)
+↘️ DOWN = Getting slower (watch!)
+═ FLAT = Consistent pace (stable)
+```
+
+### 🎯 Test Coverage (Donut Chart)
+```
+    ┌──────────┐
+    │  GOOD    │  Green = 85% tested
+    │  85%     │  Red = 15% untested
+    └──────────┘
+      Bad 15%
+
+🟢 High % = Safe to deploy
+🔴 Low % = Need more tests
+```
+
+### 👥 Contributors (Bar Chart)
+```
+Person A ████████░░ 8 commits
+Person B ██████░░░░ 6 commits
+Person C ████░░░░░░ 4 commits
+
+✓ Balanced = Good (knowledge shared)
+✗ Dominated = Risk (only 1 person knows)
+✓ More people = Better resilience
+```
+
+---
+
 ## 🎨 Colors Mean This
 
 | Color | Meaning | Action |
