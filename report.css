@@ -553,6 +553,24 @@ body {
   color: #24292e;
 }
 
+.chart-data-source {
+  font-size: 0.85rem;
+  color: #666;
+  background: #f6f8fb;
+  border-top: 1px solid #e1e4e8;
+  padding: 0.75rem;
+  margin-top: 0.75rem;
+  border-radius: 0 0 4px 4px;
+}
+
+.chart-data-source code {
+  background: #fafbfc;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  color: #0366d6;
+}
+
 /* Print */
 @media print {
   body {
