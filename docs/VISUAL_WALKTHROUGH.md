@@ -154,55 +154,74 @@ The right side updates to show ONLY that project:
 
 Below the metrics, you'll see CHARTS:
 
-#### Chart 1: Velocity Trend
+#### Chart 1: 📈 Velocity Trend (Line Chart)
 ```
-VELOCITY TREND OVER TIME
-(Line chart going up and down)
+Shows how many commits your team makes over time
 
-Commits
-   50 │       ╱╲
-      │      ╱  ╲      ╱╲
-   40 │     ╱    ╲    ╱  ╲
-      │    ╱      ╲  ╱    ╲╱
-   30 │───────────────────
-      │  Week1 Week2 Week3 Week4
-      └──────────────────→
+   Commits
+      50 │     ╱╲
+         │    ╱  ╲    ╱╲
+      40 │   ╱    ╲  ╱  ╲
+         │  ╱      ╲╱    ╲╱
+      30 │─────────────────
+         │ Jan  Feb  Mar  Apr
+         └────────────────→ Time
 
-What it means:
-- If line goes UP ↗️ = Getting faster (good!)
-- If line goes DOWN ↘️ = Getting slower (watch!)
-- If line is FLAT ═ = Consistent (stable)
-```
+📊 What it means:
+  ✓ Line going UP    = Team getting faster (good!)
+  ✗ Line going DOWN  = Team getting slower (needs help)
+  ═ Line is FLAT     = Consistent pace (stable, predictable)
 
-#### Chart 2: Code Quality
-```
-CODE QUALITY PIE CHART
-(Colored circle divided into sections)
-
-        ┌─────────────┐
-        │     ✓ OK    │ Green = 85% tested
-        │    85%      │ Red = 15% untested
-        └─────────────┘
-         ✗ Not Tested
-            15%
-
-What it means:
-- Green (high %) = Safe to deploy
-- Red (low %) = Risky, need tests
-- Bigger green = Better
+💡 Action:
+  - UP? Keep doing what you're doing! 🎉
+  - DOWN? Find out why (blockers, vacations, complexity)
+  - Know your baseline to spot changes
 ```
 
-#### Chart 3: Contributors
+#### Chart 2: 🎯 Test Coverage (Donut Chart)
 ```
-CONTRIBUTOR BREAKDOWN (Bar chart)
+Shows how much of your code is tested
 
-Person A  ████████░░  8 commits  (57%)
-Person B  ██████░░░░  6 commits  (43%)
+       ┌─────────────────┐
+       │   GOOD CODE     │
+       │   ✓ Tested      │  Green = 85% covered
+       │     85%         │  Red = 15% untested
+       └─────────────────┘
+           Bad Code
+           Not Tested
+              15%
 
-What it means:
-- Balanced = Good (knowledge shared)
-- One person dominates = Risk
-- More people = Better
+📊 What it means:
+  ✓ Green (high %)  = Safe to deploy
+  ✗ Red (low %)     = Risky, more tests needed
+  ✓ 80%+ is good    = Solid coverage
+
+💡 Action:
+  - Growing green? Great testing! ✓
+  - Growing red? Add more tests
+  - Track coverage trends over time
+  - Higher = More confidence in code
+```
+
+#### Chart 3: 👥 Contributors (Bar Chart)
+```
+Shows who is writing the code
+
+Person A ████████░░ 8 commits  (57%)
+Person B ██████░░░░ 6 commits  (43%)
+Person C ███░░░░░░░ 3 commits  (21%)
+Person D ██░░░░░░░░ 2 commits  (14%)
+
+📊 What it means:
+  ✓ Balanced bars   = Good knowledge sharing
+  ✗ One tall bar    = Risk! Only one person knows the code
+  ✓ Many people     = Better resilience, less risk
+
+💡 Action:
+  - Only one contributor? Have code reviews to share knowledge
+  - Multiple people? Good! Knowledge spread across team
+  - New people appearing? Great! Growing the team
+  - Someone disappear? Make sure others know the code
 ```
 
 ---

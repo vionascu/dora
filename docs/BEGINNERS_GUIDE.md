@@ -356,52 +356,138 @@ RIGHT SIDE of screen:
 
 ## 📊 Understanding What You See
 
-### Charts and Graphs
+### Charts and Graphs Explained
+
+Below the metrics numbers, you'll see visual charts. Here's what they mean:
+
+---
+
+### 📈 Velocity Trend (Line Chart)
+
+**What you see:**
+A line graph that goes up and down over time, showing how many commits your team makes each week.
 
 ```
-📈 Velocity Trend (Line Chart)
    Commits
-   Over time
-   ↑
-50 │     ╱╲
-   │    ╱  ╲    ╱╲
-40 │   ╱    ╲  ╱  ╲
-   │  ╱      ╲╱    ╲╱
-30 │─────────────────
-   │ Jan  Feb  Mar  Apr
-   └─────────────────→ Time
-
-What it means:
-- Going UP = team getting faster ✓
-- Going DOWN = team getting slower ✗
-- Flat = consistent pace (good!)
+      50 │     ╱╲
+         │    ╱  ╲    ╱╲
+      40 │   ╱    ╲  ╱  ╲
+         │  ╱      ╲╱    ╲╱
+      30 │─────────────────
+         │ Jan  Feb  Mar  Apr
+         └────────────────→ Time
 ```
 
-```
-🎯 Test Coverage (Donut Chart)
-       ┌─────────┐
-       │  GOOD   │  ✓ Green = 85% covered
-       │  85%    │
-       └─────────┘
-          | Bad
-          | 15%
+**What it means:**
 
-What it means:
-- Green (high %) = safe to deploy
-- Red (low %) = risky, need more tests
-```
+| Pattern | Meaning | Action |
+|---------|---------|--------|
+| **Line going UP ↗️** | Team is writing more code | Great! Team is productive |
+| **Line going DOWN ↘️** | Team is writing less code | Investigate why (vacation? blockers?) |
+| **Line is FLAT ═** | Consistent work rate | Good predictability |
+| **Sudden drop** | Something changed | Could be positive or negative - check it out |
+| **Sudden spike** | Burst of activity | Maybe a deadline push or new features |
+
+**What's healthy:**
+- Consistent velocity is predictable (easier to plan)
+- Gradual increases mean team improving
+- Drops usually indicate obstacles (fix them!)
+
+---
+
+### 🎯 Test Coverage (Donut Chart)
+
+**What you see:**
+A colorful circle (donut shape) divided into sections. Green = code that's tested. Red = code that's not tested.
 
 ```
-👥 Contributors (Bar Chart)
-
-Person A ████████░░ 8 commits
-Person B ██████░░░░ 6 commits
-Person C ████░░░░░░ 4 commits
-
-What it means:
-- Balanced = good knowledge sharing
-- One person dominates = risk!
+       ┌──────────────────┐
+       │    ✓ GOOD        │  Green = 85% covered
+       │    Tested        │
+       │     85%          │  Red = 15% untested
+       └──────────────────┘
+          Bad Code
+          Untested 15%
 ```
+
+**What it means:**
+
+| Coverage Level | Status | Risk Level | Action |
+|---|---|---|---|
+| **80-100% (big green)** | Excellent | 🟢 Low risk | Keep it up! Safe to deploy |
+| **60-80% (medium green)** | Good | 🟡 Medium risk | Add more tests soon |
+| **40-60% (small green)** | Poor | 🟠 High risk | Urgent: More tests needed |
+| **Under 40% (mostly red)** | Dangerous | 🔴 Critical risk | STOP! Add tests before release |
+
+**Why this matters:**
+- High coverage = Fewer surprises when deploying
+- Low coverage = More bugs appear in production
+- Growing coverage = Team is improving
+
+---
+
+### 👥 Contributors (Bar Chart)
+
+**What you see:**
+A bar chart showing each team member and how many commits they've made.
+
+```
+Person A ████████░░ 8 commits  (57%)
+Person B ██████░░░░ 6 commits  (43%)
+Person C ████░░░░░░ 4 commits  (29%)
+Person D ██░░░░░░░░ 2 commits  (14%)
+```
+
+**What it means:**
+
+| Pattern | Status | Risk Level | Meaning |
+|---------|--------|-----------|---------|
+| **Bars all similar height** | Balanced | 🟢 Low risk | Great! Knowledge is shared |
+| **One very tall bar** | Dominated | 🔴 High risk | Only one person knows this code! |
+| **Gradually getting smaller** | Healthy | 🟢 Normal | Core team with contributors |
+| **New bars appearing** | Growing | 🟢 Good sign | New team members onboarding |
+| **Person disappears** | Attrition | 🟡 Watch it | Make sure others know their code |
+
+**Why this matters:**
+- Balanced team = Less risk if someone leaves
+- One person = What happens if they quit?
+- Growing diversity = Team learning from each other
+
+---
+
+### 💡 How to Use These Charts
+
+**Daily:**
+- Glance at trends
+- Notice any major changes
+
+**Weekly:**
+- Check if line is going up or down
+- Is coverage staying stable?
+- Are new people contributing?
+
+**Monthly:**
+- Compare to last month's chart
+- Identify patterns
+- Plan improvements
+
+---
+
+### 🎯 What's a "Good" Dashboard?
+
+Look for:
+✓ Velocity line: Stable or increasing
+✓ Test coverage: Green and high
+✓ Contributors: Balanced and growing
+✓ All numbers: Trending in right direction
+✓ Recent activity: Updates from past few days
+
+Worry about:
+✗ Velocity dropping for weeks
+✗ Coverage going red
+✗ Only one person contributing
+✗ No activity for months
+✗ Numbers getting worse
 
 ---
 
