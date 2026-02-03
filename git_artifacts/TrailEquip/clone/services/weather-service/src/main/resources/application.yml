@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: weather-service
+  cache:
+    type: simple
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.trailequip: INFO

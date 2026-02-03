@@ -1,9 +1,0 @@
-{
-  "metric_id": "git.authors.raw",
-  "repo": "RnDMetrics",
-  "unique_authors": 1,
-  "authors": [
-    "vic.ionascu@gmail.com"
-  ],
-  "collected_at": "2026-02-01T11:22:52.949011"
-}

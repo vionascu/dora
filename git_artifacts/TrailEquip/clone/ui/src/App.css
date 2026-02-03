@@ -1,0 +1,202 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #213547;
+  background-color: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  font-weight: 500;
+  color: #0366d6;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #0256c7;
+  text-decoration: underline;
+}
+
+button {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 0.4em 0.8em;
+  font-size: 0.9em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #f6f8fa;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #24292e;
+}
+
+button:hover {
+  background-color: #e1e4e8;
+  border-color: #babbbc;
+}
+
+/* Leaflet Map Container Fixes */
+.leaflet-container {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  z-index: 1;
+  background: #fff;
+}
+
+.leaflet-control {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.leaflet-control-container {
+  z-index: 10;
+}
+
+.leaflet-top, .leaflet-bottom {
+  pointer-events: none;
+}
+
+.leaflet-control {
+  pointer-events: auto;
+}
+
+.leaflet-control-container a {
+  background-color: #f6f8fa;
+  color: #24292e;
+  border-radius: 4px;
+  padding: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.leaflet-control-container a:hover {
+  background-color: #e1e4e8;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+}
+
+.leaflet-control-zoom a {
+  background-color: #f6f8fa;
+  color: #24292e;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 16px;
+  border: none;
+  padding: 0;
+}
+
+.leaflet-control-zoom a:first-child {
+  border-bottom: 1px solid #ddd;
+  border-radius: 4px 4px 0 0;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-radius: 0 0 4px 4px;
+}
+
+.leaflet-popup {
+  font-size: 12px;
+}
+
+.leaflet-popup-content {
+  margin: 8px;
+  line-height: 1.4;
+}
+
+/* Custom Markers */
+.custom-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-weight: bold;
+  font-size: 14px;
+  color: white;
+  user-select: none;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Trail list scrollbar styling */
+div[style*="overflowY: auto"] {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+/* Pulsing animation for selected trail marker */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 2px #FF0000, 0 0 0 8px rgba(255, 0, 0, 0.4), 0 4px 8px rgba(0,0,0,0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 2px #FF0000, 0 0 0 16px rgba(255, 0, 0, 0.2), 0 4px 8px rgba(0,0,0,0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 2px #FF0000, 0 0 0 8px rgba(255, 0, 0, 0.4), 0 4px 8px rgba(0,0,0,0.4);
+  }
+}
+
+/* Waze/Google Maps style pulsing for end marker */
+@keyframes pulseWaze {
+  0% {
+    box-shadow: 0 0 0 2px rgba(255,0,0,0.3), 0 0 0 8px rgba(255, 0, 0, 0.2), 0 4px 12px rgba(0,0,0,0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 2px rgba(255,0,0,0.5), 0 0 0 16px rgba(255, 0, 0, 0.1), 0 4px 12px rgba(0,0,0,0.4);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 0 2px rgba(255,0,0,0.3), 0 0 0 8px rgba(255, 0, 0, 0.2), 0 4px 12px rgba(0,0,0,0.4);
+    transform: scale(1);
+  }
+}

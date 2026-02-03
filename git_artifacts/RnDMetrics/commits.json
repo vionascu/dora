@@ -1,6 +1,6 @@
 {
   "metric_id": "git.commits.raw",
-  "total_commits": 56,
+  "total_commits": 62,
   "commits": [
     {
       "hash": "3a04837ba906cbac5f5ecf6a31388052779fb2c8",
@@ -234,6 +234,20 @@
       "subject": "Fix YAML syntax errors in pages-build-deployment workflow"
     },
     {
+      "hash": "f5cc0c8ee17bf63be249c53e095d854286cc2e07",
+      "timestamp": "2026-01-31 13:02:09 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix YAML syntax errors in pages-build-deployment workflow"
+    },
+    {
+      "hash": "b9dce5857087a461b4c9a3780033d91196bf6cdf",
+      "timestamp": "2026-01-31 12:59:01 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix YAML syntax errors in metrics workflow"
+    },
+    {
       "hash": "99b9f28aff3656c50f9fcfd06a429136d7721492",
       "timestamp": "2026-01-31 12:59:01 +0200",
       "author_name": "Victor Ionascu",
@@ -248,11 +262,39 @@
       "subject": "Update main branch with real data integration fix"
     },
     {
+      "hash": "1a4c9c9eb4421d686581a3e1ae82fe55999d3deb",
+      "timestamp": "2026-01-31 12:55:41 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix velocity analysis with real data integration"
+    },
+    {
+      "hash": "edc48a8819fb5ae9092bc421982268dfec947251",
+      "timestamp": "2026-01-31 12:47:13 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Update gh-pages with professional dashboard redesign"
+    },
+    {
       "hash": "a6b7a391aa4fad2d1488f2014741a1763ddaddc6",
       "timestamp": "2026-01-31 12:47:09 +0200",
       "author_name": "Victor Ionascu",
       "author_email": "vic.ionascu@gmail.com",
       "subject": "Add professional dashboard redesign with period selector and velocity analysis"
+    },
+    {
+      "hash": "9be293a16666c0d7d7d73b2956f049866548ebc4",
+      "timestamp": "2026-01-31 12:45:12 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Fix YAML syntax errors in metrics workflow"
+    },
+    {
+      "hash": "cf4dabb3675c767aa5f249221246d4881b72fd16",
+      "timestamp": "2026-01-31 10:50:56 +0200",
+      "author_name": "Victor Ionascu",
+      "author_email": "vic.ionascu@gmail.com",
+      "subject": "Deploy dashboards and documentation to GitHub Pages"
     },
     {
       "hash": "a230f51f5c6f9c0f72c1190c6d73d9fa8ed18223",
@@ -395,5 +437,5 @@
       "subject": "Fix CI: move metrics data into public/data for Pages"
     }
   ],
-  "collected_at": "2026-02-03T10:03:11.589666"
+  "collected_at": "2026-02-03T09:23:07.154441"
 }

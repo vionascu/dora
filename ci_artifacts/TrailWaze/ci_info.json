@@ -1,0 +1,75 @@
+{
+  "metric_id": "ci.info.raw",
+  "repo": "TrailWaze",
+  "language": "mixed",
+  "environment_validation": {
+    "status": "valid",
+    "available_tools": {
+      "java": {
+        "installed": true,
+        "version": "openjdk version \"17.0.18\" 2026-01-20"
+      },
+      "python3": {
+        "installed": true,
+        "version": null
+      },
+      "node": {
+        "installed": true,
+        "version": null
+      },
+      "mvn": {
+        "installed": false,
+        "version": null
+      },
+      "npm": {
+        "installed": true,
+        "version": "10.8.2"
+      },
+      "docker": {
+        "installed": true,
+        "version": "Docker version 28.0.4, build b8034c0"
+      }
+    },
+    "missing_tools": [],
+    "warnings": [
+      "Optional tool mvn not found"
+    ]
+  },
+  "framework_detection": {
+    "test_framework": null,
+    "coverage_tool": null
+  },
+  "coverage_results": [
+    {
+      "tool": "lcov",
+      "language": "javascript",
+      "success": false,
+      "coverage_percentage": null,
+      "files_covered": 0,
+      "lines_covered": 0,
+      "lines_total": 0,
+      "report_path": null,
+      "status_message": "npm test execution completed but no coverage report found",
+      "errors": [
+        "No lcov.info file generated"
+      ],
+      "collected_at": "2026-02-03T09:23:50.550032"
+    },
+    {
+      "tool": "jacoco",
+      "language": "java",
+      "success": false,
+      "coverage_percentage": null,
+      "files_covered": 0,
+      "lines_covered": 0,
+      "lines_total": 0,
+      "report_path": null,
+      "status_message": "Error running JaCoCo: [Errno 2] No such file or directory: './gradlew'",
+      "errors": [
+        "[Errno 2] No such file or directory: './gradlew'"
+      ],
+      "collected_at": "2026-02-03T09:23:50.550047"
+    }
+  ],
+  "collected_at": "2026-02-03T09:23:50.550049"
+}

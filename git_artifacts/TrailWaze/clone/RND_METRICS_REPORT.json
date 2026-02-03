@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-01-28T12:14:32.709720",
+  "commit_hash": "4995d4b",
+  "branch": "main",
+  "total_commits": 14,
+  "recent_commits": [
+    "4995d4b Internationalize UI to English with emoticons and improve button sizing",
+    "5b47541 update the trailwaze application",
+    "80acf33 Update dashboard to show all 56 tests with detailed breakdown",
+    "904d35e Expand test suite to 56 tests with complete documentation and dashboard",
+    "0058e2f Implement comprehensive MVP epic tests with 41 passing test cases",
+    "bc730b7 Update end-user documentation for web reporting",
+    "ac7a7f3 Add Bucegi offline map and MapLibre setup",
+    "992200f Add UI smoke test job to CI",
+    "384c772 Update README with CI badge and usage",
+    "73a540f Add CI test stage for mobile app"
+  ],
+  "file_statistics": {
+    "no-extension": 4,
+    ".html": 3,
+    ".md": 5,
+    ".yml": 1,
+    ".py": 1,
+    ".json": 6,
+    ".js": 11,
+    ".png": 5,
+    ".mbtiles": 1
+  },
+  "test_info": "Tests:       56 passed, 56 total",
+  "project_status": "Active Development"
+}

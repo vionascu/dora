@@ -21,8 +21,8 @@
   ],
   "repos_total_count": 3,
   "repos_with_issues": [],
-  "total_commits": 241,
-  "unique_contributors": 3,
+  "total_commits": 247,
+  "unique_contributors": null,
   "method": "Aggregate per-repo commit totals and contributors",
-  "calculated_at": "2026-02-03T10:04:06.815027"
+  "calculated_at": "2026-02-03T09:23:54.852597"
 }

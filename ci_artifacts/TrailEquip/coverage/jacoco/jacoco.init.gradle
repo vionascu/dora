@@ -1,0 +1,24 @@
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
+gradle.allprojects { project ->
+  project.plugins.withId('java') {
+    project.plugins.apply('jacoco')
+    project.tasks.withType(Test).configureEach {
+      finalizedBy 'jacocoTestReport'
+    }
+    project.tasks.withType(JacocoReport).configureEach {
+      dependsOn project.tasks.withType(Test)
+      reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+      }
+      def mainSourceSets = project.extensions.findByName('sourceSets')
+      if (mainSourceSets != null) {
+        classDirectories.setFrom(project.files(mainSourceSets.main.output))
+        sourceDirectories.setFrom(project.files(mainSourceSets.main.allSource.srcDirs))
+      }
+      executionData.setFrom(project.fileTree(dir: project.buildDir, includes: ['jacoco/test.exec', 'jacoco/test.exec.*']))
+    }
+  }
+}

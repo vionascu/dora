@@ -1,0 +1,15 @@
+{
+  "projects": [
+    {
+      "url": "https://github.com/vionascu/trailwaze",
+      "language": "mixed",
+      "description": "Trail navigation mobile/web app (React Native/React)"
+    },
+    {
+      "url": "https://github.com/vionascu/trail-equip",
+      "local_dir": "TrailEquip",
+      "language": "java",
+      "description": "Trail equipment recommendation system (microservices, Java/Spring)"
+    }
+  ]
+}

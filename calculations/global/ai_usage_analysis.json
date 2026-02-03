@@ -1,0 +1,42 @@
+{
+  "metric_id": "global.ai_usage_analysis",
+  "repos": [
+    "RnDMetrics",
+    "TrailEquip",
+    "TrailWaze"
+  ],
+  "inputs": [
+    "calculations/global/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "global_ai_score": 6.0,
+  "score_interpretation": "Minimal AI usage indicators",
+  "total_ai_commits": 0,
+  "total_commits_analyzed": 247,
+  "global_ai_percentage": 0.0,
+  "repositories_ranked": [
+    {
+      "repo": "TrailEquip",
+      "score": 10,
+      "ai_commits": 0,
+      "percentage": 0.0
+    },
+    {
+      "repo": "RnDMetrics",
+      "score": 4,
+      "ai_commits": 0,
+      "percentage": 0.0
+    },
+    {
+      "repo": "TrailWaze",
+      "score": 4,
+      "ai_commits": 0,
+      "percentage": 0.0
+    }
+  ],
+  "method": "Aggregate AI analysis across all repositories",
+  "calculated_at": "2026-02-03T09:23:55.001154Z"
+}

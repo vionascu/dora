@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: trail-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/trailequip}
+    username: ${SPRING_DATASOURCE_USERNAME:trailequip}
+    password: ${SPRING_DATASOURCE_PASSWORD:trailequip_dev}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  mvc:
+    problemdetails:
+      enabled: true
+
+server:
+  port: 10000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.trailequip: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN

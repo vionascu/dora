@@ -1,0 +1,52 @@
+{
+  "metric_id": "repo.ai_analysis.RnDMetrics",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "git_artifacts/RnDMetrics/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-24",
+    "end": "2026-01-31"
+  },
+  "ai_probability_score": 4,
+  "ai_score_interpretation": "Minimal AI usage indicators",
+  "explicit_ai_mentions": {},
+  "ai_attributed_commits": 0,
+  "ai_commits_percentage": 0.0,
+  "code_pattern_analysis": {
+    "style_changes": 1
+  },
+  "commit_clustering": {
+    "suspicious_clusters": 2,
+    "avg_cluster_size": 30.5,
+    "max_cluster_size": 43,
+    "cluster_details": [
+      {
+        "date": "2026-01-28",
+        "commit_count": 18,
+        "subjects": [
+          "updates",
+          "updates",
+          "solving the config.py file"
+        ]
+      },
+      {
+        "date": "2026-01-31",
+        "commit_count": 43,
+        "subjects": [
+          "Add CI/CD automation and GitHub Pages deployment",
+          "Deploy dashboards and documentation to GitHub Pages",
+          "Fix YAML syntax errors in metrics workflow"
+        ]
+      }
+    ]
+  },
+  "sample_ai_commits": [],
+  "total_commits_analyzed": 62,
+  "method": "Detect AI mentions, code patterns, and commit clustering behavior",
+  "note": "AI score is speculative; explicit mentions in commits are more reliable",
+  "calculated_at": "2026-02-03T09:23:54.989258Z"
+}

@@ -13,10 +13,10 @@
   },
   "test_files": 0,
   "test_frameworks": [],
-  "epics": 32,
-  "user_stories": 3,
+  "epics": 12,
+  "user_stories": 23,
   "sample_test_files": [],
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-01T09:23:42.518303Z"
+  "calculated_at": "2026-02-03T09:23:55.099689Z"
 }

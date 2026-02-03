@@ -1,0 +1,19 @@
+{
+  "run_timestamp": "2026-02-03T09:23:54.220962+00:00",
+  "time_range": "last_30_days",
+  "date_from": "2026-01-04T09:23:54.221061+00:00",
+  "date_to": "2026-02-03T09:23:54.221061+00:00",
+  "timezone": "UTC",
+  "preflight": {
+    "timestamp": "2026-02-03T09:23:54.221073+00:00",
+    "repos": {},
+    "computable_metrics": {},
+    "na_metrics": {}
+  },
+  "metrics_collected": [],
+  "evidence_map": {},
+  "quality_gates": {
+    "evidence_completeness": "PASS",
+    "determinism_check": "PENDING"
+  }
+}

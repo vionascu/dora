@@ -5,17 +5,13 @@
     "TrailEquip",
     "TrailWaze"
   ],
-  "inputs": [
-    "git_artifacts/RnDMetrics/authors.json",
-    "git_artifacts/TrailEquip/authors.json",
-    "git_artifacts/TrailWaze/authors.json"
-  ],
+  "inputs": [],
   "time_range": {
     "start": "2026-01-20",
     "end": "2026-02-01"
   },
-  "unique_contributors": 3,
+  "unique_contributors": null,
   "method": "Union of author emails across repos",
-  "reason": null,
-  "calculated_at": "2026-02-03T10:04:06.813199"
+  "reason": "No authors.json inputs available",
+  "calculated_at": "2026-02-03T09:23:54.852101"
 }

@@ -1,0 +1,54 @@
+{
+  "metric_id": "ci.info.raw",
+  "repo": "TrailEquip",
+  "language": "java",
+  "environment_validation": {
+    "status": "missing_dependencies",
+    "available_tools": {
+      "java": {
+        "installed": true,
+        "version": "openjdk version \"17.0.18\" 2026-01-20"
+      },
+      "mvn": {
+        "installed": false,
+        "version": null
+      },
+      "gradle": {
+        "installed": false,
+        "version": null
+      },
+      "docker": {
+        "installed": true,
+        "version": "Docker version 28.0.4, build b8034c0"
+      }
+    },
+    "missing_tools": [
+      "mvn"
+    ],
+    "warnings": [
+      "Optional tool gradle not found"
+    ]
+  },
+  "framework_detection": {
+    "test_framework": "JUnit",
+    "coverage_tool": "jacoco"
+  },
+  "coverage_results": [
+    {
+      "tool": "jacoco",
+      "language": "java",
+      "success": false,
+      "coverage_percentage": null,
+      "files_covered": 0,
+      "lines_covered": 0,
+      "lines_total": 0,
+      "report_path": null,
+      "status_message": "Maven and Gradle test/coverage execution completed but no reports found",
+      "errors": [
+        "No JaCoCo reports generated"
+      ],
+      "collected_at": "2026-02-03T09:23:44.214251"
+    }
+  ],
+  "collected_at": "2026-02-03T09:23:44.214270"
+}

@@ -1,0 +1,345 @@
+{
+  "repo_name": "",
+  "repo_path": ".",
+  "scanned_at": "2026-01-23T18:14:11.261280",
+  "git": {
+    "total_commits": 12,
+    "branches": [
+      "main",
+      "remotes/origin/HEAD -> origin/main",
+      "remotes/origin/main"
+    ],
+    "current_branch": "main",
+    "contributors": [
+      "Victor Ionascu"
+    ],
+    "commit_history": [
+      {
+        "hash": "80acf33",
+        "date": "2026-01-23 09:09:06 +0200",
+        "message": "Update dashboard to show all 56 tests with detailed breakdown",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "904d35e",
+        "date": "2026-01-23 09:03:52 +0200",
+        "message": "Expand test suite to 56 tests with complete documentation and dashboard",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "0058e2f",
+        "date": "2026-01-21 17:10:20 +0200",
+        "message": "Implement comprehensive MVP epic tests with 41 passing test cases",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "bc730b7",
+        "date": "2026-01-21 11:05:22 +0200",
+        "message": "Update end-user documentation for web reporting",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "ac7a7f3",
+        "date": "2026-01-20 22:20:56 +0200",
+        "message": "Add Bucegi offline map and MapLibre setup",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "992200f",
+        "date": "2026-01-20 22:20:38 +0200",
+        "message": "Add UI smoke test job to CI",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "384c772",
+        "date": "2026-01-20 21:39:30 +0200",
+        "message": "Update README with CI badge and usage",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "73a540f",
+        "date": "2026-01-20 21:35:19 +0200",
+        "message": "Add CI test stage for mobile app",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "dae9268",
+        "date": "2026-01-20 21:31:18 +0200",
+        "message": "Add mobile app scaffold and MVP epics/tests",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "0d7a8af",
+        "date": "2026-01-20 21:14:20 +0200",
+        "message": "Prepare mobile app structure",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "33bdc67",
+        "date": "2026-01-20 18:57:46 +0000",
+        "message": "Add CI to verify Node",
+        "author": "Victor Ionascu"
+      },
+      {
+        "hash": "2bbd775",
+        "date": "2026-01-20 18:33:31 +0000",
+        "message": "Initial commit",
+        "author": "Victor Ionascu"
+      }
+    ],
+    "first_commit_date": "2026-01-20 18:33:31 +0000",
+    "last_commit_date": "2026-01-23 09:09:06 +0200"
+  },
+  "code": {
+    "languages": {},
+    "total_lines": 148501,
+    "files_by_extension": {
+      ".mbtiles": {
+        "count": 1,
+        "lines": 122048
+      },
+      ".json": {
+        "count": 4,
+        "lines": 21118
+      },
+      ".html": {
+        "count": 2,
+        "lines": 1392
+      },
+      ".js": {
+        "count": 11,
+        "lines": 1340
+      },
+      ".py": {
+        "count": 1,
+        "lines": 1238
+      },
+      ".md": {
+        "count": 5,
+        "lines": 757
+      },
+      ".png": {
+        "count": 5,
+        "lines": 527
+      },
+      "other": {
+        "count": 4,
+        "lines": 50
+      },
+      ".yml": {
+        "count": 1,
+        "lines": 31
+      }
+    },
+    "main_files": [
+      {
+        "path": "tools/trailwaze_dashboard.py",
+        "lines": 1238,
+        "ext": ".py"
+      },
+      {
+        "path": "apps/mobile/App.js",
+        "lines": 464,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/WebMap.web.js",
+        "lines": 132,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/e2e/init.js",
+        "lines": 19,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/e2e/app.e2e.js",
+        "lines": 11,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/jest.setup.js",
+        "lines": 8,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/index.js",
+        "lines": 8,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/e2e/jest.config.js",
+        "lines": 5,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/WebMap.native.js",
+        "lines": 3,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/mbtiles.web.js",
+        "lines": 1,
+        "ext": ".js"
+      },
+      {
+        "path": "apps/mobile/mbtiles.native.js",
+        "lines": 1,
+        "ext": ".js"
+      }
+    ],
+    "loc_breakdown": {
+      "source": 1890,
+      "tests": 688,
+      "config": 21149,
+      "docs": 757
+    }
+  },
+  "tests": {
+    "total_tests": 88,
+    "test_files": [
+      {
+        "path": "apps/mobile/__tests__/mvp-epics.test.js",
+        "tests": 86,
+        "lines": 689
+      },
+      {
+        "path": "TEST_COVERAGE_REPORT.md",
+        "tests": 2,
+        "lines": 480
+      }
+    ],
+    "test_frameworks": [
+      "Jest"
+    ],
+    "test_coverage": 0,
+    "test_suites": {}
+  },
+  "dependencies": {
+    "package_managers": [],
+    "dependencies": {},
+    "dev_dependencies": {},
+    "total_deps": 0
+  },
+  "files": {
+    "total_files": 34,
+    "config_files": [
+      ".gitlab-ci.yml",
+      "apps/mobile/package.json",
+      "apps/mobile/e2e/jest.config.js"
+    ],
+    "documentation": [
+      "README.md",
+      "TEST_COVERAGE_REPORT.md",
+      "docs/mvp-epics.md",
+      "apps/mobile/README.md",
+      "apps/mobile/.expo/README.md"
+    ],
+    "largest_files": [
+      {
+        "path": "apps/mobile/assets/RegionMaps/bucegi.mbtiles",
+        "size_kb": 16888.0,
+        "ext": ".mbtiles"
+      },
+      {
+        "path": "apps/mobile/package-lock.json",
+        "size_kb": 759.9,
+        "ext": ".json"
+      },
+      {
+        "path": "tools/trailwaze_dashboard.py",
+        "size_kb": 43.0,
+        "ext": ".py"
+      },
+      {
+        "path": "apps/mobile/__tests__/mvp-epics.test.js",
+        "size_kb": 29.4,
+        "ext": ".js"
+      },
+      {
+        "path": "dashboard.html",
+        "size_kb": 24.6,
+        "ext": ".html"
+      },
+      {
+        "path": "apps/mobile/assets/icon.png",
+        "size_kb": 21.9,
+        "ext": ".png"
+      },
+      {
+        "path": "tools/dashboard_site/index.html",
+        "size_kb": 20.5,
+        "ext": ".html"
+      },
+      {
+        "path": "apps/mobile/assets/adaptive-icon.png",
+        "size_kb": 17.1,
+        "ext": ".png"
+      },
+      {
+        "path": "apps/mobile/assets/splash-icon.png",
+        "size_kb": 17.1,
+        "ext": ".png"
+      },
+      {
+        "path": "TEST_COVERAGE_REPORT.md",
+        "size_kb": 14.8,
+        "ext": ".md"
+      },
+      {
+        "path": "apps/mobile/App.js",
+        "size_kb": 11.2,
+        "ext": ".js"
+      },
+      {
+        "path": ".DS_Store",
+        "size_kb": 6.0,
+        "ext": ""
+      },
+      {
+        "path": "apps/.DS_Store",
+        "size_kb": 6.0,
+        "ext": ""
+      },
+      {
+        "path": "apps/mobile/.DS_Store",
+        "size_kb": 6.0,
+        "ext": ""
+      },
+      {
+        "path": "docs/mvp-epics.md",
+        "size_kb": 3.3,
+        "ext": ".md"
+      }
+    ],
+    "file_distribution": {
+      ".js": 11,
+      ".md": 5,
+      ".png": 5,
+      "other": 4,
+      ".json": 4,
+      ".html": 2,
+      ".yml": 1,
+      ".py": 1,
+      ".mbtiles": 1
+    }
+  },
+  "ci": {
+    "platforms": [
+      "GitLab CI"
+    ],
+    "config_files": [
+      ".gitlab-ci.yml"
+    ],
+    "stages": [
+      "verify",
+      "test"
+    ]
+  },
+  "quality": {
+    "project_age_days": 1,
+    "commits_per_day": 0.0,
+    "refactoring_ratio": 0,
+    "code_organization_score": 75
+  }
+}

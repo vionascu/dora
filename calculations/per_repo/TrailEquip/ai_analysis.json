@@ -1,0 +1,82 @@
+{
+  "metric_id": "repo.ai_analysis.TrailEquip",
+  "repo": "TrailEquip",
+  "repos": [
+    "TrailEquip"
+  ],
+  "inputs": [
+    "git_artifacts/TrailEquip/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-28",
+    "end": "2026-02-01"
+  },
+  "ai_probability_score": 10,
+  "ai_score_interpretation": "Minimal AI usage indicators",
+  "explicit_ai_mentions": {},
+  "ai_attributed_commits": 0,
+  "ai_commits_percentage": 0.0,
+  "code_pattern_analysis": {
+    "bulk_updates": 1,
+    "style_changes": 5,
+    "documentation": 1,
+    "code_generation": 1
+  },
+  "commit_clustering": {
+    "suspicious_clusters": 5,
+    "avg_cluster_size": 32.6,
+    "max_cluster_size": 58,
+    "cluster_details": [
+      {
+        "date": "2026-01-28",
+        "commit_count": 29,
+        "subjects": [
+          "Initial commit: TrailEquip scaffold with microservices, React UI, Docker Compose, and CI/CD",
+          "docs: add comprehensive setup instructions",
+          "docs: add completion verification document"
+        ]
+      },
+      {
+        "date": "2026-01-29",
+        "commit_count": 29,
+        "subjects": [
+          "Add comprehensive architecture documentation and PostgreSQL setup guide",
+          "Add comprehensive CRUD tests, fix JPA mappings, and complete documentation",
+          "Add implementation summary - Project complete and ready for deployment"
+        ]
+      },
+      {
+        "date": "2026-01-30",
+        "commit_count": 39,
+        "subjects": [
+          "Fix Spotless formatting violations in weather-service",
+          "Fix remaining Spotless formatting violations in weather-service",
+          "Fix Spotless violations in WeatherControllerTest"
+        ]
+      },
+      {
+        "date": "2026-01-31",
+        "commit_count": 58,
+        "subjects": [
+          "Fix missing Spring Boot test autoconfigure dependency",
+          "Fix compilation errors identified in test suite",
+          "Add Docker containerization and cloud deployment support"
+        ]
+      },
+      {
+        "date": "2026-02-01",
+        "commit_count": 8,
+        "subjects": [
+          "Fix JDBC URL format: add missing port 5432 to Render DATABASE_URL",
+          "Auto-trigger Render redeploy with port fix - 00:16:35",
+          "Add comprehensive deployment fix summary and documentation"
+        ]
+      }
+    ]
+  },
+  "sample_ai_commits": [],
+  "total_commits_analyzed": 163,
+  "method": "Detect AI mentions, code patterns, and commit clustering behavior",
+  "note": "AI score is speculative; explicit mentions in commits are more reliable",
+  "calculated_at": "2026-02-03T09:23:54.999397Z"
+}

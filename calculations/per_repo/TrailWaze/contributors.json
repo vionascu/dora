@@ -4,15 +4,13 @@
   "repos": [
     "TrailWaze"
   ],
-  "inputs": [
-    "git_artifacts/TrailWaze/authors.json",
-    "git_artifacts/TrailWaze/timeline.json"
-  ],
+  "inputs": [],
   "time_range": {
-    "start": "2026-01-20",
-    "end": "2026-02-01"
+    "start": null,
+    "end": null
   },
-  "unique_contributors": 2,
-  "method": "Count unique author emails",
-  "calculated_at": "2026-02-03T10:04:06.803679"
+  "unique_contributors": null,
+  "method": "Count unique author emails in git_artifacts authors.json",
+  "reason": "Missing git_artifacts authors.json",
+  "calculated_at": "2026-02-03T09:23:54.850801"
 }

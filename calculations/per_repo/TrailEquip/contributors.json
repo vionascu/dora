@@ -4,15 +4,13 @@
   "repos": [
     "TrailEquip"
   ],
-  "inputs": [
-    "git_artifacts/TrailEquip/authors.json",
-    "git_artifacts/TrailEquip/timeline.json"
-  ],
+  "inputs": [],
   "time_range": {
-    "start": "2026-01-28",
-    "end": "2026-02-01"
+    "start": null,
+    "end": null
   },
-  "unique_contributors": 1,
-  "method": "Count unique author emails",
-  "calculated_at": "2026-02-03T10:04:06.794315"
+  "unique_contributors": null,
+  "method": "Count unique author emails in git_artifacts authors.json",
+  "reason": "Missing git_artifacts authors.json",
+  "calculated_at": "2026-02-03T09:23:54.849225"
 }

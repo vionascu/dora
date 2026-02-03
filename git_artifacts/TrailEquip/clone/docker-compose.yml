@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: trailequip-db
+    environment:
+      POSTGRES_USER: trailequip
+      POSTGRES_PASSWORD: trailequip_dev
+      POSTGRES_DB: trailequip
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trailequip"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trailequip-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trailequip-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/trailequip
+      SPRING_DATASOURCE_USERNAME: trailequip
+      SPRING_DATASOURCE_PASSWORD: trailequip_dev
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.spatial.dialect.postgis.PostgisPG10Dialect
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - trailequip-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  trailequip-network:
+    driver: bridge

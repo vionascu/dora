@@ -1,0 +1,44 @@
+{
+  "metric_id": "ci.info.raw",
+  "repo": "RnDMetrics",
+  "language": "python",
+  "environment_validation": {
+    "status": "valid",
+    "available_tools": {
+      "python3": {
+        "installed": true,
+        "version": null
+      },
+      "pip": {
+        "installed": true,
+        "version": null
+      },
+      "docker": {
+        "installed": true,
+        "version": "Docker version 28.0.4, build b8034c0"
+      }
+    },
+    "missing_tools": [],
+    "warnings": []
+  },
+  "framework_detection": {
+    "test_framework": "pytest",
+    "coverage_tool": "pytest-cov"
+  },
+  "coverage_results": [
+    {
+      "tool": "pytest-cov",
+      "language": "python",
+      "success": true,
+      "coverage_percentage": null,
+      "files_covered": 0,
+      "lines_covered": 0,
+      "lines_total": 0,
+      "report_path": "git_artifacts/RnDMetrics/clone/coverage.xml",
+      "status_message": "Coverage report generated via pytest-cov",
+      "errors": [],
+      "collected_at": "2026-02-03T09:23:54.598134"
+    }
+  ],
+  "collected_at": "2026-02-03T09:23:54.598157"
+}

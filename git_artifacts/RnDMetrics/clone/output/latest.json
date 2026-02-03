@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-01-28T13:21:52.070423",
+  "project": {
+    "name": "Trailwaze",
+    "description": "Offline-first hiking navigation app",
+    "url": "https://gitlab.com/vic.ionascu/trailwaze",
+    "branch": "main"
+  },
+  "git": {
+    "total_commits": 15,
+    "latest_commit": "f13cb46",
+    "branch": "main"
+  },
+  "code": {
+    "total_lines": 26105,
+    "file_types": {
+      "no-extension": 4,
+      ".json": 7,
+      ".html": 4,
+      ".md": 5,
+      ".yml": 1,
+      ".py": 1,
+      ".js": 11,
+      ".png": 5,
+      ".mbtiles": 1
+    }
+  },
+  "tests": {
+    "test_output": "Tests:       56 passed, 56 total\nRan all test suites.",
+    "total_tests": 56,
+    "pass_rate": 100,
+    "execution_time": "6.6s"
+  },
+  "quality": {
+    "documentation": 100,
+    "test_coverage": 100
+  },
+  "breakdown": {
+    "feature_tests": 41,
+    "integration_tests": 15,
+    "e2e_tests": 0
+  }
+}

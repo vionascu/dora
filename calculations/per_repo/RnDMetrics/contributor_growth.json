@@ -1,0 +1,23 @@
+{
+  "metric_id": "repo.contributor_growth.RnDMetrics",
+  "repo": "RnDMetrics",
+  "repos": [
+    "RnDMetrics"
+  ],
+  "inputs": [
+    "git_artifacts/RnDMetrics/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-24",
+    "end": "2026-01-31"
+  },
+  "growth_timeline": {
+    "2026-01-24": 1
+  },
+  "total_contributors": 1,
+  "first_contributor_date": "2026-01-24",
+  "latest_contributor_date": "2026-01-31",
+  "avg_new_contributors_per_month": 1.0,
+  "method": "Track unique contributors cumulative growth over time",
+  "calculated_at": "2026-02-03T09:23:54.939430Z"
+}

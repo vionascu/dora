@@ -1,0 +1,23 @@
+{
+  "metric_id": "repo.contributor_growth.TrailWaze",
+  "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
+  "inputs": [
+    "git_artifacts/TrailWaze/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "growth_timeline": {
+    "2026-01-20": 1
+  },
+  "total_contributors": 1,
+  "first_contributor_date": "2026-01-20",
+  "latest_contributor_date": "2026-02-01",
+  "avg_new_contributors_per_month": 0.5,
+  "method": "Track unique contributors cumulative growth over time",
+  "calculated_at": "2026-02-03T09:23:54.943963Z"
+}

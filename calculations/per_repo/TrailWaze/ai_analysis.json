@@ -1,0 +1,53 @@
+{
+  "metric_id": "repo.ai_analysis.TrailWaze",
+  "repo": "TrailWaze",
+  "repos": [
+    "TrailWaze"
+  ],
+  "inputs": [
+    "git_artifacts/TrailWaze/commits.json"
+  ],
+  "time_range": {
+    "start": "2026-01-20",
+    "end": "2026-02-01"
+  },
+  "ai_probability_score": 4,
+  "ai_score_interpretation": "Minimal AI usage indicators",
+  "explicit_ai_mentions": {},
+  "ai_attributed_commits": 0,
+  "ai_commits_percentage": 0.0,
+  "code_pattern_analysis": {
+    "documentation": 1,
+    "code_generation": 1
+  },
+  "commit_clustering": {
+    "suspicious_clusters": 2,
+    "avg_cluster_size": 6.5,
+    "max_cluster_size": 8,
+    "cluster_details": [
+      {
+        "date": "2026-01-20",
+        "commit_count": 8,
+        "subjects": [
+          "Initial commit",
+          "Add CI to verify Node",
+          "Prepare mobile app structure"
+        ]
+      },
+      {
+        "date": "2026-02-01",
+        "commit_count": 5,
+        "subjects": [
+          "Align Jest dependencies for coverage",
+          "Run Jest tests in node environment",
+          "Add source-map to stabilize Jest runtime"
+        ]
+      }
+    ]
+  },
+  "sample_ai_commits": [],
+  "total_commits_analyzed": 22,
+  "method": "Detect AI mentions, code patterns, and commit clustering behavior",
+  "note": "AI score is speculative; explicit mentions in commits are more reliable",
+  "calculated_at": "2026-02-03T09:23:55.000895Z"
+}

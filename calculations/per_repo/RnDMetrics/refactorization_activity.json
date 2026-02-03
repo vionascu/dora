@@ -17,7 +17,7 @@
     "deprecat": 1
   },
   "total_refactor_commits": 4,
-  "refactor_percentage": 7.14,
+  "refactor_percentage": 6.45,
   "timeline": {
     "refactor": [
       "2026-01-28"
@@ -31,5 +31,5 @@
     ]
   },
   "method": "Analyze commit messages for refactorization-related keywords",
-  "calculated_at": "2026-02-01T18:14:08.246279Z"
+  "calculated_at": "2026-02-03T09:23:54.939783Z"
 }

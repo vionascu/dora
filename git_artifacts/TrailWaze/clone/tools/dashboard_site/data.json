@@ -1,0 +1,86 @@
+{
+  "repo_name": "tools",
+  "repo_path": "/Users/viionascu/Projects/trailwaze/tools",
+  "scanned_at": "2026-01-23T18:15:09.749104",
+  "git": {
+    "total_commits": 0,
+    "branches": [],
+    "current_branch": "unknown",
+    "contributors": [],
+    "commit_history": [],
+    "first_commit_date": null,
+    "last_commit_date": null
+  },
+  "code": {
+    "languages": {},
+    "total_lines": 1897,
+    "files_by_extension": {
+      ".py": {
+        "count": 1,
+        "lines": 1238
+      },
+      ".html": {
+        "count": 1,
+        "lines": 659
+      }
+    },
+    "main_files": [
+      {
+        "path": "trailwaze_dashboard.py",
+        "lines": 1238,
+        "ext": ".py"
+      }
+    ],
+    "loc_breakdown": {
+      "source": 1238,
+      "tests": 0,
+      "config": 0,
+      "docs": 0
+    }
+  },
+  "tests": {
+    "total_tests": 0,
+    "test_files": [],
+    "test_frameworks": [],
+    "test_coverage": 0,
+    "test_suites": {}
+  },
+  "dependencies": {
+    "package_managers": [],
+    "dependencies": {},
+    "dev_dependencies": {},
+    "total_deps": 0
+  },
+  "files": {
+    "total_files": 2,
+    "config_files": [],
+    "documentation": [],
+    "largest_files": [
+      {
+        "path": "trailwaze_dashboard.py",
+        "size_kb": 43.0,
+        "ext": ".py"
+      },
+      {
+        "path": "dashboard_site/index.html",
+        "size_kb": 20.5,
+        "ext": ".html"
+      }
+    ],
+    "file_distribution": {
+      ".py": 1,
+      ".html": 1
+    }
+  },
+  "ci": {
+    "platforms": [],
+    "config_files": [],
+    "stages": []
+  },
+  "quality": {
+    "project_age_days": 1,
+    "commits_per_day": 0.0,
+    "refactoring_ratio": 0,
+    "code_organization_score": 75
+  }
+}

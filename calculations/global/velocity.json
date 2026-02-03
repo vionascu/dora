@@ -14,9 +14,9 @@
     "start": "2026-01-20",
     "end": "2026-02-01"
   },
-  "value": 18.31,
+  "value": 18.98,
   "unit": "commits/day",
   "method": "Average per-repo avg_commits_per_day",
   "reason": null,
-  "calculated_at": "2026-02-03T10:04:06.814475"
+  "calculated_at": "2026-02-03T09:23:54.852423"
 }
