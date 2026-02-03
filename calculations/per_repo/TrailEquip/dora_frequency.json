@@ -15,5 +15,5 @@
   "unit": "commits/day",
   "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
   "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-  "calculated_at": "2026-02-03T10:25:10.122020"
+  "calculated_at": "2026-02-03T10:30:11.466789"
 }

@@ -78,5 +78,5 @@
   "total_commits_analyzed": 163,
   "method": "Detect AI mentions, code patterns, and commit clustering behavior",
   "note": "AI score is speculative; explicit mentions in commits are more reliable",
-  "calculated_at": "2026-02-03T10:25:10.277907Z"
+  "calculated_at": "2026-02-03T10:30:11.629337Z"
 }

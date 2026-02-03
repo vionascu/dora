@@ -983,33 +983,21 @@ class MetricsReport {
     const container = ctx?.parentElement;
     if (!ctx || !container) return;
 
-    // Aggregate contributor data from all repos
-    const contributorMap = {};
+    // Build chart data from per-repo contributor counts
+    const repoContributors = [];
 
-    // Process each repo's contributors
     for (const { repo, data } of perRepoContributorsData) {
-      if (data && data.unique_contributors) {
-        // If we have individual contributors data, use it
-        if (data.contributors) {
-          for (const contrib of data.contributors) {
-            const name = contrib.name || 'Unknown';
-            contributorMap[name] = (contributorMap[name] || 0) + (contrib.commits || 1);
-          }
-        } else {
-          // Fallback: use repo name with unique count
-          const repoLabel = `${repo} (${data.unique_contributors} contributors)`;
-          contributorMap[repoLabel] = data.unique_contributors;
-        }
+      if (data && data.unique_contributors !== undefined) {
+        repoContributors.push({
+          repo: repo,
+          contributors: data.unique_contributors,
+          timeRange: data.time_range
+        });
       }
     }
 
-    // Convert to array and sort by commit count
-    const contributors = Object.entries(contributorMap)
-      .map(([name, commits]) => ({ name, commits }))
-      .sort((a, b) => b.commits - a.commits);
-
-    if (contributors.length === 0) {
-      // Show count if we have it
+    if (repoContributors.length === 0) {
+      // Show total count if we have it
       if (globalContributorsData && globalContributorsData.unique_contributors) {
         container.innerHTML = `<p style="color: #999; padding: 2rem;">👥 ${globalContributorsData.unique_contributors} total contributors (breakdown not available)</p>`;
         this.addDataSourceNote(container, `${globalContributorsData.unique_contributors} unique contributors total`, 'calculations/global/contributors.json');
@@ -1020,38 +1008,36 @@ class MetricsReport {
       return;
     }
 
-    // Take top 10 contributors
-    const topContributors = contributors.slice(0, 10);
-    const labels = topContributors.map(c => c.name);
-    const data = topContributors.map(c => c.commits);
+    // Sort by repository name for consistent display
+    repoContributors.sort((a, b) => a.repo.localeCompare(b.repo));
 
-    console.log('✅ Contributors Chart - Real data loaded from GitHub:', { contributors: topContributors.length, totalCommits: data.reduce((a, b) => a + b, 0) });
+    // Prepare chart data
+    const labels = repoContributors.map(r => r.repo);
+    const data = repoContributors.map(r => r.contributors);
+
+    console.log('✅ Contributors Chart - Real data loaded from GitHub:', { repositories: labels, contributors: data });
+
+    // Determine colors based on contributor count (green for 2+, orange for 1)
+    const backgroundColor = data.map(count => {
+      if (count >= 2) return 'rgba(40, 167, 69, 0.8)';  // Green - good
+      return 'rgba(255, 193, 7, 0.8)';  // Yellow - warning
+    });
+
+    const borderColor = data.map(count => {
+      if (count >= 2) return '#28a745';  // Green
+      return '#ffc107';  // Yellow
+    });
 
     new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Commits',
+          label: 'Number of Contributors',
           data: data,
-          backgroundColor: [
-            'rgba(3, 102, 214, 0.8)',
-            'rgba(40, 167, 69, 0.8)',
-            'rgba(255, 193, 7, 0.8)',
-            'rgba(220, 53, 69, 0.8)',
-            'rgba(23, 162, 184, 0.8)',
-            'rgba(111, 66, 193, 0.8)',
-            'rgba(233, 30, 99, 0.8)',
-            'rgba(255, 87, 34, 0.8)',
-            'rgba(76, 175, 80, 0.8)',
-            'rgba(156, 39, 176, 0.8)'
-          ],
-          borderColor: [
-            '#0366d6', '#28a745', '#ffc107', '#dc3545',
-            '#17a2b8', '#6f42c1', '#e91e63', '#ff5722',
-            '#4caf50', '#9c27b0'
-          ],
-          borderWidth: 1
+          backgroundColor: backgroundColor,
+          borderColor: borderColor,
+          borderWidth: 2
         }]
       },
       options: {
@@ -1063,7 +1049,9 @@ class MetricsReport {
           tooltip: {
             callbacks: {
               label: function(context) {
-                return 'Commits: ' + context.parsed.x;
+                const count = context.parsed.x;
+                const status = count >= 2 ? '✓ Good' : '⚠️ Warning - Single contributor';
+                return `Contributors: ${count} (${status})`;
               }
             }
           }
@@ -1071,8 +1059,15 @@ class MetricsReport {
         scales: {
           x: {
             beginAtZero: true,
-            ticks: { color: '#666' },
-            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+            ticks: {
+              color: '#666',
+              stepSize: 1
+            },
+            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+            title: {
+              display: true,
+              text: 'Number of Contributors'
+            }
           },
           y: {
             ticks: { color: '#666' },
@@ -1082,7 +1077,8 @@ class MetricsReport {
       }
     });
 
-    this.addDataSourceNote(container, `Top ${topContributors.length} contributors from GitHub`, 'calculations/per_repo/*/contributors.json');
+    const totalContributors = data.reduce((a, b) => a + b, 0);
+    this.addDataSourceNote(container, `${labels.length} projects, ${totalContributors} total contributors`, 'calculations/per_repo/*/contributors.json');
   }
 
   addDataSourceNote(container, description, source) {
