@@ -382,6 +382,18 @@
         "reason": null,
         "calculated_at": "2026-02-01T09:23:42.518310Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/untested_epics.json"
+      },
+      "ai_usage_indicators.json": {
+        "file": "calculations/per_repo/RnDMetrics/ai_usage_indicators.json"
+      },
+      "code_quality_evolution.json": {
+        "file": "calculations/per_repo/RnDMetrics/code_quality_evolution.json"
+      },
+      "refactorization_activity.json": {
+        "file": "calculations/per_repo/RnDMetrics/refactorization_activity.json"
+      },
+      "velocity_trend.json": {
+        "file": "calculations/per_repo/RnDMetrics/velocity_trend.json"
       }
     },
     "TrailEquip": {
@@ -539,6 +551,18 @@
         "reason": null,
         "calculated_at": "2026-02-01T09:23:42.525736Z",
         "calculation_path": "calculations/per_repo/TrailEquip/untested_epics.json"
+      },
+      "ai_usage_indicators.json": {
+        "file": "calculations/per_repo/TrailEquip/ai_usage_indicators.json"
+      },
+      "code_quality_evolution.json": {
+        "file": "calculations/per_repo/TrailEquip/code_quality_evolution.json"
+      },
+      "refactorization_activity.json": {
+        "file": "calculations/per_repo/TrailEquip/refactorization_activity.json"
+      },
+      "velocity_trend.json": {
+        "file": "calculations/per_repo/TrailEquip/velocity_trend.json"
       }
     },
     "TrailWaze": {
@@ -694,6 +718,18 @@
         "reason": null,
         "calculated_at": "2026-02-01T09:23:42.533184Z",
         "calculation_path": "calculations/per_repo/TrailWaze/untested_epics.json"
+      },
+      "ai_usage_indicators.json": {
+        "file": "calculations/per_repo/TrailWaze/ai_usage_indicators.json"
+      },
+      "code_quality_evolution.json": {
+        "file": "calculations/per_repo/TrailWaze/code_quality_evolution.json"
+      },
+      "refactorization_activity.json": {
+        "file": "calculations/per_repo/TrailWaze/refactorization_activity.json"
+      },
+      "velocity_trend.json": {
+        "file": "calculations/per_repo/TrailWaze/velocity_trend.json"
       }
     }
   },
