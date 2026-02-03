@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Scan GitHub repositories for epics, user stories, and test files
+Uses configuration-driven pattern detection
 """
 
 import json
@@ -8,9 +9,10 @@ import re
 import subprocess
 from pathlib import Path
 from collections import defaultdict
+from src.config.config_parser import RepoConfigParser
 
 class GitHubScanner:
-    def __init__(self, root_dir="."):
+    def __init__(self, root_dir=".", config_file=None):
         self.root_dir = Path(root_dir)
         self.git_artifacts = self.root_dir / "git_artifacts"
         self.results = {
@@ -21,6 +23,37 @@ class GitHubScanner:
             "epic_coverage": defaultdict(list)  # Track which epics are referenced in tests
         }
 
+        # Initialize config parser
+        self.config_parser = RepoConfigParser(config_file=config_file)
+        is_valid, errors = self.config_parser.load_config()
+
+        if not is_valid:
+            print(f"Warning: Configuration validation errors: {errors}")
+            print("Continuing with default patterns")
+
+    def _get_artifact_patterns(self, repo_name: str) -> dict:
+        """Get artifact patterns from config or use defaults"""
+        repo_config = self.config_parser.get_repo(repo_name)
+
+        if repo_config and repo_config.get('artifact_patterns'):
+            return repo_config['artifact_patterns']
+
+        # Default patterns
+        return {
+            'epics': {
+                'local_patterns': [
+                    {'file': '**/docs/**/*.md', 'regex': r'Epic\s+(\d+):\s*(.+)'},
+                    {'file': '**/*.md', 'regex': r'Epic\s+(\d+):\s*(.+)'}
+                ]
+            },
+            'stories': {
+                'local_patterns': [
+                    {'file': '**/docs/**/*.md', 'regex': r'US(\d+\.\d+)'},
+                    {'file': '**/*.md', 'regex': r'US(\d+\.\d+)'}
+                ]
+            }
+        }
+
     def scan_for_epics_and_stories(self, repo_path):
         """Search for files containing epic or user story references"""
         repo_name = repo_path.parent.name if repo_path.name == "clone" else repo_path.name
@@ -28,8 +61,11 @@ class GitHubScanner:
         epics_found = set()
         stories_found = set()
 
-        # Common patterns for epic/story files
-        patterns = [
+        # Get patterns from config or defaults
+        patterns_config = self._get_artifact_patterns(repo_name)
+
+        # Common patterns for epic/story files (fallback)
+        default_patterns = [
             "**/*epic*",
             "**/*story*",
             "**/*user*story*",
@@ -41,7 +77,7 @@ class GitHubScanner:
             "**/*.md"
         ]
 
-        for pattern in patterns:
+        for pattern in default_patterns:
             for file_path in repo_path.glob(pattern):
                 if file_path.is_file() and not any(p in str(file_path) for p in ['.git', '__pycache__', 'node_modules', '.gradle']):
                     try:
@@ -52,18 +88,40 @@ class GitHubScanner:
                         if re.search(r'epic|epic\s*story|us-\d+|user\s*story', content, re.IGNORECASE):
                             rel_path = file_path.relative_to(repo_path)
 
-                            # Extract Epic patterns with full names
-                            # Matches "## Epic 1: Mobile app foundation (React Native + Expo)"
-                            epic_matches = re.findall(r'[Ee]pic\s+(\d+):\s*([^\n]+)', content)
-                            for epic_num, epic_name in epic_matches:
-                                epic_title = epic_name.strip()
-                                epics_found.add(f"Epic {epic_num}: {epic_title}")
+                            # Extract Epic patterns with full names using configured regex
+                            epic_patterns = patterns_config.get('epics', {}).get('local_patterns', [])
+                            for pattern_obj in epic_patterns:
+                                if isinstance(pattern_obj, dict):
+                                    regex = pattern_obj.get('regex')
+                                    if regex:
+                                        epic_matches = re.findall(regex, content)
+                                        for match in epic_matches:
+                                            if isinstance(match, tuple):
+                                                epic_num, epic_name = match
+                                                epics_found.add(f"Epic {epic_num}: {epic_name.strip()}")
+                                            else:
+                                                epics_found.add(f"Epic {match}")
 
-                            # Extract US patterns (e.g., "US1.1", "US1.2", "US2.1", etc.)
-                            # Matches "US1.1 -", "US2.3 -", etc. with or without space after US
-                            us_matches = re.findall(r'US\s*(\d+\.\d+)', content, re.IGNORECASE)
-                            for us_id in us_matches:
-                                stories_found.add(f"US{us_id}")
+                            # Extract US patterns using configured regex
+                            story_patterns = patterns_config.get('stories', {}).get('local_patterns', [])
+                            for pattern_obj in story_patterns:
+                                if isinstance(pattern_obj, dict):
+                                    regex = pattern_obj.get('regex')
+                                    if regex:
+                                        us_matches = re.findall(regex, content)
+                                        for us_id in us_matches:
+                                            stories_found.add(f"US{us_id}")
+
+                            # Fallback to default patterns if config not found
+                            if not epic_patterns:
+                                epic_matches = re.findall(r'[Ee]pic\s+(\d+):\s*([^\n]+)', content)
+                                for epic_num, epic_name in epic_matches:
+                                    epics_found.add(f"Epic {epic_num}: {epic_name.strip()}")
+
+                            if not story_patterns:
+                                us_matches = re.findall(r'US\s*(\d+\.\d+)', content, re.IGNORECASE)
+                                for us_id in us_matches:
+                                    stories_found.add(f"US{us_id}")
                     except:
                         pass
 
@@ -152,11 +210,11 @@ class GitHubScanner:
         print("\n" + "="*70)
         print("GITHUB ARTIFACT SCANNER - Epics, User Stories, and Tests")
         print("="*70 + "\n")
-        
+
         if not self.git_artifacts.exists():
             print("No git artifacts found. Run collection layer first.")
             return {}
-        
+
         for repo_dir in sorted(self.git_artifacts.iterdir()):
             if repo_dir.is_dir() and not repo_dir.name.startswith('.'):
                 clone_dir = repo_dir / "clone"
@@ -164,12 +222,13 @@ class GitHubScanner:
                     print(f"Skipping {repo_dir.name} (no clone directory)")
                     continue
                 print(f"Scanning {repo_dir.name}...")
+                print(f"  → Using artifact patterns from configuration")
                 self.scan_for_epics_and_stories(clone_dir)
                 self.scan_for_tests(clone_dir)
                 print(f"  ✓ Scan complete for {repo_dir.name}\n")
-        
+
         results = self.save_results()
-        
+
         print("\n" + "="*70)
         print("SCAN RESULTS")
         print("="*70)
@@ -177,7 +236,7 @@ class GitHubScanner:
         print(f"User stories found: {sum(len(v) for v in results['user_stories'].values())}")
         print(f"Total test files: {sum(v['count'] for v in results['tests'].values())}")
         print("="*70 + "\n")
-        
+
         return results
 
 if __name__ == "__main__":
