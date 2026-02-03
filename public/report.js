@@ -27,9 +27,11 @@ class MetricsReport {
 
   async loadManifest() {
     // Try multiple paths to handle different deployment scenarios
+    // GitHub Pages serves from: https://vionascu.github.io/dora/public/
+    // So calculations are at: https://vionascu.github.io/dora/calculations/
     const paths = [
-      './calculations/MANIFEST.json',           // Same directory (GitHub Pages root)
-      '../calculations/MANIFEST.json',          // Parent directory
+      '../calculations/MANIFEST.json',          // Parent directory (CORRECT for GitHub Pages)
+      './calculations/MANIFEST.json',           // Same directory
       '/dora/calculations/MANIFEST.json',       // Absolute path under /dora
       '/calculations/MANIFEST.json'             // Root level
     ];
@@ -38,15 +40,17 @@ class MetricsReport {
       try {
         const response = await fetch(path, { cache: 'no-cache' });
         if (response.ok) {
+          console.log(`✅ Loaded MANIFEST from: ${path}`);
           this.manifest = await response.json();
           return;
         }
       } catch (err) {
+        console.warn(`⚠️ Failed to load from ${path}:`, err.message);
         continue;
       }
     }
 
-    throw new Error('Failed to load MANIFEST.json from any path');
+    throw new Error('Failed to load MANIFEST.json from any path. Tried: ' + paths.join(', '));
   }
 
   setupSidebar() {
@@ -582,11 +586,19 @@ class MetricsReport {
   }
 
   async loadJSON(path) {
+    // Convert paths like './calculations/...' to '../calculations/...'
+    // since we're served from /dora/public/ but metrics are at /dora/calculations/
+    let correctedPath = path;
+    if (path.startsWith('./calculations/')) {
+      correctedPath = path.replace('./calculations/', '../calculations/');
+    }
+
     const paths = [
-      path,
-      '../' + path,
-      '/dora/' + path,
-      '/' + path
+      correctedPath,                  // Corrected relative path
+      path,                           // Original path
+      '../' + path,                   // Parent directory
+      '/dora/' + path,                // Absolute path under /dora
+      '/' + path                      // Root level
     ];
 
     for (const p of paths) {
@@ -599,6 +611,7 @@ class MetricsReport {
         continue;
       }
     }
+    console.warn(`Could not load JSON from any path for: ${path}`);
     return null;
   }
 
