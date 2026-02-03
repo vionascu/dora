@@ -30,14 +30,20 @@ class MetricsReport {
     // GitLab Artifact Preview: /-/dora/-/jobs/JOBID/artifacts/public/index.html
     // Files are relative to public/ folder, so calculations/ is at ./calculations/
     if (pathname.includes('/-/') && pathname.includes('/artifacts/')) {
-      console.log('🔧 Detected GitLab artifact preview URL');
+      console.log('Detected GitLab artifact preview URL');
       return './';
+    }
+    // GitLab Pages (Axway format): dora-ee6fae.git-pages.ecd.axway.org/index.html
+    // Root domain deployment - files at /calculations/, /index.html, etc.
+    if (hostname.includes('.git-pages.ecd.axway.org')) {
+      console.log('Detected Axway GitLab Pages domain');
+      return '/';
     }
     // GitHub Pages: /dora/public/index.html -> /dora/
     if (pathname.includes('/dora/public')) {
       return '/dora/';
     }
-    // GitLab Pages: /public/index.html -> /
+    // GitLab Pages (standard): /public/index.html -> /
     if (pathname.includes('/public') && !hostname.includes('localhost')) {
       return '/';
     }
