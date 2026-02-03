@@ -151,6 +151,10 @@ class MetricsReport {
     document.querySelector(`[data-project="${project}"]`).classList.add('active');
 
     this.render();
+
+    // Re-render charts for the selected project
+    console.log('📊 Project selected:', project);
+    setTimeout(() => this.renderCharts(), 500);
   }
 
   applyDateFilter(from, to) {
@@ -825,45 +829,65 @@ class MetricsReport {
 
   async renderCharts() {
     try {
-      console.log('📊 Loading real data for charts from calculations/');
+      console.log('📊 Loading real data for charts - Project:', this.selectedProject);
 
-      // Load real data from calculations
-      const velocityData = await this.loadJSON(this.basePath + 'calculations/global/velocity.json').catch(e => {
-        console.warn('⚠️ Velocity data not available:', e.message);
-        return null;
-      });
-
-      const globalContributorsData = await this.loadJSON(this.basePath + 'calculations/global/contributors.json').catch(e => {
-        console.warn('⚠️ Global contributors count not available:', e.message);
-        return null;
-      });
-
-      const commitsData = await this.loadJSON(this.basePath + 'calculations/global/commits.json').catch(e => {
-        console.warn('⚠️ Commits data not available:', e.message);
-        return null;
-      });
-
-      // Load per-repo contributor data to get individual contributor breakdown
-      let perRepoContributorsData = [];
-      const repos = ['RnDMetrics', 'TrailEquip', 'TrailWaze'];
-      for (const repo of repos) {
-        const repoContribData = await this.loadJSON(this.basePath + `calculations/per_repo/${repo}/contributors.json`).catch(e => {
-          console.warn(`⚠️ Contributor data for ${repo} not available:`, e.message);
+      // Determine if we're showing global or per-repo data
+      if (this.selectedProject === 'all') {
+        // Global view - load all repos data
+        const velocityData = await this.loadJSON(this.basePath + 'calculations/global/velocity.json').catch(e => {
+          console.warn('⚠️ Velocity data not available:', e.message);
           return null;
         });
-        if (repoContribData) {
-          perRepoContributorsData.push({ repo, data: repoContribData });
+
+        const globalContributorsData = await this.loadJSON(this.basePath + 'calculations/global/contributors.json').catch(e => {
+          console.warn('⚠️ Global contributors count not available:', e.message);
+          return null;
+        });
+
+        const commitsData = await this.loadJSON(this.basePath + 'calculations/global/commits.json').catch(e => {
+          console.warn('⚠️ Commits data not available:', e.message);
+          return null;
+        });
+
+        // Load per-repo contributor data
+        let perRepoContributorsData = [];
+        const repos = ['RnDMetrics', 'TrailEquip', 'TrailWaze'];
+        for (const repo of repos) {
+          const repoContribData = await this.loadJSON(this.basePath + `calculations/per_repo/${repo}/contributors.json`).catch(e => {
+            console.warn(`⚠️ Contributor data for ${repo} not available:`, e.message);
+            return null;
+          });
+          if (repoContribData) {
+            perRepoContributorsData.push({ repo, data: repoContribData });
+          }
         }
+
+        // Render global charts
+        this.renderVelocityChart(velocityData);
+        this.renderCoverageChart(commitsData);
+        this.renderContributorsChart(globalContributorsData, perRepoContributorsData);
+      } else {
+        // Per-repo view - load specific project data
+        const repoVelocity = await this.loadJSON(this.basePath + `calculations/per_repo/${this.selectedProject}/velocity_trend.json`).catch(e => {
+          console.warn(`⚠️ Velocity data for ${this.selectedProject}:`, e.message);
+          return null;
+        });
+
+        const repoCoverage = await this.loadJSON(this.basePath + `calculations/per_repo/${this.selectedProject}/coverage.json`).catch(e => {
+          console.warn(`⚠️ Coverage data for ${this.selectedProject}:`, e.message);
+          return null;
+        });
+
+        const repoContributors = await this.loadJSON(this.basePath + `calculations/per_repo/${this.selectedProject}/contributors.json`).catch(e => {
+          console.warn(`⚠️ Contributors data for ${this.selectedProject}:`, e.message);
+          return null;
+        });
+
+        // Render per-repo charts
+        this.renderVelocityChart(repoVelocity);
+        this.renderCoverageChart(repoCoverage);
+        this.renderContributorsChartPerRepo(repoContributors);
       }
-
-      // Render velocity trend chart (Line Chart) - from real data
-      this.renderVelocityChart(velocityData);
-
-      // Render test coverage chart (Donut Chart) - from real data or N/A
-      this.renderCoverageChart(commitsData);
-
-      // Render contributors chart (Bar Chart) - from real per-repo data
-      this.renderContributorsChart(globalContributorsData, perRepoContributorsData);
     } catch (err) {
       console.warn('Chart rendering error:', err);
       // Charts are optional, don't fail the whole report
@@ -1095,6 +1119,70 @@ class MetricsReport {
 
     const totalContributors = data.reduce((a, b) => a + b, 0);
     this.addDataSourceNote(container, `${labels.length} projects, ${totalContributors} total contributors`, 'calculations/per_repo/*/contributors.json');
+  }
+
+  renderContributorsChartPerRepo(repoContributorsData) {
+    const ctx = document.getElementById('contributorsChart');
+    const container = ctx?.parentElement;
+    if (!ctx || !container) return;
+
+    if (!repoContributorsData || !repoContributorsData.unique_contributors) {
+      container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
+      this.addDataSourceNote(container, 'No data', `calculations/per_repo/${this.selectedProject}/contributors.json`);
+      return;
+    }
+
+    const count = repoContributorsData.unique_contributors;
+
+    // Display as a simple metric for single project
+    const statusColor = count >= 2 ? '#28a745' : '#ffc107'; // Green or Yellow
+    const statusText = count >= 2 ? '✓ Good' : '⚠️ Risk';
+
+    // Show a simple bar chart with just this project
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [this.selectedProject],
+        datasets: [{
+          label: 'Number of Contributors',
+          data: [count],
+          backgroundColor: statusColor === '#28a745' ? 'rgba(40, 167, 69, 0.8)' : 'rgba(255, 193, 7, 0.8)',
+          borderColor: statusColor,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function() {
+                return `Contributors: ${count} (${statusText})`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: {
+              color: '#666',
+              stepSize: 1
+            },
+            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+          },
+          y: {
+            ticks: { color: '#666' },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    this.addDataSourceNote(container, `${count} contributor${count !== 1 ? 's' : ''} in ${this.selectedProject}`, `calculations/per_repo/${this.selectedProject}/contributors.json`);
   }
 
   addDataSourceNote(container, description, source) {

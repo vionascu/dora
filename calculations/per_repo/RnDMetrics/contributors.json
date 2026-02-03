@@ -12,5 +12,5 @@
   "unique_contributors": null,
   "method": "Count unique author emails in git_artifacts authors.json",
   "reason": "Missing git_artifacts authors.json",
-  "calculated_at": "2026-02-03T11:05:17.705953"
+  "calculated_at": "2026-02-03T11:09:18.179750"
 }
