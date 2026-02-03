@@ -11,9 +11,6 @@ variables:
 
 # Default configuration for all jobs
 default:
-  tags:
-    - docker
-    - linux
   retry:
     max: 2
     when:

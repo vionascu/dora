@@ -4,13 +4,14 @@
   "repos": [
     "aisportal"
   ],
-  "inputs": [],
+  "inputs": [
+    "git_artifacts/aisportal/authors.json"
+  ],
   "time_range": {
     "start": null,
     "end": null
   },
-  "unique_contributors": null,
-  "method": "Count unique author emails in git_artifacts authors.json",
-  "reason": "Missing git_artifacts authors.json",
-  "calculated_at": "2026-02-03T13:40:57.154712"
+  "unique_contributors": 33,
+  "method": "Count unique author emails",
+  "calculated_at": "2026-02-03T15:18:48.375080"
 }

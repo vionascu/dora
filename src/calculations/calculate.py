@@ -397,6 +397,54 @@ class Calculator:
             "calculated_at": datetime.now().isoformat()
         }
 
+    def calculate_loc(self, repo_name):
+        """Calculate lines of code metric for a repository"""
+        loc_file = self.git_artifacts / repo_name / "loc.json"
+
+        if not loc_file.exists():
+            return {
+                "metric_id": "repo.lines_of_code",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [],
+                "time_range": self._safe_time_range(None, None),
+                "total_lines_of_code": None,
+                "method": "Count lines of code from cloned repository",
+                "reason": "Missing git_artifacts loc.json - run collect_loc.py first",
+                "calculated_at": datetime.now().isoformat()
+            }
+
+        with open(loc_file, 'r') as f:
+            loc_data = json.load(f)
+
+        if loc_data.get("status") != "success":
+            return {
+                "metric_id": "repo.lines_of_code",
+                "repo": repo_name,
+                "repos": [repo_name],
+                "inputs": [str(loc_file.relative_to(self.root_dir))],
+                "time_range": self._safe_time_range(None, None),
+                "total_lines_of_code": None,
+                "method": "Count lines of code from cloned repository",
+                "reason": loc_data.get("reason", "LOC collection failed"),
+                "calculated_at": datetime.now().isoformat()
+            }
+
+        return {
+            "metric_id": "repo.lines_of_code",
+            "repo": repo_name,
+            "repos": [repo_name],
+            "inputs": [str(loc_file.relative_to(self.root_dir))],
+            "time_range": self._safe_time_range(None, None),
+            "total_lines_of_code": loc_data.get("total_lines_of_code", 0),
+            "total_lines_including_blank": loc_data.get("total_lines_including_blank", 0),
+            "blank_lines": loc_data.get("blank_lines", 0),
+            "comment_lines": loc_data.get("comment_lines", 0),
+            "code_only_lines": loc_data.get("code_only_lines", 0),
+            "method": loc_data.get("method", "cloc_tool"),
+            "calculated_at": datetime.now().isoformat()
+        }
+
     def save_repo_metrics(self, repo_name, config):
         """Calculate and save all per-repo metrics"""
         print(f"  Calculating {repo_name}...")
@@ -410,7 +458,8 @@ class Calculator:
             ("contributors.json", self.calculate_contributors(repo_name)),
             ("coverage.json", self.calculate_coverage_percentage(repo_name, config)),
             ("dora_frequency.json", self.calculate_dora_frequency(repo_name)),
-            ("lead_time.json", self.calculate_lead_time(repo_name))
+            ("lead_time.json", self.calculate_lead_time(repo_name)),
+            ("loc.json", self.calculate_loc(repo_name))
         ]
 
         saved_count = 0
@@ -459,8 +508,14 @@ class Calculator:
             if authors_file.exists():
                 with open(authors_file, "r") as f:
                     data = json.load(f)
-                    for email in data.get("authors", []):
-                        all_contributors.add(email)
+                    for author in data.get("authors", []):
+                        # author can be a string or dict depending on file format
+                        if isinstance(author, dict):
+                            email = author.get("email")
+                        else:
+                            email = author
+                        if email:
+                            all_contributors.add(email)
 
         # Save global commits
         self._write_json(

@@ -37,6 +37,10 @@ echo "  Collecting CI artifacts..."
 python3 src/collection/collect_ci.py
 echo ""
 
+echo "  Collecting lines of code metrics..."
+python3 src/collection/collect_loc.py
+echo ""
+
 # Step 3: Calculation
 echo "Step 3: CALCULATION Layer"
 python3 src/calculations/calculate.py

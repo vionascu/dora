@@ -9,6 +9,12 @@ class MetricsReport {
     this.selectedProject = 'all';
     this.dateFilterFrom = null;
     this.dateFilterTo = null;
+    // Store chart instances so we can destroy and recreate them
+    this.charts = {
+      velocity: null,
+      coverage: null,
+      contributors: null
+    };
     // Detect base path for GitHub Pages deployment
     // window.location.pathname = /dora/public/ or /dora/public/index.html
     this.basePath = this.detectBasePath();
@@ -16,15 +22,27 @@ class MetricsReport {
   }
 
   detectBasePath() {
-    // From /dora/public/index.html, we need /dora/ as base
+    // Determine base path based on deployment context
     const pathname = window.location.pathname;
-    console.log('Current pathname:', pathname);
+    const hostname = window.location.hostname;
+    console.log('Current pathname:', pathname, 'hostname:', hostname);
 
+    // GitHub Pages: /dora/public/index.html -> /dora/
     if (pathname.includes('/dora/public')) {
       return '/dora/';
-    } else if (pathname.includes('/public')) {
+    }
+    // GitLab Pages: /public/index.html -> /
+    if (pathname.includes('/public') && !hostname.includes('localhost')) {
       return '/';
     }
+    // Local development (localhost or 127.0.0.1): served from project root via http.server
+    // URL is http://localhost:8002/public/index.html
+    // So pathname = /public/index.html, but calculations are at /calculations/
+    // We need to use ../calculations/ which resolves correctly from /public/
+    if (hostname.includes('localhost') || hostname === '127.0.0.1') {
+      return '../';
+    }
+    // Default
     return '';
   }
 
@@ -137,7 +155,12 @@ class MetricsReport {
       document.getElementById('date-to').value = '';
       this.dateFilterFrom = null;
       this.dateFilterTo = null;
+      const filterBtn = document.getElementById('apply-date-filter');
+      filterBtn.textContent = 'Apply Filter';
+      filterBtn.style.background = '#28a745';
       this.render();
+      // Re-render charts with reset date filter
+      setTimeout(() => this.renderCharts(), 500);
     });
   }
 
@@ -161,6 +184,8 @@ class MetricsReport {
     this.dateFilterFrom = from || null;
     this.dateFilterTo = to || null;
 
+    console.log('🗓️  DATE FILTER APPLIED:', { from: this.dateFilterFrom, to: this.dateFilterTo });
+
     // Show feedback on which filter is active
     const filterBtn = document.getElementById('apply-date-filter');
     if (from || to) {
@@ -172,11 +197,14 @@ class MetricsReport {
     }
 
     this.render();
+    // Re-render charts with new date filter
+    console.log('📊 Re-rendering charts in 500ms...');
+    setTimeout(() => this.renderCharts(), 500);
   }
 
   render() {
-    this.renderFindings();
-    this.renderRepositories();
+    this.renderFindings().catch(err => console.error('Findings render error:', err));
+    this.renderRepositories().catch(err => console.error('Repositories render error:', err));
     this.renderEvolutionMetrics().catch(err => console.error('Evolution metrics error:', err));
   }
 
@@ -201,7 +229,7 @@ class MetricsReport {
     }
   }
 
-  renderFindings() {
+  async renderFindings() {
     const data = this.manifest;
 
     if (this.selectedProject === 'all') {
@@ -210,7 +238,8 @@ class MetricsReport {
 
       if (this.dateFilterFrom || this.dateFilterTo) {
         // Aggregate commits from projects that fall within date range
-        filteredCommits = this.getAggregatedCommitsForDateRange();
+        filteredCommits = await this.getAggregatedCommitsForDateRange();
+        console.log('📊 Metrics updated for date range:', { from: this.dateFilterFrom, to: this.dateFilterTo, commits: filteredCommits.total_commits, avgPerDay: filteredCommits.avg_commits_per_day });
       } else {
         filteredCommits = data.global_metrics['commits.json'];
       }
@@ -245,6 +274,16 @@ class MetricsReport {
       this.updateElement('finding-epics', globalTests?.total_epics_found);
       this.updateElement('finding-stories', globalTests?.total_user_stories_found);
 
+      // Calculate total LOC across all repos
+      let totalLOC = 0;
+      for (const repo of Object.keys(data.per_repo_metrics)) {
+        const locMetric = data.per_repo_metrics[repo].loc;
+        if (locMetric && locMetric.total_lines_of_code) {
+          totalLOC += locMetric.total_lines_of_code;
+        }
+      }
+      this.updateElement('finding-loc', totalLOC > 0 ? totalLOC : 'N/A');
+
       this.attachFindingLinks('finding-commits', filteredCommits);
       this.attachFindingLinks('finding-repos', globalSummary);
       this.attachFindingLinks('finding-contributors', globalContributors);
@@ -252,6 +291,7 @@ class MetricsReport {
       this.attachFindingLinks('finding-tests', globalTests);
       this.attachFindingLinks('finding-epics', globalTests);
       this.attachFindingLinks('finding-stories', globalTests);
+      this.attachFindingLinks('finding-loc', { value: totalLOC > 0 ? totalLOC : 'N/A' });
     } else {
       // Show project-specific metrics - filtered by date if applicable
       const repoData = data.per_repo_metrics[this.selectedProject];
@@ -263,6 +303,7 @@ class MetricsReport {
         this.updateElement('finding-tests', 'N/A');
         this.updateElement('finding-epics', 'N/A');
         this.updateElement('finding-stories', 'N/A');
+        this.updateElement('finding-loc', 'N/A');
         return;
       }
 
@@ -282,6 +323,7 @@ class MetricsReport {
       this.updateElement('finding-tests', repoData.tests?.test_files);
       this.updateElement('finding-epics', repoData.tests?.epics);
       this.updateElement('finding-stories', repoData.tests?.user_stories);
+      this.updateElement('finding-loc', repoData.loc?.total_lines_of_code || 'N/A');
 
       this.attachFindingLinks('finding-commits', filteredCommits);
       this.attachFindingLinks('finding-repos', { value: 1 });
@@ -290,6 +332,7 @@ class MetricsReport {
       this.attachFindingLinks('finding-tests', repoData.tests);
       this.attachFindingLinks('finding-epics', repoData.tests);
       this.attachFindingLinks('finding-stories', repoData.tests);
+      this.attachFindingLinks('finding-loc', repoData.loc);
     }
   }
 
@@ -319,13 +362,16 @@ class MetricsReport {
     return metric;
   }
 
-  getAggregatedCommitsForDateRange() {
-    // Aggregate commits from all projects that fall within the date range
+  async getAggregatedCommitsForDateRange() {
+    // Aggregate ACTUAL commits from projects within date range using velocity data
     const filterFrom = this.dateFilterFrom || '1900-01-01';
     const filterTo = this.dateFilterTo || '2100-12-31';
 
+    const filterFromDate = new Date(filterFrom);
+    const filterToDate = new Date(filterTo);
+
     let totalCommits = 0;
-    let totalDays = 0;
+    let activeDays = new Set();
     let projectsInRange = 0;
 
     for (const repo of Object.keys(this.manifest.per_repo_metrics)) {
@@ -337,12 +383,32 @@ class MetricsReport {
 
       // Check if repo data overlaps with date range
       if (repoEnd >= filterFrom && repoStart <= filterTo) {
-        totalCommits += repoData.commits.total_commits || 0;
-        totalDays += repoData.commits.days_active || 1;
         projectsInRange++;
+
+        // Try to load velocity_trend for accurate filtered counts
+        try {
+          const velocityPath = this.basePath + `calculations/per_repo/${repo}/velocity_trend.json`;
+          const velocityData = await this.loadJSON(velocityPath);
+
+          if (velocityData && velocityData.weekly_data) {
+            // Filter weekly data by date range
+            const filteredWeeks = this.filterWeeklyDataByDateRange(velocityData.weekly_data);
+            const weeklyCommits = Object.values(filteredWeeks).reduce((sum, val) => sum + val, 0);
+            totalCommits += weeklyCommits;
+
+            // Count unique weeks (approximate days)
+            activeDays.add(Object.keys(filteredWeeks).length * 7);
+          }
+        } catch (err) {
+          // If velocity data unavailable, fall back to basic calculation
+          console.warn(`Could not load velocity for ${repo}, using basic calculation`);
+          totalCommits += repoData.commits.total_commits || 0;
+          activeDays.add(repoData.commits.days_active || 1);
+        }
       }
     }
 
+    const totalDays = Array.from(activeDays).reduce((a, b) => a + b, 0) || 1;
     const avgCommitsPerDay = totalDays > 0 ? (totalCommits / totalDays) : 0;
 
     return {
@@ -350,7 +416,7 @@ class MetricsReport {
       avg_commits_per_day: Math.round(avgCommitsPerDay * 100) / 100,
       period_start: filterFrom,
       period_end: filterTo,
-      method: `Aggregated from ${projectsInRange} project(s) in date range`
+      method: `Filtered from ${projectsInRange} project(s) within selected date range`
     };
   }
 
@@ -365,7 +431,7 @@ class MetricsReport {
     return allEpics.filter(epic => !coveredEpics.includes(epic));
   }
 
-  renderRepositories() {
+  async renderRepositories() {
     const container = document.getElementById('repos-container');
     if (!container) return;
 
@@ -392,13 +458,44 @@ class MetricsReport {
       const uncoveredEpics = this.getUncoveredEpics(repo);
       const dropdownId = `uncovered-${repo.replace(/\s+/g, '-')}`;
 
+      // Apply date filtering to commits data if filter is active
+      let filteredCommits = data.commits;
+      let hasDateFilter = this.dateFilterFrom || this.dateFilterTo;
+
+      // If date filter is active, try to load velocity data for accurate filtering
+      if (hasDateFilter) {
+        try {
+          const velocityPath = this.basePath + `calculations/per_repo/${repo}/velocity_trend.json`;
+          const velocityData = await this.loadJSON(velocityPath);
+          if (velocityData && velocityData.weekly_data) {
+            const filteredWeeks = this.filterWeeklyDataByDateRange(velocityData.weekly_data);
+            const weeklyCommits = Object.values(filteredWeeks).reduce((sum, val) => sum + val, 0);
+            const weeksCount = Object.keys(filteredWeeks).length;
+            const avgPerDay = weeksCount > 0 ? (weeklyCommits / (weeksCount * 7)) : 0;
+
+            filteredCommits = {
+              ...data.commits,
+              total_commits: weeklyCommits,
+              avg_commits_per_day: Math.round(avgPerDay * 100) / 100,
+              period_start: this.dateFilterFrom || data.commits.period_start,
+              period_end: this.dateFilterTo || data.commits.period_end,
+              days_active: weeksCount * 7,
+              _isFiltered: true
+            };
+          }
+        } catch (err) {
+          // Fall back to base filtering
+          filteredCommits = this.getFilteredMetric(data.commits);
+        }
+      }
+
       html += `
         <div class="repo-detail-card">
           <div class="repo-detail-name">${repo}</div>
           <table class="repo-metrics-table">
             <tr>
               <td>Total Commits</td>
-              <td>${this.formatValue(data.commits?.total_commits)}${this.renderMetricLinks(data.commits)}</td>
+              <td>${this.formatValue(filteredCommits?.total_commits)}${this.renderMetricLinks(filteredCommits)}${hasDateFilter && filteredCommits?._isFiltered ? ' <span style="color: #ff9800; font-size: 0.9em;">(filtered)</span>' : ''}</td>
             </tr>
             <tr>
               <td>Contributors</td>
@@ -406,15 +503,15 @@ class MetricsReport {
             </tr>
             <tr>
               <td>Daily Activity</td>
-              <td>${this.formatValue(data.commits?.avg_commits_per_day, 'commits/day')}${this.renderMetricLinks(data.commits)}</td>
+              <td>${this.formatValue(filteredCommits?.avg_commits_per_day, 'commits/day')}${this.renderMetricLinks(filteredCommits)}${hasDateFilter && filteredCommits?._isFiltered ? ' <span style="color: #ff9800; font-size: 0.9em;">(filtered)</span>' : ''}</td>
             </tr>
             <tr>
               <td>Active Period</td>
-              <td>${this.formatRange(data.commits?.period_start, data.commits?.period_end)}${this.renderMetricLinks(data.commits)}</td>
+              <td>${this.formatRange(filteredCommits?.period_start, filteredCommits?.period_end)}${this.renderMetricLinks(filteredCommits)}</td>
             </tr>
             <tr>
               <td>Days Active</td>
-              <td>${this.formatValue(data.commits?.days_active)}${this.renderMetricLinks(data.commits)}</td>
+              <td>${this.formatValue(filteredCommits?.days_active)}${this.renderMetricLinks(filteredCommits)}${hasDateFilter && filteredCommits?._isFiltered ? ' <span style="color: #ff9800; font-size: 0.9em;">(filtered)</span>' : ''}</td>
             </tr>
             <tr>
               <td>Deployment Frequency</td>
@@ -558,29 +655,29 @@ class MetricsReport {
       try {
         // Try to load velocity trend
         if (data['velocity_trend.json'] || data.velocity_trend) {
-          const velocityPath = data['velocity_trend.json']?.file || `./calculations/per_repo/${repo}/velocity_trend.json`;
+          const velocityPath = data['velocity_trend.json']?.file || this.basePath + `calculations/per_repo/${repo}/velocity_trend.json`;
           velocity = await this.loadJSON(velocityPath);
         }
 
         // Try to load refactorization activity
         if (data['refactorization_activity.json'] || data.refactorization_activity) {
-          const refactorPath = data['refactorization_activity.json']?.file || `./calculations/per_repo/${repo}/refactorization_activity.json`;
+          const refactorPath = data['refactorization_activity.json']?.file || this.basePath + `calculations/per_repo/${repo}/refactorization_activity.json`;
           refactor = await this.loadJSON(refactorPath);
         }
 
         // Try to load code quality evolution
         if (data['code_quality_evolution.json'] || data.code_quality_evolution) {
-          const qualityPath = data['code_quality_evolution.json']?.file || `./calculations/per_repo/${repo}/code_quality_evolution.json`;
+          const qualityPath = data['code_quality_evolution.json']?.file || this.basePath + `calculations/per_repo/${repo}/code_quality_evolution.json`;
           quality = await this.loadJSON(qualityPath);
         }
 
         // Try to load AI indicators
         if (data['ai_usage_indicators.json'] || data.ai_usage_indicators) {
-          const aiPath = data['ai_usage_indicators.json']?.file || `./calculations/per_repo/${repo}/ai_usage_indicators.json`;
+          const aiPath = data['ai_usage_indicators.json']?.file || this.basePath + `calculations/per_repo/${repo}/ai_usage_indicators.json`;
           aiAnalysis = await this.loadJSON(aiPath);
         }
       } catch (err) {
-        console.warn(`Error loading evolution metrics for ${repo}:`, err);
+        console.warn(`Error loading evolution metrics for ${repo}:`, err.message);
       }
 
       // Velocity Trends
@@ -833,12 +930,7 @@ class MetricsReport {
 
       // Determine if we're showing global or per-repo data
       if (this.selectedProject === 'all') {
-        // Global view - load all repos data
-        const velocityData = await this.loadJSON(this.basePath + 'calculations/global/velocity.json').catch(e => {
-          console.warn('⚠️ Velocity data not available:', e.message);
-          return null;
-        });
-
+        // Global view - aggregate from all repos
         const globalContributorsData = await this.loadJSON(this.basePath + 'calculations/global/contributors.json').catch(e => {
           console.warn('⚠️ Global contributors count not available:', e.message);
           return null;
@@ -849,23 +941,45 @@ class MetricsReport {
           return null;
         });
 
+        // For global view, aggregate velocity from all repos in MANIFEST
+        let aggregatedWeeklyData = {};
+        if (this.manifest && this.manifest.per_repo_metrics) {
+          for (const repo of Object.keys(this.manifest.per_repo_metrics)) {
+            const repoVelocity = await this.loadJSON(this.basePath + `calculations/per_repo/${repo}/velocity_trend.json`).catch(e => {
+              console.warn(`⚠️ Velocity data for ${repo} not available:`, e.message);
+              return null;
+            });
+            if (repoVelocity && repoVelocity.weekly_data) {
+              // Aggregate weekly data
+              for (const [week, count] of Object.entries(repoVelocity.weekly_data)) {
+                aggregatedWeeklyData[week] = (aggregatedWeeklyData[week] || 0) + count;
+              }
+            }
+          }
+        }
+
+        const aggregatedVelocityData = Object.keys(aggregatedWeeklyData).length > 0
+          ? { weekly_data: aggregatedWeeklyData }
+          : null;
+
         // Load per-repo contributor data
         let perRepoContributorsData = [];
-        const repos = ['RnDMetrics', 'TrailEquip', 'TrailWaze'];
-        for (const repo of repos) {
-          const repoContribData = await this.loadJSON(this.basePath + `calculations/per_repo/${repo}/contributors.json`).catch(e => {
-            console.warn(`⚠️ Contributor data for ${repo} not available:`, e.message);
-            return null;
-          });
-          if (repoContribData) {
-            perRepoContributorsData.push({ repo, data: repoContribData });
+        if (this.manifest && this.manifest.per_repo_metrics) {
+          for (const repo of Object.keys(this.manifest.per_repo_metrics)) {
+            const repoContribData = await this.loadJSON(this.basePath + `calculations/per_repo/${repo}/contributors.json`).catch(e => {
+              console.warn(`⚠️ Contributor data for ${repo} not available:`, e.message);
+              return null;
+            });
+            if (repoContribData) {
+              perRepoContributorsData.push({ repo, data: repoContribData });
+            }
           }
         }
 
         // Render global charts
-        this.renderVelocityChart(velocityData);
+        this.renderVelocityChart(aggregatedVelocityData);
         this.renderCoverageChart(commitsData);
-        this.renderContributorsChart(globalContributorsData, perRepoContributorsData);
+        await this.renderContributorsChart(globalContributorsData, perRepoContributorsData);
       } else {
         // Per-repo view - load specific project data
         const repoVelocity = await this.loadJSON(this.basePath + `calculations/per_repo/${this.selectedProject}/velocity_trend.json`).catch(e => {
@@ -894,10 +1008,49 @@ class MetricsReport {
     }
   }
 
+  filterWeeklyDataByDateRange(weeklyData) {
+    if (!this.dateFilterFrom && !this.dateFilterTo) {
+      return weeklyData;
+    }
+
+    const filterFrom = this.dateFilterFrom ? new Date(this.dateFilterFrom) : null;
+    const filterTo = this.dateFilterTo ? new Date(this.dateFilterTo) : null;
+
+    const filtered = {};
+    for (const [week, value] of Object.entries(weeklyData)) {
+      // Parse week format: "2026-W05" -> get Monday of that week
+      const match = week.match(/(\d{4})-W(\d{2})/);
+      if (!match) continue;
+
+      const year = parseInt(match[1]);
+      const weekNum = parseInt(match[2]);
+
+      // Calculate the Monday of that ISO week
+      const jan4 = new Date(year, 0, 4);
+      const dayOfWeek = (jan4.getDay() || 7) - 1;
+      const weekStart = new Date(jan4);
+      weekStart.setDate(weekStart.getDate() - dayOfWeek + (weekNum - 1) * 7);
+
+      // Check if week is within date range
+      if (filterFrom && weekStart < filterFrom) continue;
+      if (filterTo && weekStart > filterTo) continue;
+
+      filtered[week] = value;
+    }
+
+    return filtered;
+  }
+
   renderVelocityChart(velocityData) {
     const ctx = document.getElementById('velocityChart');
     const container = ctx?.parentElement;
     if (!ctx || !container) return;
+
+    // Destroy old chart if it exists
+    if (this.charts.velocity) {
+      this.charts.velocity.destroy();
+      this.charts.velocity = null;
+    }
 
     if (!velocityData || !velocityData.weekly_data) {
       container.innerHTML = '<p style="color: #999; padding: 2rem;">📊 N/A - Velocity data not available</p>';
@@ -906,13 +1059,22 @@ class MetricsReport {
     }
 
     // Extract real weekly data from calculations
-    const weeklyData = velocityData.weekly_data;
+    let weeklyData = velocityData.weekly_data;
+
+    // Apply date filter if active
+    if (this.dateFilterFrom || this.dateFilterTo) {
+      const beforeCount = Object.keys(weeklyData).length;
+      weeklyData = this.filterWeeklyDataByDateRange(weeklyData);
+      const afterCount = Object.keys(weeklyData).length;
+      console.log('📅 Date filter applied:', { dateFrom: this.dateFilterFrom, dateTo: this.dateFilterTo, before: beforeCount, after: afterCount });
+    }
+
     const labels = Object.keys(weeklyData).sort();
     const data = labels.map(week => weeklyData[week]);
 
-    console.log('✅ Velocity Chart - Real data loaded:', { weeks: labels.length, dataPoints: data });
+    console.log('✅ Velocity Chart - Real data loaded:', { weeks: labels.length, dataPoints: data, dateFilterFrom: this.dateFilterFrom, dateFilterTo: this.dateFilterTo });
 
-    new Chart(ctx, {
+    this.charts.velocity = new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
@@ -968,6 +1130,12 @@ class MetricsReport {
     const container = ctx?.parentElement;
     if (!ctx || !container) return;
 
+    // Destroy old chart if it exists
+    if (this.charts.coverage) {
+      this.charts.coverage.destroy();
+      this.charts.coverage = null;
+    }
+
     // Try to get coverage data
     let coveragePercentage = null;
     if (commitsData && commitsData.coverage_percentage !== undefined) {
@@ -985,7 +1153,7 @@ class MetricsReport {
 
     console.log('✅ Coverage Chart - Real data loaded:', { tested: testedPercentage + '%', untested: unterstedPercentage + '%' });
 
-    new Chart(ctx, {
+    this.charts.coverage = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: ['Tested Code', 'Untested Code'],
@@ -1018,113 +1186,176 @@ class MetricsReport {
     this.addDataSourceNote(container, `${testedPercentage}% tested`, 'calculations/global/commits.json');
   }
 
-  renderContributorsChart(globalContributorsData, perRepoContributorsData) {
+  async renderContributorsChart(globalContributorsData, perRepoContributorsData) {
     const ctx = document.getElementById('contributorsChart');
     const container = ctx?.parentElement;
     if (!ctx || !container) return;
 
-    // Build chart data from per-repo contributor counts
-    const repoContributors = [];
-
-    for (const { repo, data } of perRepoContributorsData) {
-      if (data && data.unique_contributors !== undefined) {
-        repoContributors.push({
-          repo: repo,
-          contributors: data.unique_contributors,
-          timeRange: data.time_range
-        });
-      }
+    // Destroy old chart if it exists
+    if (this.charts.contributors) {
+      this.charts.contributors.destroy();
+      this.charts.contributors = null;
     }
 
-    if (repoContributors.length === 0) {
-      // Show total count if we have it
-      if (globalContributorsData && globalContributorsData.unique_contributors) {
-        container.innerHTML = `<p style="color: #999; padding: 2rem;">👥 ${globalContributorsData.unique_contributors} total contributors (breakdown not available)</p>`;
-        this.addDataSourceNote(container, `${globalContributorsData.unique_contributors} unique contributors total`, 'calculations/global/contributors.json');
-      } else {
-        container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
-        this.addDataSourceNote(container, 'No breakdown data', 'calculations/per_repo/*/contributors.json');
-      }
-      return;
-    }
+    // If date filter is active, calculate filtered contributor counts from commits
+    let contributors = [];
+    const hasDateFilter = this.dateFilterFrom || this.dateFilterTo;
 
-    // Sort by repository name for consistent display
-    repoContributors.sort((a, b) => a.repo.localeCompare(b.repo));
+    if (hasDateFilter) {
+      // Load commits and count per contributor in the date range
+      console.log('📅 Calculating contributors for date range:', { from: this.dateFilterFrom, to: this.dateFilterTo });
 
-    // Prepare chart data
-    const labels = repoContributors.map(r => r.repo);
-    const data = repoContributors.map(r => r.contributors);
+      if (this.manifest && this.manifest.per_repo_metrics) {
+        for (const repo of Object.keys(this.manifest.per_repo_metrics)) {
+          try {
+            // Load raw commits from git_artifacts (not the metrics file at calculations/)
+            const commitsData = await this.loadJSON(this.basePath + `git_artifacts/${repo}/commits.json`);
+            console.log(`📋 Loaded commits for ${repo}:`, commitsData ? `${commitsData.commits?.length || 0} commits` : 'null');
 
-    console.log('✅ Contributors Chart - Real data loaded from GitHub:', { repositories: labels, contributors: data });
+            if (commitsData && commitsData.commits && Array.isArray(commitsData.commits)) {
+              const filterFrom = this.dateFilterFrom ? new Date(this.dateFilterFrom) : new Date('1900-01-01');
+              const filterTo = this.dateFilterTo ? new Date(this.dateFilterTo) : new Date('2100-12-31');
 
-    // Determine colors based on contributor count (green for 2+, orange for 1)
-    const backgroundColor = data.map(count => {
-      if (count >= 2) return 'rgba(40, 167, 69, 0.8)';  // Green - good
-      return 'rgba(255, 193, 7, 0.8)';  // Yellow - warning
-    });
+              console.log(`🔍 Filtering ${commitsData.commits.length} commits between ${filterFrom.toISOString()} and ${filterTo.toISOString()}`);
 
-    const borderColor = data.map(count => {
-      if (count >= 2) return '#28a745';  // Green
-      return '#ffc107';  // Yellow
-    });
+              // Count commits per author in the date range
+              const authorCounts = {};
+              let filteredCount = 0;
+              commitsData.commits.forEach(commit => {
+                const commitDate = new Date(commit.timestamp.split(' ')[0]); // Extract date part
+                if (commitDate >= filterFrom && commitDate <= filterTo) {
+                  const author = commit.author_email || commit.author_name || 'Unknown';
+                  authorCounts[author] = (authorCounts[author] || 0) + 1;
+                  filteredCount++;
+                }
+              });
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Number of Contributors',
-          data: data,
-          backgroundColor: backgroundColor,
-          borderColor: borderColor,
-          borderWidth: 2
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const count = context.parsed.x;
-                const status = count >= 2 ? '✓ Good' : '⚠️ Warning - Single contributor';
-                return `Contributors: ${count} (${status})`;
+              console.log(`✅ Found ${filteredCount} commits and ${Object.keys(authorCounts).length} authors in date range`);
+
+              // Add to contributors list
+              for (const [author, count] of Object.entries(authorCounts)) {
+                const existing = contributors.find(c => c.email === author);
+                if (existing) {
+                  existing.commit_count = (existing.commit_count || 0) + count;
+                } else {
+                  contributors.push({ name: author, email: author, commit_count: count });
+                }
               }
             }
-          }
-        },
-        scales: {
-          x: {
-            beginAtZero: true,
-            ticks: {
-              color: '#666',
-              stepSize: 1
-            },
-            grid: { color: 'rgba(0, 0, 0, 0.05)' },
-            title: {
-              display: true,
-              text: 'Number of Contributors'
-            }
-          },
-          y: {
-            ticks: { color: '#666' },
-            grid: { display: false }
+          } catch (e) {
+            console.warn(`⚠️ Commits data for ${repo} not available:`, e.message);
           }
         }
       }
-    });
+    } else {
+      // No date filter - use all-time contributor data from authors.json
+      if (this.manifest && this.manifest.per_repo_metrics) {
+        for (const repo of Object.keys(this.manifest.per_repo_metrics)) {
+          try {
+            const authorsData = await this.loadJSON(this.basePath + `git_artifacts/${repo}/authors.json`);
+            if (authorsData && authorsData.authors && Array.isArray(authorsData.authors)) {
+              contributors = contributors.concat(authorsData.authors);
+            }
+          } catch (e) {
+            console.warn(`⚠️ Authors data for ${repo} not available:`, e.message);
+          }
+        }
+      }
+    }
 
-    const totalContributors = data.reduce((a, b) => a + b, 0);
-    this.addDataSourceNote(container, `${labels.length} projects, ${totalContributors} total contributors`, 'calculations/per_repo/*/contributors.json');
+    // If we have individual contributors, show top N by commit count
+    if (contributors.length > 0) {
+      // Sort by commit count descending
+      contributors.sort((a, b) => (b.commit_count || 0) - (a.commit_count || 0));
+
+      // Take top 15 contributors
+      const topContributors = contributors.slice(0, 15);
+
+      const labels = topContributors.map(c => c.name || c.email || 'Unknown');
+      const commitCounts = topContributors.map(c => c.commit_count || 0);
+
+      console.log('✅ Contributors Chart - Real data from individual contributors:', { contributors: labels, commits: commitCounts, dateFiltered: hasDateFilter });
+
+      // Determine colors based on commit count (gradient)
+      const maxCommits = Math.max(...commitCounts, 1);
+      const backgroundColor = commitCounts.map(count => {
+        const intensity = Math.min(count / maxCommits, 1);
+        const hue = Math.floor((1 - intensity) * 120); // Green (120) to Yellow (60)
+        return `hsl(${hue}, 70%, 50%)`;
+      });
+
+      const borderColor = backgroundColor.map(bg => bg.replace('50%', '40%'));
+
+      this.charts.contributors = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Commits',
+            data: commitCounts,
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `Commits: ${context.parsed.x}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {
+                color: '#666'
+              },
+              grid: { color: 'rgba(0, 0, 0, 0.05)' },
+              title: {
+                display: true,
+                text: 'Commits by Contributor'
+              }
+            },
+            y: {
+              ticks: { color: '#666' },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+      const filterNote = hasDateFilter ? ` (filtered: ${this.dateFilterFrom || '∞'} to ${this.dateFilterTo || '∞'})` : '';
+      this.addDataSourceNote(container, `Top ${labels.length} contributors (${contributors.length} shown)${filterNote}`, 'git_artifacts/*/commits.json');
+    } else {
+      // Fallback to showing total count if no individual contributors found
+      if (globalContributorsData && globalContributorsData.unique_contributors) {
+        container.innerHTML = `<p style="color: #999; padding: 2rem;">👥 ${globalContributorsData.unique_contributors} total contributors</p>`;
+        this.addDataSourceNote(container, `${globalContributorsData.unique_contributors} unique contributors total`, 'calculations/global/contributors.json');
+      } else {
+        container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
+        this.addDataSourceNote(container, 'No breakdown data', 'git_artifacts/*/authors.json');
+      }
+    }
   }
 
   renderContributorsChartPerRepo(repoContributorsData) {
     const ctx = document.getElementById('contributorsChart');
     const container = ctx?.parentElement;
     if (!ctx || !container) return;
+
+    // Destroy old chart if it exists
+    if (this.charts.contributors) {
+      this.charts.contributors.destroy();
+      this.charts.contributors = null;
+    }
 
     if (!repoContributorsData || !repoContributorsData.unique_contributors) {
       container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
@@ -1139,7 +1370,7 @@ class MetricsReport {
     const statusText = count >= 2 ? '✓ Good' : '⚠️ Risk';
 
     // Show a simple bar chart with just this project
-    new Chart(ctx, {
+    this.charts.contributors = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: [this.selectedProject],
@@ -1187,6 +1418,11 @@ class MetricsReport {
 
   addDataSourceNote(container, description, source) {
     if (!container) return;
+    // Remove existing data source notes to avoid duplicates
+    const existing = container.querySelector('.chart-data-source');
+    if (existing) {
+      existing.remove();
+    }
     const sourceNote = document.createElement('div');
     sourceNote.className = 'chart-data-source';
     sourceNote.innerHTML = `<small>📊 Data: ${description} | Source: <code>${source}</code></small>`;

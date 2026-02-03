@@ -3,13 +3,15 @@
   "repos": [
     "aisportal"
   ],
-  "inputs": [],
+  "inputs": [
+    "git_artifacts/aisportal/authors.json"
+  ],
   "time_range": {
     "start": "2018-09-03",
     "end": "2026-02-02"
   },
-  "unique_contributors": null,
+  "unique_contributors": 33,
   "method": "Union of author emails across repos",
-  "reason": "No authors.json inputs available",
-  "calculated_at": "2026-02-03T13:40:57.208243"
+  "reason": null,
+  "calculated_at": "2026-02-03T15:18:48.415030"
 }
