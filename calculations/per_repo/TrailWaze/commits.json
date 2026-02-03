@@ -18,5 +18,5 @@
   "period_end": "2026-02-01",
   "days_active": 13,
   "method": "Count commits; average by unique active dates; active period from first to last commit date",
-  "calculated_at": "2026-02-03T10:13:58.794911"
+  "calculated_at": "2026-02-03T10:14:30.361890"
 }
