@@ -27,12 +27,10 @@ collect_git:
   variables:
     GIT_DEPTH: 0
   before_script:
-    - echo "📦 Installing Python dependencies..."
+    - echo "Installing Python dependencies..."
     - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
-    - echo "✅ Dependencies installed"
-    - echo "🔐 Checking GitLab token..."
-    - if [ -z "$GITLAB_TOKEN" ]; then echo "⚠️  Warning: GITLAB_TOKEN not set - clone may fail"; else echo "✅ GITLAB_TOKEN available"; fi
+    - echo "Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA COLLECTION LAYER - Git Data Extraction"
@@ -55,10 +53,10 @@ calculate_metrics:
   dependencies:
     - collect_git
   before_script:
-    - echo "📦 Installing Python dependencies..."
+    - echo "Installing Python dependencies..."
     - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
-    - echo "✅ Dependencies installed"
+    - echo "Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA CALCULATION LAYER - Metrics Computation"
@@ -92,10 +90,10 @@ pages:
   dependencies:
     - calculate_metrics
   before_script:
-    - echo "📦 Installing dependencies..."
+    - echo "Installing dependencies..."
     - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
-    - echo "✅ Dependencies installed"
+    - echo "Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA DEPLOYMENT - Preparing GitLab Pages"
@@ -145,10 +143,10 @@ scheduled_collection:
   variables:
     GIT_DEPTH: 0
   before_script:
-    - echo "📦 Installing Python dependencies..."
+    - echo "Installing Python dependencies..."
     - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
-    - echo "✅ Dependencies installed"
+    - echo "Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA SCHEDULED COLLECTION - Daily Metrics Update"
