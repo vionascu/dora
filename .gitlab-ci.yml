@@ -112,6 +112,11 @@ pages:
         echo "Copying calculations..."
         cp -r calculations public_output/
       fi
+      # Copy git artifacts (needed for contributors chart)
+      if [ -d "git_artifacts" ]; then
+        echo "Copying git artifacts..."
+        cp -r git_artifacts public_output/
+      fi
       # Copy documentation
       if [ -d "docs" ]; then
         echo "Copying documentation..."
