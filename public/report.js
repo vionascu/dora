@@ -736,12 +736,13 @@ class MetricsReport {
   async loadJSON(path) {
     // Handle git_artifacts paths separately - they should load from root, not calculations/
     if (path.includes('git_artifacts/')) {
-      // git_artifacts paths load directly from root
-      // Normalize to start with /
+      // git_artifacts paths - try multiple resolution strategies
       const normalizedPath = path.startsWith('/') ? path : '/' + path;
+      const relativePath = path.includes('./') ? path : './' + path;
 
       const paths = [
         normalizedPath,                               // Absolute path from root: /git_artifacts/...
+        relativePath,                                 // Relative path: ./git_artifacts/...
         path,                                           // Original path (fallback)
       ];
 
@@ -756,7 +757,7 @@ class MetricsReport {
           continue;
         }
       }
-      console.warn(`⚠️ Could not load git_artifacts: ${path}`);
+      console.warn(`⚠️ Could not load git_artifacts: ${path}. Tried paths: ${JSON.stringify(paths)}`);
       return null;
     }
 

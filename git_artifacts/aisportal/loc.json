@@ -1,0 +1,12 @@
+{
+  "metric_id": "git.loc.raw",
+  "repo": "aisportal",
+  "status": "success",
+  "total_lines_of_code": 190122,
+  "total_lines_including_blank": 210165,
+  "blank_lines": 20043,
+  "comment_lines": 0,
+  "code_only_lines": 190122,
+  "method": "simple_scan",
+  "collected_at": "2026-02-03T18:09:38.503535"
+}

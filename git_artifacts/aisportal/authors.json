@@ -1,0 +1,171 @@
+{
+  "metric_id": "git.authors.raw",
+  "unique_authors": 33,
+  "authors": [
+    {
+      "name": "Oana Orza",
+      "email": "odtudor@axway.com",
+      "commit_count": 738
+    },
+    {
+      "name": "Vali Bors",
+      "email": "vbors@axway.com",
+      "commit_count": 931
+    },
+    {
+      "name": "Bogdan Boicu",
+      "email": "bboicu@axway.com",
+      "commit_count": 685
+    },
+    {
+      "name": "svcatanea",
+      "email": "svcatanea@axway.com",
+      "commit_count": 603
+    },
+    {
+      "name": "ais-cat",
+      "email": "ais_robot@axway.com",
+      "commit_count": 305
+    },
+    {
+      "name": "Valerian Stanciu",
+      "email": "vstanciu@axway.com",
+      "commit_count": 1849
+    },
+    {
+      "name": "Laurentiu Dimana",
+      "email": "ldimana@axway.com",
+      "commit_count": 281
+    },
+    {
+      "name": "Cristina Sirbu",
+      "email": "csirbu@axway.com",
+      "commit_count": 12
+    },
+    {
+      "name": "Teodor Andrei Tartareanu",
+      "email": "ttartareanu@axway.com",
+      "commit_count": 95
+    },
+    {
+      "name": "Dragoescu Daniel Ionut",
+      "email": "didragoescu@axway.com",
+      "commit_count": 21
+    },
+    {
+      "name": "Iorgulescu Nicoleta",
+      "email": "niorgulescu@axway.com",
+      "commit_count": 8
+    },
+    {
+      "name": "mgrecescu",
+      "email": "mgrecescu@axway.com",
+      "commit_count": 1
+    },
+    {
+      "name": "Lucian Gusa",
+      "email": "legusa@axway.com",
+      "commit_count": 133
+    },
+    {
+      "name": "Madalina Balaceanu",
+      "email": "mbalaceanu@axway.com",
+      "commit_count": 3
+    },
+    {
+      "name": "mirada",
+      "email": "mirada@axway.com",
+      "commit_count": 51
+    },
+    {
+      "name": "Bogdan Bataus",
+      "email": "bgbataus@axway.com",
+      "commit_count": 26
+    },
+    {
+      "name": "Georgiu Gabriel",
+      "email": "ggeorgiu@axway.com",
+      "commit_count": 1
+    },
+    {
+      "name": "Boissard Bruno",
+      "email": "bboissard@axway.com",
+      "commit_count": 2
+    },
+    {
+      "name": "svcatanea",
+      "email": "svcatanea@ITEM-AX32847.wks.axway.int",
+      "commit_count": 6
+    },
+    {
+      "name": "Marius Tarsana",
+      "email": "mtarsana@axway.com",
+      "commit_count": 398
+    },
+    {
+      "name": "Cosmin Nicula",
+      "email": "cnicula@axway.com",
+      "commit_count": 5
+    },
+    {
+      "name": "cosmin dumitrescu",
+      "email": "cdumitrescu@axway.com",
+      "commit_count": 296
+    },
+    {
+      "name": "svcatanea",
+      "email": "svcatanea@ITEM-AX31978.wks.axway.int",
+      "commit_count": 147
+    },
+    {
+      "name": "Ioan Dumitrescu",
+      "email": "idumitrescu@axway.com",
+      "commit_count": 93
+    },
+    {
+      "name": "Angelo Neacsu",
+      "email": "aneacsu@axway.com",
+      "commit_count": 162
+    },
+    {
+      "name": "Mihai Jeleriu",
+      "email": "mjeleriu@axway.com",
+      "commit_count": 3
+    },
+    {
+      "name": "angeloneacsu",
+      "email": "angelo.neacsu@gmail.com",
+      "commit_count": 2
+    },
+    {
+      "name": "Contractor - S\u00e9bastien Le gallic",
+      "email": "slegallic@axway.com",
+      "commit_count": 196
+    },
+    {
+      "name": "Lucas Teixeira",
+      "email": "lteixeira@axway.com",
+      "commit_count": 11
+    },
+    {
+      "name": "Angelo Neacsu",
+      "email": "angelo@item-ax31577.wks.buch.axway.int",
+      "commit_count": 1
+    },
+    {
+      "name": "Alessandro ROSSI",
+      "email": "arossi@axway.com",
+      "commit_count": 114
+    },
+    {
+      "name": "AXWAY\\ipaiva",
+      "email": "ipaiva@axway.com",
+      "commit_count": 2
+    },
+    {
+      "name": "Lucas Ionut Stefan",
+      "email": "islucas@axway.com",
+      "commit_count": 1
+    }
+  ]
+}

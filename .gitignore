@@ -5,12 +5,10 @@ dist/
 .DS_Store
 .env
 .env.local
-git_artifacts/*
-!git_artifacts/**/*.json
-!git_artifacts/**/*.txt
-!git_artifacts/**/*.xml
-!git_artifacts/**/*.info
+# Keep JSON/TXT/XML/INFO files from git_artifacts, but ignore clone directories
 git_artifacts/**/clone/
 git_artifacts/**/clone/**
+# Ignore all other directories in git_artifacts root
+git_artifacts/aisportal/clone/
 *.pyc
 __pycache__/
