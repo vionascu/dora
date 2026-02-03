@@ -801,26 +801,40 @@ class MetricsReport {
     }
   }
 
+  async loadJSON(path) {
+    const response = await fetch(path, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`Failed to load ${path}: ${response.status}`);
+    return await response.json();
+  }
+
   async renderCharts() {
     try {
-      // Get velocity data
-      const velocityPath = this.basePath + 'calculations/global/velocity.json';
-      const velocityResp = await fetch(velocityPath, { cache: 'no-cache' });
-      const velocityData = await velocityResp.json();
+      console.log('📊 Loading real data for charts from calculations/');
 
-      // Get contributors data
-      const contributorsPath = this.basePath + 'calculations/global/contributors.json';
-      const contributorsResp = await fetch(contributorsPath, { cache: 'no-cache' });
-      const contributorsData = await contributorsResp.json();
+      // Load real data from calculations
+      const velocityData = await this.loadJSON(this.basePath + 'calculations/global/velocity.json').catch(e => {
+        console.warn('⚠️ Velocity data not available:', e.message);
+        return null;
+      });
 
-      // Render velocity trend chart (Line Chart)
+      const contributorsData = await this.loadJSON(this.basePath + 'calculations/global/contributors.json').catch(e => {
+        console.warn('⚠️ Contributors data not available:', e.message);
+        return null;
+      });
+
+      const commitsData = await this.loadJSON(this.basePath + 'calculations/global/commits.json').catch(e => {
+        console.warn('⚠️ Commits data not available:', e.message);
+        return null;
+      });
+
+      // Render velocity trend chart (Line Chart) - from real data
       this.renderVelocityChart(velocityData);
 
-      // Render test coverage chart (Donut Chart) - using simulated data
-      this.renderCoverageChart();
+      // Render test coverage chart (Donut Chart) - from real data or N/A
+      this.renderCoverageChart(commitsData);
 
-      // Render contributors chart (Bar Chart)
-      this.renderContributorsChart(contributorsData);
+      // Render contributors chart (Bar Chart) - from real data
+      this.renderContributorsChart(contributorsData, commitsData);
     } catch (err) {
       console.warn('Chart rendering error:', err);
       // Charts are optional, don't fail the whole report
@@ -831,24 +845,25 @@ class MetricsReport {
     const ctx = document.getElementById('velocityChart');
     if (!ctx) return;
 
-    // Generate sample weekly data
-    const labels = [];
-    const data = [];
-    const today = new Date();
-    for (let i = 7; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-      // Random velocity between 15-40
-      data.push(Math.floor(Math.random() * 25) + 15);
+    if (!velocityData || !velocityData.weekly_data) {
+      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">📊 N/A - Velocity data not available</p>';
+      this.addDataSource('velocityChart', 'No data available', 'calculations/global/velocity.json');
+      return;
     }
+
+    // Extract real weekly data from calculations
+    const weeklyData = velocityData.weekly_data;
+    const labels = Object.keys(weeklyData).sort();
+    const data = labels.map(week => weeklyData[week]);
+
+    console.log('✅ Velocity Chart - Real data loaded:', { weeks: labels.length, dataPoints: data });
 
     new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Commits/Day',
+          label: 'Commits/Week',
           data: data,
           borderColor: '#0366d6',
           backgroundColor: 'rgba(3, 102, 214, 0.05)',
@@ -865,7 +880,17 @@ class MetricsReport {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: function(context) {
+                return 'Week: ' + context[0].label;
+              },
+              label: function(context) {
+                return 'Commits: ' + context.parsed.y;
+              }
+            }
+          }
         },
         scales: {
           y: {
@@ -880,15 +905,30 @@ class MetricsReport {
         }
       }
     });
+
+    this.addDataSource('velocityChart', `Data from ${labels.length} weeks`, 'calculations/global/velocity.json');
   }
 
-  renderCoverageChart() {
+  renderCoverageChart(commitsData) {
     const ctx = document.getElementById('coverageChart');
     if (!ctx) return;
 
-    // Sample test coverage data
-    const testedPercentage = 65;
-    const unterstedPercentage = 35;
+    // Try to get coverage data
+    let coveragePercentage = null;
+    if (commitsData && commitsData.coverage_percentage !== undefined) {
+      coveragePercentage = commitsData.coverage_percentage;
+    }
+
+    if (coveragePercentage === null || coveragePercentage === undefined) {
+      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">🎯 N/A - Test coverage data not available (requires local test run)</p>';
+      this.addDataSource('coverageChart', 'No data available', 'calculations/global/commits.json');
+      return;
+    }
+
+    const testedPercentage = coveragePercentage;
+    const unterstedPercentage = 100 - coveragePercentage;
+
+    console.log('✅ Coverage Chart - Real data loaded:', { tested: testedPercentage + '%', untested: unterstedPercentage + '%' });
 
     new Chart(ctx, {
       type: 'doughnut',
@@ -919,38 +959,59 @@ class MetricsReport {
         }
       }
     });
+
+    this.addDataSource('coverageChart', `${testedPercentage}% tested`, 'calculations/global/commits.json');
   }
 
-  renderContributorsChart(contributorsData) {
+  renderContributorsChart(contributorsData, commitsData) {
     const ctx = document.getElementById('contributorsChart');
     if (!ctx) return;
 
-    // Sample contributor data
-    const contributors = [
-      { name: 'Developer A', commits: 45 },
-      { name: 'Developer B', commits: 28 },
-      { name: 'Developer C', commits: 15 },
-      { name: 'Developer D', commits: 8 }
-    ];
+    if (!commitsData || !commitsData.contributors_by_commits) {
+      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - Contributors breakdown not available</p>';
+      this.addDataSource('contributorsChart', 'No breakdown data', 'calculations/global/commits.json');
+      return;
+    }
+
+    // Extract real contributor data from calculations
+    const contributors = commitsData.contributors_by_commits || [];
+
+    if (contributors.length === 0) {
+      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
+      this.addDataSource('contributorsChart', 'Empty dataset', 'calculations/global/commits.json');
+      return;
+    }
+
+    // Take top 10 contributors
+    const topContributors = contributors.slice(0, 10);
+    const labels = topContributors.map(c => c.name || 'Unknown');
+    const data = topContributors.map(c => c.commits || 0);
+
+    console.log('✅ Contributors Chart - Real data loaded:', { contributors: topContributors.length, totalCommits: data.reduce((a, b) => a + b, 0) });
 
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: contributors.map(c => c.name),
+        labels: labels,
         datasets: [{
           label: 'Commits',
-          data: contributors.map(c => c.commits),
+          data: data,
           backgroundColor: [
             'rgba(3, 102, 214, 0.8)',
             'rgba(40, 167, 69, 0.8)',
             'rgba(255, 193, 7, 0.8)',
-            'rgba(220, 53, 69, 0.8)'
+            'rgba(220, 53, 69, 0.8)',
+            'rgba(23, 162, 184, 0.8)',
+            'rgba(111, 66, 193, 0.8)',
+            'rgba(233, 30, 99, 0.8)',
+            'rgba(255, 87, 34, 0.8)',
+            'rgba(76, 175, 80, 0.8)',
+            'rgba(156, 39, 176, 0.8)'
           ],
           borderColor: [
-            '#0366d6',
-            '#28a745',
-            '#ffc107',
-            '#dc3545'
+            '#0366d6', '#28a745', '#ffc107', '#dc3545',
+            '#17a2b8', '#6f42c1', '#e91e63', '#ff5722',
+            '#4caf50', '#9c27b0'
           ],
           borderWidth: 1
         }]
@@ -960,7 +1021,14 @@ class MetricsReport {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Commits: ' + context.parsed.x;
+              }
+            }
+          }
         },
         scales: {
           x: {
@@ -975,6 +1043,16 @@ class MetricsReport {
         }
       }
     });
+
+    this.addDataSource('contributorsChart', `Top ${topContributors.length} contributors`, 'calculations/global/commits.json');
+  }
+
+  addDataSource(chartId, description, source) {
+    const container = document.getElementById(chartId).parentElement;
+    const sourceNote = document.createElement('div');
+    sourceNote.className = 'chart-data-source';
+    sourceNote.innerHTML = `<small>📊 Data: ${description} | Source: <code>${source}</code></small>`;
+    container.appendChild(sourceNote);
   }
 }
 
