@@ -237,11 +237,17 @@ jobs:
         cp -r calculations _site/
         cp -r git_artifacts _site/
         cp -r ci_artifacts _site/
+        cp -r docs _site/
 
         cp REPORT_ACCESS.md _site/
         cp docs/index.md _site/README.md
 
         echo "✓ Deployment package prepared"
+        echo "✓ Dashboard files copied"
+        echo "✓ Calculations data copied"
+        echo "✓ Documentation folder copied"
+        echo ""
+        echo "📁 Deployed structure:"
         ls -la _site/
 
     - name: "🚀 Deploy to GitHub Pages"
@@ -258,12 +264,13 @@ jobs:
         echo "✓ DEPLOYMENT STAGE COMPLETE"
         echo "======================================================================"
         echo ""
-        echo "Dashboard deployed to GitHub Pages!"
+        echo "Dashboard and Documentation deployed to GitHub Pages!"
         echo ""
         echo "📊 Access Points:"
-        echo "  • Main: https://vionascu.github.io/dora/public/index.html"
+        echo "  • Dashboard: https://vionascu.github.io/dora/public/index.html"
         echo "  • Calculations: https://vionascu.github.io/dora/calculations/MANIFEST.json"
-        echo "  • Documentation: https://vionascu.github.io/dora/README.md"
+        echo "  • Documentation Hub: https://vionascu.github.io/dora/docs/index.html"
+        echo "  • README: https://vionascu.github.io/dora/README.md"
         echo ""
         echo "======================================================================"
 
