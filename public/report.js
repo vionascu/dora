@@ -150,7 +150,7 @@ class MetricsReport {
   render() {
     this.renderFindings();
     this.renderRepositories();
-    this.renderEvolutionMetrics();
+    this.renderEvolutionMetrics().catch(err => console.error('Evolution metrics error:', err));
   }
 
   renderHeader() {
@@ -477,7 +477,7 @@ class MetricsReport {
     return parts[parts.length - 1];
   }
 
-  renderEvolutionMetrics() {
+  async renderEvolutionMetrics() {
     const container = document.getElementById('evolution-container');
     if (!container) {
       // Create container if it doesn't exist
@@ -509,32 +509,58 @@ class MetricsReport {
       html += `<div style="background: white; padding: 1.5rem; margin: 1rem 0; border-radius: 6px; border-left: 4px solid #007acc;">`;
       html += `<h3 style="margin-top: 0;">${repo} - Evolution Metrics</h3>`;
 
+      // Load evolution metrics files
+      let velocity, contributors, refactor, quality, aiAnalysis;
+
+      try {
+        // Try to load velocity trend
+        if (data['velocity_trend.json'] || data.velocity_trend) {
+          const velocityPath = data['velocity_trend.json']?.file || `./calculations/per_repo/${repo}/velocity_trend.json`;
+          velocity = await this.loadJSON(velocityPath);
+        }
+
+        // Try to load refactorization activity
+        if (data['refactorization_activity.json'] || data.refactorization_activity) {
+          const refactorPath = data['refactorization_activity.json']?.file || `./calculations/per_repo/${repo}/refactorization_activity.json`;
+          refactor = await this.loadJSON(refactorPath);
+        }
+
+        // Try to load code quality evolution
+        if (data['code_quality_evolution.json'] || data.code_quality_evolution) {
+          const qualityPath = data['code_quality_evolution.json']?.file || `./calculations/per_repo/${repo}/code_quality_evolution.json`;
+          quality = await this.loadJSON(qualityPath);
+        }
+
+        // Try to load AI indicators
+        if (data['ai_usage_indicators.json'] || data.ai_usage_indicators) {
+          const aiPath = data['ai_usage_indicators.json']?.file || `./calculations/per_repo/${repo}/ai_usage_indicators.json`;
+          aiAnalysis = await this.loadJSON(aiPath);
+        }
+      } catch (err) {
+        console.warn(`Error loading evolution metrics for ${repo}:`, err);
+      }
+
       // Velocity Trends
-      const velocity = data.velocity_trend;
       if (velocity) {
         html += this.renderVelocityTrend(velocity);
       }
 
       // Contributor Growth
-      const contributors = data.contributor_growth;
       if (contributors) {
         html += this.renderContributorGrowth(contributors);
       }
 
       // Refactorization Activity
-      const refactor = data.refactorization_activity;
       if (refactor) {
         html += this.renderRefactorizationActivity(refactor);
       }
 
       // Code Quality Evolution
-      const quality = data.code_quality_evolution;
       if (quality) {
         html += this.renderQualityEvolution(quality);
       }
 
       // AI Analysis
-      const aiAnalysis = data.ai_analysis;
       if (aiAnalysis) {
         html += this.renderAIAnalysis(aiAnalysis);
       }
@@ -553,6 +579,27 @@ class MetricsReport {
 
     html += '</div>';
     document.getElementById('evolution-container').innerHTML = html;
+  }
+
+  async loadJSON(path) {
+    const paths = [
+      path,
+      '../' + path,
+      '/dora/' + path,
+      '/' + path
+    ];
+
+    for (const p of paths) {
+      try {
+        const response = await fetch(p, { cache: 'no-cache' });
+        if (response.ok) {
+          return await response.json();
+        }
+      } catch (err) {
+        continue;
+      }
+    }
+    return null;
   }
 
   renderVelocityTrend(velocity) {
