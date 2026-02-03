@@ -734,7 +734,31 @@ class MetricsReport {
   }
 
   async loadJSON(path) {
-    // Extract just the calculation path (remove ./calculations/ or calculations/ prefix)
+    // Handle git_artifacts paths separately - they should load from root, not calculations/
+    if (path.includes('git_artifacts/')) {
+      // git_artifacts paths load directly from root
+      const paths = [
+        path.startsWith('/') ? path : '/' + path,     // Absolute path from root
+        path,                                           // Original path
+        this.basePath + path,                           // With basePath prefix
+      ];
+
+      for (const p of paths) {
+        try {
+          const response = await fetch(p, { cache: 'no-cache' });
+          if (response.ok) {
+            console.log(`✅ Loaded from: ${p}`);
+            return await response.json();
+          }
+        } catch (err) {
+          continue;
+        }
+      }
+      console.warn(`⚠️ Could not load git_artifacts: ${path}`);
+      return null;
+    }
+
+    // For calculation paths, extract the calculation file name
     let calcPath = path;
     if (path.startsWith('./calculations/')) {
       calcPath = path.replace('./calculations/', '');
