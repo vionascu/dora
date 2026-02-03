@@ -1,0 +1,31 @@
+# Git artifacts (cloned repositories)
+git_artifacts/*/clone/
+git_artifacts/*/clone
+ci_artifacts/*/
+
+# Dependencies
+node_modules/
+.yarn/
+package-lock.json
+
+# Build output
+dist/
+build/
+*.egg-info/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+.env.local
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
