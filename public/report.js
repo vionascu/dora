@@ -586,32 +586,46 @@ class MetricsReport {
   }
 
   async loadJSON(path) {
-    // Convert paths like './calculations/...' to '../calculations/...'
-    // since we're served from /dora/public/ but metrics are at /dora/calculations/
+    // Convert paths to work from /dora/public/ where dashboard is served
+    // Metrics are at /dora/calculations/
+
     let correctedPath = path;
+
+    // Handle various path formats
     if (path.startsWith('./calculations/')) {
+      // ./calculations/... → ../calculations/...
       correctedPath = path.replace('./calculations/', '../calculations/');
+    } else if (path.startsWith('calculations/')) {
+      // calculations/... → ../calculations/...
+      correctedPath = '../' + path;
+    } else if (path.startsWith('/calculations/')) {
+      // /calculations/... → ../calculations/...
+      correctedPath = path.replace('/calculations/', '../calculations/');
     }
 
     const paths = [
-      correctedPath,                  // Corrected relative path
-      path,                           // Original path
-      '../' + path,                   // Parent directory
-      '/dora/' + path,                // Absolute path under /dora
-      '/' + path                      // Root level
+      correctedPath,                           // Corrected relative path (PRIMARY)
+      '../' + path.replace(/^\.?\/?/, ''),     // Parent with path cleanup
+      path,                                    // Original path
+      '/dora/' + path.replace(/^\.?\/?/, ''),  // Absolute path under /dora
+      '/' + path                               // Root level
     ];
 
-    for (const p of paths) {
+    // Remove duplicates
+    const uniquePaths = [...new Set(paths)].filter(p => p);
+
+    for (const p of uniquePaths) {
       try {
         const response = await fetch(p, { cache: 'no-cache' });
         if (response.ok) {
+          console.log(`✅ Loaded metrics from: ${p}`);
           return await response.json();
         }
       } catch (err) {
         continue;
       }
     }
-    console.warn(`Could not load JSON from any path for: ${path}`);
+    console.warn(`❌ Could not load JSON from any path for: ${path}\n   Tried: ${uniquePaths.join(', ')}`);
     return null;
   }
 
