@@ -11,12 +11,18 @@
     "start": null,
     "end": null
   },
-  "test_files": 0,
-  "test_frameworks": [],
-  "epics": 32,
-  "user_stories": 3,
-  "sample_test_files": [],
+  "test_files": 12,
+  "test_frameworks": [
+    "unittest"
+  ],
+  "epics": 12,
+  "user_stories": 23,
+  "sample_test_files": [
+    "tests/conftest.py",
+    "tests/test_quality_gates.py",
+    "tests/test_derived_metrics.py"
+  ],
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-01T09:23:42.518303Z"
+  "calculated_at": "2026-02-03T11:41:00.278118Z"
 }

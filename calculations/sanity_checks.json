@@ -3,7 +3,8 @@
   "repos": [
     "RnDMetrics",
     "TrailEquip",
-    "TrailWaze"
+    "TrailWaze",
+    "aisportal"
   ],
   "inputs": [],
   "time_range": {
@@ -16,5 +17,5 @@
     "calculations_present": true
   },
   "method": "Verify presence of required pipeline directories",
-  "calculated_at": "2026-02-03T10:04:06.816237"
+  "calculated_at": "2026-02-03T13:40:57.219312"
 }

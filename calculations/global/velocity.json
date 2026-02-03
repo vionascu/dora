@@ -1,22 +1,18 @@
 {
   "metric_id": "global.velocity",
   "repos": [
-    "RnDMetrics",
-    "TrailEquip",
-    "TrailWaze"
+    "aisportal"
   ],
   "inputs": [
-    "calculations/per_repo/RnDMetrics/commits.json",
-    "calculations/per_repo/TrailEquip/commits.json",
-    "calculations/per_repo/TrailWaze/commits.json"
+    "calculations/per_repo/aisportal/commits.json"
   ],
   "time_range": {
-    "start": "2026-01-20",
-    "end": "2026-02-01"
+    "start": "2018-09-03",
+    "end": "2026-02-02"
   },
-  "value": 18.31,
+  "value": 4.81,
   "unit": "commits/day",
   "method": "Average per-repo avg_commits_per_day",
   "reason": null,
-  "calculated_at": "2026-02-03T10:04:06.814475"
+  "calculated_at": "2026-02-03T13:40:57.212700"
 }

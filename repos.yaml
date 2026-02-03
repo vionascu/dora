@@ -1,7 +1,7 @@
 repositories:
   aisportal:
     repo: https://git.ecd.axway.org/aisportal/aisportal.git
-    branch: main
+    branch: master
     language: mixed
     ci_system: github-actions
     coverage_tools: []

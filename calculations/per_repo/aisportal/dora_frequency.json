@@ -1,0 +1,19 @@
+{
+  "metric_id": "repo.dora_frequency",
+  "repo": "aisportal",
+  "repos": [
+    "aisportal"
+  ],
+  "inputs": [
+    "git_artifacts/aisportal/commits.json"
+  ],
+  "time_range": {
+    "start": "2018-09-03",
+    "end": "2026-02-02"
+  },
+  "value": 2.65,
+  "unit": "commits/day",
+  "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
+  "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
+  "calculated_at": "2026-02-03T13:40:57.162129"
+}

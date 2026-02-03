@@ -1,0 +1,22 @@
+{
+  "metric_id": "repo.commits",
+  "repo": "aisportal",
+  "repos": [
+    "aisportal"
+  ],
+  "time_range": {
+    "start": "2018-09-03",
+    "end": "2026-02-02"
+  },
+  "inputs": [
+    "git_artifacts/aisportal/commits.json"
+  ],
+  "total_commits": 7182,
+  "unique_dates": 1493,
+  "avg_commits_per_day": 4.81,
+  "period_start": "2018-09-03",
+  "period_end": "2026-02-02",
+  "days_active": 2710,
+  "method": "Count commits; average by unique active dates; active period from first to last commit date",
+  "calculated_at": "2026-02-03T13:40:57.154167"
+}

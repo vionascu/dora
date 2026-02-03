@@ -1,28 +1,26 @@
 {
   "metric_id": "global.summary",
   "repos": [
-    "RnDMetrics",
-    "TrailEquip",
-    "TrailWaze"
+    "aisportal"
   ],
   "inputs": [
-    "calculations/per_repo/RnDMetrics/commits.json",
-    "calculations/per_repo/TrailEquip/commits.json",
-    "calculations/per_repo/TrailWaze/commits.json"
+    "calculations/per_repo/aisportal/commits.json"
   ],
   "time_range": {
-    "start": "2026-01-20",
-    "end": "2026-02-01"
+    "start": "2018-09-03",
+    "end": "2026-02-02"
   },
   "repos_analyzed": [
+    "aisportal"
+  ],
+  "repos_total_count": 4,
+  "repos_with_issues": [
     "RnDMetrics",
     "TrailEquip",
     "TrailWaze"
   ],
-  "repos_total_count": 3,
-  "repos_with_issues": [],
-  "total_commits": 241,
-  "unique_contributors": 3,
+  "total_commits": 7182,
+  "unique_contributors": null,
   "method": "Aggregate per-repo commit totals and contributors",
-  "calculated_at": "2026-02-03T10:04:06.815027"
+  "calculated_at": "2026-02-03T13:40:57.215766"
 }

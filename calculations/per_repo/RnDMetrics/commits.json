@@ -4,19 +4,18 @@
   "repos": [
     "RnDMetrics"
   ],
+  "inputs": [],
   "time_range": {
-    "start": "2026-01-24",
-    "end": "2026-01-31"
+    "start": null,
+    "end": null
   },
-  "inputs": [
-    "git_artifacts/RnDMetrics/commits.json"
-  ],
-  "total_commits": 56,
-  "unique_dates": 3,
-  "avg_commits_per_day": 18.67,
-  "period_start": "2026-01-24",
-  "period_end": "2026-01-31",
-  "days_active": 8,
-  "method": "Count commits; average by unique active dates; active period from first to last commit date",
-  "calculated_at": "2026-02-03T10:04:06.776731"
+  "total_commits": null,
+  "unique_dates": null,
+  "avg_commits_per_day": null,
+  "period_start": null,
+  "period_end": null,
+  "days_active": null,
+  "method": "Count commits in git_artifacts commits.json",
+  "reason": "Missing git_artifacts commits.json",
+  "calculated_at": "2026-02-03T13:40:57.099084"
 }

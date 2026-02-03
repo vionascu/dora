@@ -1,0 +1,22 @@
+{
+  "metric_id": "repo.tests.aisportal",
+  "repo": "aisportal",
+  "repos": [
+    "aisportal"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "test_files": null,
+  "test_frameworks": [],
+  "epics": 0,
+  "user_stories": 0,
+  "sample_test_files": [],
+  "method": "Scan git_artifacts repositories for test files and epic/story references",
+  "reason": null,
+  "calculated_at": "2026-02-03T11:41:00.300714Z"
+}

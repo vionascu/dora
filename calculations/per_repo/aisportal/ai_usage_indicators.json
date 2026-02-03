@@ -1,0 +1,26 @@
+{
+  "metric_id": "repo.ai_usage_indicators.aisportal",
+  "repo": "aisportal",
+  "repos": [
+    "aisportal"
+  ],
+  "inputs": [
+    "git_artifacts/aisportal/commits.json"
+  ],
+  "time_range": {
+    "start": "2018-09-03",
+    "end": "2026-02-02"
+  },
+  "explicit_ai_mentions": {
+    "generated": 2
+  },
+  "total_ai_attributed_commits": 2,
+  "ai_percentage": 0.03,
+  "bug_fix_commits": 1040,
+  "feature_commits": 1113,
+  "bug_fix_percentage": 14.48,
+  "feature_percentage": 15.5,
+  "note": "Explicit AI mentions detected from commit messages",
+  "method": "Analyze commit messages for AI framework mentions and work pattern indicators",
+  "calculated_at": "2026-02-03T11:41:03.380471Z"
+}

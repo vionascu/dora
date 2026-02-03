@@ -5,6 +5,7 @@ Clones repositories and extracts raw git metrics
 """
 
 import subprocess
+import os
 from datetime import datetime
 from pathlib import Path
 from src.config.config_parser import RepoConfigParser
@@ -28,6 +29,17 @@ class GitCollector:
         """Parse repository configuration"""
         return self.config_parser.get_all_repos()
 
+    def _prepare_repo_url(self, repo_url):
+        """Prepare repository URL with authentication if needed"""
+        # Check for GitLab HTTPS URLs that need authentication
+        if "git.ecd.axway.org" in repo_url and repo_url.startswith("https://"):
+            gitlab_token = os.getenv("GITLAB_TOKEN")
+            if gitlab_token:
+                # Insert token into URL: https://oauth2:token@host/path
+                repo_url = repo_url.replace("https://", f"https://oauth2:{gitlab_token}@")
+
+        return repo_url
+
     def collect_repo(self, repo_name, repo_config):
         """Clone repository and extract git data"""
         print(f"  Collecting {repo_name}...")
@@ -39,6 +51,9 @@ class GitCollector:
             print(f"    ✗ No repo URL defined")
             return False
 
+        # Prepare URL with authentication if needed
+        auth_repo_url = self._prepare_repo_url(repo_url)
+
         repo_dir = self.git_artifacts / repo_name
         repo_dir.mkdir(exist_ok=True)
         clone_path = repo_dir / "clone"
@@ -47,7 +62,7 @@ class GitCollector:
         if not clone_path.exists():
             try:
                 subprocess.run(
-                    ["git", "clone", "-b", branch, repo_url, str(clone_path)],
+                    ["git", "clone", "-b", branch, auth_repo_url, str(clone_path)],
                     capture_output=True,
                     timeout=180,
                     check=True

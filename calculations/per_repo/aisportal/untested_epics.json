@@ -1,0 +1,22 @@
+{
+  "metric_id": "repo.untested_epics.aisportal",
+  "repo": "aisportal",
+  "repos": [
+    "aisportal"
+  ],
+  "inputs": [
+    "git_artifacts/github_scan_artifacts.json"
+  ],
+  "time_range": {
+    "start": null,
+    "end": null
+  },
+  "coverage_value": null,
+  "coverage_reason": "Coverage data not available (tool: , requires local test run)",
+  "tests_count": null,
+  "epics_without_coverage": [],
+  "user_stories_without_coverage": [],
+  "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
+  "reason": null,
+  "calculated_at": "2026-02-03T11:41:00.300730Z"
+}

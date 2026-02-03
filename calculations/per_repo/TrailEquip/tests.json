@@ -11,19 +11,19 @@
     "start": null,
     "end": null
   },
-  "test_files": 8,
+  "test_files": 128,
   "test_frameworks": [
     "Jest/Mocha",
     "JUnit"
   ],
   "epics": 0,
-  "user_stories": 0,
+  "user_stories": 22,
   "sample_test_files": [
-    "services/recommendation-service/src/test/java/com/trailequip/recommendation/adapter/rest/RecommendationControllerTest.java",
-    "services/weather-service/src/test/java/com/trailequip/weather/adapter/rest/WeatherControllerTest.java",
-    "services/trail-service/src/test/java/com/trailequip/trail/adapter/rest/TrailControllerTest.java"
+    "services/trail-service/src/test/java/com/trailequip/trail/domain/DifficultyClassifierTest.java",
+    "services/trail-service/src/test/java/com/trailequip/trail/domain/model/DifficultyTest.java",
+    "services/trail-service/src/test/java/com/trailequip/trail/application/service/TrailExportServiceTest.java"
   ],
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-01T09:23:42.525725Z"
+  "calculated_at": "2026-02-03T11:41:00.287038Z"
 }

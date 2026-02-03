@@ -441,8 +441,11 @@ class Calculator:
             if commits_file.exists():
                 with open(commits_file, 'r') as f:
                     data = json.load(f)
-                    total_commits += data.get("total_commits", 0)
-                    repos_analyzed.append(repo_name)
+                    commit_count = data.get("total_commits")
+                    # Skip repos with missing data (None or missing)
+                    if commit_count is not None:
+                        total_commits += commit_count
+                        repos_analyzed.append(repo_name)
                     time_range = data.get("time_range") or {}
                     start = time_range.get("start")
                     end = time_range.get("end")

@@ -4,16 +4,14 @@
   "repos": [
     "TrailEquip"
   ],
-  "inputs": [
-    "git_artifacts/TrailEquip/commits.json"
-  ],
+  "inputs": [],
   "time_range": {
-    "start": "2026-01-28",
-    "end": "2026-02-01"
+    "start": null,
+    "end": null
   },
-  "value": 0.57,
+  "value": null,
   "unit": "hours",
   "method": "Average time between consecutive commits",
-  "note": "Proxy metric. True DORA measures code commit to deployment",
-  "calculated_at": "2026-02-03T10:04:06.795166"
+  "reason": "Missing git_artifacts commits.json",
+  "calculated_at": "2026-02-03T13:40:57.113378"
 }

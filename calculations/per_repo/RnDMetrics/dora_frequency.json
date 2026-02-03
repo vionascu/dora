@@ -4,16 +4,14 @@
   "repos": [
     "RnDMetrics"
   ],
-  "inputs": [
-    "git_artifacts/RnDMetrics/commits.json"
-  ],
+  "inputs": [],
   "time_range": {
-    "start": "2026-01-24",
-    "end": "2026-01-31"
+    "start": null,
+    "end": null
   },
-  "value": 7.0,
+  "value": null,
   "unit": "commits/day",
-  "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
-  "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-  "calculated_at": "2026-02-03T10:04:06.781937"
+  "method": "Total commits / days in history (proxy)",
+  "reason": "Missing git_artifacts commits.json",
+  "calculated_at": "2026-02-03T13:40:57.099119"
 }

@@ -11,12 +11,13 @@
     "start": null,
     "end": null
   },
-  "test_files": 3,
+  "test_files": 365,
   "test_frameworks": [
+    "Jest/Mocha",
     "JUnit"
   ],
-  "epics": 12,
-  "user_stories": 1,
+  "epics": 24,
+  "user_stories": 17,
   "sample_test_files": [
     "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/JsonParserTest.java",
     "apps/mobile/node_modules/detox/android/detox/src/testFull/java/com/wix/invoke/MethodInvocationTest.java",
@@ -24,5 +25,5 @@
   ],
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-01T09:23:42.533175Z"
+  "calculated_at": "2026-02-03T11:41:00.293898Z"
 }
