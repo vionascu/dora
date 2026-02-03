@@ -9,7 +9,23 @@ class MetricsReport {
     this.selectedProject = 'all';
     this.dateFilterFrom = null;
     this.dateFilterTo = null;
+    // Detect base path for GitHub Pages deployment
+    // window.location.pathname = /dora/public/ or /dora/public/index.html
+    this.basePath = this.detectBasePath();
     this.init();
+  }
+
+  detectBasePath() {
+    // From /dora/public/index.html, we need /dora/ as base
+    const pathname = window.location.pathname;
+    console.log('Current pathname:', pathname);
+
+    if (pathname.includes('/dora/public')) {
+      return '/dora/';
+    } else if (pathname.includes('/public')) {
+      return '/';
+    }
+    return '';
   }
 
   async init() {
@@ -26,23 +42,24 @@ class MetricsReport {
   }
 
   async loadManifest() {
-    // Try multiple paths to handle different deployment scenarios
     // GitHub Pages serves from: https://vionascu.github.io/dora/public/
-    // So calculations are at: https://vionascu.github.io/dora/calculations/
+    // Calculations are at: https://vionascu.github.io/dora/calculations/
     const paths = [
-      '../calculations/MANIFEST.json',          // Parent directory (CORRECT for GitHub Pages)
-      './calculations/MANIFEST.json',           // Same directory
-      '/dora/calculations/MANIFEST.json',       // Absolute path under /dora
-      '/calculations/MANIFEST.json'             // Root level
+      this.basePath + 'calculations/MANIFEST.json',  // Absolute path using detected base (PRIMARY)
+      '../calculations/MANIFEST.json',                // Parent directory relative path
+      './calculations/MANIFEST.json'                  // Same directory relative path
     ];
 
     for (const path of paths) {
       try {
+        console.log(`Trying to fetch MANIFEST from: ${path}`);
         const response = await fetch(path, { cache: 'no-cache' });
         if (response.ok) {
           console.log(`✅ Loaded MANIFEST from: ${path}`);
           this.manifest = await response.json();
           return;
+        } else {
+          console.log(`Response not ok from ${path}: ${response.status}`);
         }
       } catch (err) {
         console.warn(`⚠️ Failed to load from ${path}:`, err.message);
@@ -586,46 +603,40 @@ class MetricsReport {
   }
 
   async loadJSON(path) {
-    // Convert paths to work from /dora/public/ where dashboard is served
-    // Metrics are at /dora/calculations/
-
-    let correctedPath = path;
-
-    // Handle various path formats
+    // Extract just the calculation path (remove ./calculations/ or calculations/ prefix)
+    let calcPath = path;
     if (path.startsWith('./calculations/')) {
-      // ./calculations/... → ../calculations/...
-      correctedPath = path.replace('./calculations/', '../calculations/');
+      calcPath = path.replace('./calculations/', '');
     } else if (path.startsWith('calculations/')) {
-      // calculations/... → ../calculations/...
-      correctedPath = '../' + path;
+      calcPath = path.replace('calculations/', '');
     } else if (path.startsWith('/calculations/')) {
-      // /calculations/... → ../calculations/...
-      correctedPath = path.replace('/calculations/', '../calculations/');
+      calcPath = path.replace('/calculations/', '');
     }
 
+    // Build paths using absolute base path first (most reliable)
     const paths = [
-      correctedPath,                           // Corrected relative path (PRIMARY)
-      '../' + path.replace(/^\.?\/?/, ''),     // Parent with path cleanup
-      path,                                    // Original path
-      '/dora/' + path.replace(/^\.?\/?/, ''),  // Absolute path under /dora
-      '/' + path                               // Root level
+      this.basePath + 'calculations/' + calcPath,     // Absolute path (PRIMARY - MOST RELIABLE)
+      '../calculations/' + calcPath,                   // Relative path from public folder
+      './calculations/' + calcPath,                    // Same directory
+      path                                             // Original path as fallback
     ];
 
-    // Remove duplicates
-    const uniquePaths = [...new Set(paths)].filter(p => p);
+    // Remove duplicates and empty paths
+    const uniquePaths = [...new Set(paths)].filter(p => p && p.trim());
 
     for (const p of uniquePaths) {
       try {
         const response = await fetch(p, { cache: 'no-cache' });
         if (response.ok) {
-          console.log(`✅ Loaded metrics from: ${p}`);
+          console.log(`✅ Loaded from: ${p}`);
           return await response.json();
         }
       } catch (err) {
+        // Silent fail, try next path
         continue;
       }
     }
-    console.warn(`❌ Could not load JSON from any path for: ${path}\n   Tried: ${uniquePaths.join(', ')}`);
+    console.warn(`⚠️ Could not load: ${path} from paths: ${uniquePaths.join(', ')}`);
     return null;
   }
 
