@@ -53,7 +53,7 @@
       "errors": [
         "No lcov.info file generated"
       ],
-      "collected_at": "2026-02-03T10:14:26.165987"
+      "collected_at": "2026-02-03T10:19:26.810741"
     },
     {
       "tool": "jacoco",
@@ -68,8 +68,8 @@
       "errors": [
         "[Errno 2] No such file or directory: './gradlew'"
       ],
-      "collected_at": "2026-02-03T10:14:26.166002"
+      "collected_at": "2026-02-03T10:19:26.810755"
     }
   ],
-  "collected_at": "2026-02-03T10:14:26.166005"
+  "collected_at": "2026-02-03T10:19:26.810757"
 }
