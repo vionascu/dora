@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DORA Documentation - Complete Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .search-box {
+            margin: 30px 0;
+            text-align: center;
+            animation: slideUp 0.6s ease-out 0.2s both;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .quick-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+            animation: fadeIn 0.6s ease-out 0.3s both;
+        }
+
+        .nav-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            border-left-color: #764ba2;
+        }
+
+        .nav-card h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .nav-card p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .nav-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-card a:hover {
+            color: #764ba2;
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-card:hover .arrow {
+            transform: translateX(3px);
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease-out both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.4s; }
+        .section:nth-child(2) { animation-delay: 0.5s; }
+        .section:nth-child(3) { animation-delay: 0.6s; }
+        .section:nth-child(4) { animation-delay: 0.7s; }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4em;
+        }
+
+        .section-icon {
+            font-size: 1.5em;
+        }
+
+        .doc-list {
+            list-style: none;
+        }
+
+        .doc-list li {
+            margin-bottom: 12px;
+            padding-left: 0;
+        }
+
+        .doc-list a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            border-radius: 4px;
+        }
+
+        .doc-list a:hover {
+            color: #764ba2;
+            padding-left: 5px;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .section p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            opacity: 0.9;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 2px;
+            margin-top: 10px;
+        }
+
+        .role-badge.manager {
+            background: rgba(52, 152, 219, 0.3);
+        }
+
+        .role-badge.developer {
+            background: rgba(46, 204, 113, 0.3);
+        }
+
+        .role-badge.architect {
+            background: rgba(155, 89, 182, 0.3);
+        }
+
+        .role-badge.devops {
+            background: rgba(230, 126, 34, 0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .quick-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .sections {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📚 DORA Documentation</h1>
+            <p>Complete guide to understanding and using DORA Metrics</p>
+        </header>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search documentation...">
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="quick-nav">
+            <div class="nav-card">
+                <h3>❓ New to DORA?</h3>
+                <p>Start here if you're just learning about DORA for the first time.</p>
+                <a href="BEGINNERS_GUIDE.md">
+                    Read Beginner's Guide <span class="arrow">→</span>
+                </a>
+                <span class="time-badge">15 min read</span>
+            </div>
+
+            <div class="nav-card">
+                <h3>⚡ Need Quick Info?</h3>
+                <p>One-page reference card with everything you need to know at a glance.</p>
+                <a href="QUICK_REFERENCE_CARD.md">
+                    View Quick Reference <span class="arrow">→</span>
+                </a>
+                <span class="time-badge">3 min read</span>
+            </div>
+
+            <div class="nav-card">
+                <h3>👀 Show Me Visual?</h3>
+                <p>Step-by-step walkthrough with screenshots and visual diagrams.</p>
+                <a href="VISUAL_WALKTHROUGH.md">
+                    Start Walkthrough <span class="arrow">→</span>
+                </a>
+                <span class="time-badge">10 min read</span>
+            </div>
+
+            <div class="nav-card">
+                <h3>🗺️ Find Your Path</h3>
+                <p>Documentation organized by role, task, or question.</p>
+                <a href="DOCUMENTATION_MAP.md">
+                    View Navigation Map <span class="arrow">→</span>
+                </a>
+                <span class="time-badge">5 min read</span>
+            </div>
+        </div>
+
+        <!-- Main Documentation Sections -->
+        <div class="sections">
+            <!-- For Everyone -->
+            <div class="section">
+                <h2>
+                    <span class="section-icon">👥</span>
+                    For Everyone
+                </h2>
+                <p>Start here regardless of your role or technical background.</p>
+                <ul class="doc-list">
+                    <li><a href="BEGINNERS_GUIDE.md">📖 Beginner's Guide <span class="time-badge">15 min</span></a></li>
+                    <li><a href="QUICK_REFERENCE_CARD.md">📋 Quick Reference Card <span class="time-badge">3 min</span></a></li>
+                    <li><a href="VISUAL_WALKTHROUGH.md">👁️ Visual Walkthrough <span class="time-badge">10 min</span></a></li>
+                    <li><a href="DOCUMENTATION_MAP.md">🗺️ Documentation Map <span class="time-badge">5 min</span></a></li>
+                    <li><a href="QUICK_START.md">🚀 Quick Start <span class="time-badge">3 min</span></a></li>
+                </ul>
+                <div>
+                    <span class="role-badge">Project Managers</span>
+                    <span class="role-badge">Junior Developers</span>
+                    <span class="role-badge">Everyone</span>
+                </div>
+            </div>
+
+            <!-- For Developers -->
+            <div class="section">
+                <h2>
+                    <span class="section-icon">👨‍💻</span>
+                    For Developers
+                </h2>
+                <p>Guides for setting up projects and working with DORA.</p>
+                <ul class="doc-list">
+                    <li><a href="PROJECT_CONFIG_GUIDE.md">⚙️ Project Configuration <span class="time-badge">15 min</span></a></li>
+                    <li><a href="JIRA_EXPORT_GUIDE.md">🔗 JIRA Integration <span class="time-badge">20 min</span></a></li>
+                    <li><a href="NON_INTRUSIVE_ARCHITECTURE.md">🏗️ Architecture Deep Dive <span class="time-badge">30 min</span></a></li>
+                    <li><a href="AUTO_FIX_WORKFLOW.md">🤖 Auto-Fix System <span class="time-badge">15 min</span></a></li>
+                </ul>
+                <div>
+                    <span class="role-badge developer">Junior Developers</span>
+                    <span class="role-badge developer">Developers</span>
+                </div>
+            </div>
+
+            <!-- For Architects & DevOps -->
+            <div class="section">
+                <h2>
+                    <span class="section-icon">🏗️</span>
+                    For Architects & DevOps
+                </h2>
+                <p>Technical documentation for system design and deployment.</p>
+                <ul class="doc-list">
+                    <li><a href="NON_INTRUSIVE_ARCHITECTURE.md">🏗️ System Architecture <span class="time-badge">30 min</span></a></li>
+                    <li><a href="UNDERSTANDING_THE_CONSTRAINTS.md">💡 Design Decisions <span class="time-badge">10 min</span></a></li>
+                    <li><a href="GITHUB_PAGES_DEPLOYMENT.md">🚀 Deployment Guide <span class="time-badge">15 min</span></a></li>
+                    <li><a href="AUTO_FIX_WORKFLOW.md">🤖 Auto-Fix System <span class="time-badge">15 min</span></a></li>
+                </ul>
+                <div>
+                    <span class="role-badge architect">Tech Leads</span>
+                    <span class="role-badge architect">Architects</span>
+                    <span class="role-badge devops">DevOps</span>
+                </div>
+            </div>
+
+            <!-- References & Advanced -->
+            <div class="section">
+                <h2>
+                    <span class="section-icon">📚</span>
+                    Reference & Advanced
+                </h2>
+                <p>Additional resources and detailed technical guides.</p>
+                <ul class="doc-list">
+                    <li><a href="ARCHITECTURE_GUIDE.md">🏛️ Architecture Reference <span class="time-badge">25 min</span></a></li>
+                    <li><a href="IMPLEMENTATION_SUMMARY.md">✅ Implementation Summary <span class="time-badge">20 min</span></a></li>
+                    <li><a href="DEPLOYMENT_COMPLETE.md">📦 Deployment Complete <span class="time-badge">15 min</span></a></li>
+                    <li><a href="README.md">📄 Project README <span class="time-badge">5 min</span></a></li>
+                </ul>
+                <div>
+                    <span class="role-badge architect">Architects</span>
+                    <span class="role-badge devops">DevOps</span>
+                    <span class="role-badge">Advanced Users</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>📚 DORA Documentation Hub | Last Updated: February 3, 2026</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                Can't find what you need? Check the <a href="DOCUMENTATION_MAP.md" style="color: white; text-decoration: underline;">Documentation Map</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const navCards = document.querySelectorAll('.nav-card');
+        const sections = document.querySelectorAll('.section');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+
+            navCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.classList.toggle('hidden', !text.includes(searchTerm));
+            });
+
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                section.classList.toggle('hidden', !text.includes(searchTerm));
+            });
+        });
+
+        // Make nav cards clickable
+        navCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const link = card.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
