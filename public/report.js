@@ -843,11 +843,12 @@ class MetricsReport {
 
   renderVelocityChart(velocityData) {
     const ctx = document.getElementById('velocityChart');
-    if (!ctx) return;
+    const container = ctx?.parentElement;
+    if (!ctx || !container) return;
 
     if (!velocityData || !velocityData.weekly_data) {
-      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">📊 N/A - Velocity data not available</p>';
-      this.addDataSource('velocityChart', 'No data available', 'calculations/global/velocity.json');
+      container.innerHTML = '<p style="color: #999; padding: 2rem;">📊 N/A - Velocity data not available</p>';
+      this.addDataSourceNote(container, 'No data available', 'calculations/global/velocity.json');
       return;
     }
 
@@ -906,12 +907,13 @@ class MetricsReport {
       }
     });
 
-    this.addDataSource('velocityChart', `Data from ${labels.length} weeks`, 'calculations/global/velocity.json');
+    this.addDataSourceNote(container, `Data from ${labels.length} weeks`, 'calculations/global/velocity.json');
   }
 
   renderCoverageChart(commitsData) {
     const ctx = document.getElementById('coverageChart');
-    if (!ctx) return;
+    const container = ctx?.parentElement;
+    if (!ctx || !container) return;
 
     // Try to get coverage data
     let coveragePercentage = null;
@@ -920,8 +922,8 @@ class MetricsReport {
     }
 
     if (coveragePercentage === null || coveragePercentage === undefined) {
-      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">🎯 N/A - Test coverage data not available (requires local test run)</p>';
-      this.addDataSource('coverageChart', 'No data available', 'calculations/global/commits.json');
+      container.innerHTML = '<p style="color: #999; padding: 2rem;">🎯 N/A - Test coverage data not available (requires local test run)</p>';
+      this.addDataSourceNote(container, 'No data available', 'calculations/global/commits.json');
       return;
     }
 
@@ -960,16 +962,17 @@ class MetricsReport {
       }
     });
 
-    this.addDataSource('coverageChart', `${testedPercentage}% tested`, 'calculations/global/commits.json');
+    this.addDataSourceNote(container, `${testedPercentage}% tested`, 'calculations/global/commits.json');
   }
 
   renderContributorsChart(contributorsData, commitsData) {
     const ctx = document.getElementById('contributorsChart');
-    if (!ctx) return;
+    const container = ctx?.parentElement;
+    if (!ctx || !container) return;
 
     if (!commitsData || !commitsData.contributors_by_commits) {
-      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - Contributors breakdown not available</p>';
-      this.addDataSource('contributorsChart', 'No breakdown data', 'calculations/global/commits.json');
+      container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - Contributors breakdown not available</p>';
+      this.addDataSourceNote(container, 'No breakdown data', 'calculations/global/commits.json');
       return;
     }
 
@@ -977,8 +980,8 @@ class MetricsReport {
     const contributors = commitsData.contributors_by_commits || [];
 
     if (contributors.length === 0) {
-      ctx.parentElement.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
-      this.addDataSource('contributorsChart', 'Empty dataset', 'calculations/global/commits.json');
+      container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
+      this.addDataSourceNote(container, 'Empty dataset', 'calculations/global/commits.json');
       return;
     }
 
@@ -1044,11 +1047,11 @@ class MetricsReport {
       }
     });
 
-    this.addDataSource('contributorsChart', `Top ${topContributors.length} contributors`, 'calculations/global/commits.json');
+    this.addDataSourceNote(container, `Top ${topContributors.length} contributors`, 'calculations/global/commits.json');
   }
 
-  addDataSource(chartId, description, source) {
-    const container = document.getElementById(chartId).parentElement;
+  addDataSourceNote(container, description, source) {
+    if (!container) return;
     const sourceNote = document.createElement('div');
     sourceNote.className = 'chart-data-source';
     sourceNote.innerHTML = `<small>📊 Data: ${description} | Source: <code>${source}</code></small>`;
