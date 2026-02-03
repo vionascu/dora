@@ -817,8 +817,8 @@ class MetricsReport {
         return null;
       });
 
-      const contributorsData = await this.loadJSON(this.basePath + 'calculations/global/contributors.json').catch(e => {
-        console.warn('⚠️ Contributors data not available:', e.message);
+      const globalContributorsData = await this.loadJSON(this.basePath + 'calculations/global/contributors.json').catch(e => {
+        console.warn('⚠️ Global contributors count not available:', e.message);
         return null;
       });
 
@@ -827,14 +827,27 @@ class MetricsReport {
         return null;
       });
 
+      // Load per-repo contributor data to get individual contributor breakdown
+      let perRepoContributorsData = [];
+      const repos = ['RnDMetrics', 'TrailEquip', 'TrailWaze'];
+      for (const repo of repos) {
+        const repoContribData = await this.loadJSON(this.basePath + `calculations/per_repo/${repo}/contributors.json`).catch(e => {
+          console.warn(`⚠️ Contributor data for ${repo} not available:`, e.message);
+          return null;
+        });
+        if (repoContribData) {
+          perRepoContributorsData.push({ repo, data: repoContribData });
+        }
+      }
+
       // Render velocity trend chart (Line Chart) - from real data
       this.renderVelocityChart(velocityData);
 
       // Render test coverage chart (Donut Chart) - from real data or N/A
       this.renderCoverageChart(commitsData);
 
-      // Render contributors chart (Bar Chart) - from real data
-      this.renderContributorsChart(contributorsData, commitsData);
+      // Render contributors chart (Bar Chart) - from real per-repo data
+      this.renderContributorsChart(globalContributorsData, perRepoContributorsData);
     } catch (err) {
       console.warn('Chart rendering error:', err);
       // Charts are optional, don't fail the whole report
@@ -965,32 +978,54 @@ class MetricsReport {
     this.addDataSourceNote(container, `${testedPercentage}% tested`, 'calculations/global/commits.json');
   }
 
-  renderContributorsChart(contributorsData, commitsData) {
+  renderContributorsChart(globalContributorsData, perRepoContributorsData) {
     const ctx = document.getElementById('contributorsChart');
     const container = ctx?.parentElement;
     if (!ctx || !container) return;
 
-    if (!commitsData || !commitsData.contributors_by_commits) {
-      container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - Contributors breakdown not available</p>';
-      this.addDataSourceNote(container, 'No breakdown data', 'calculations/global/commits.json');
-      return;
+    // Aggregate contributor data from all repos
+    const contributorMap = {};
+
+    // Process each repo's contributors
+    for (const { repo, data } of perRepoContributorsData) {
+      if (data && data.unique_contributors) {
+        // If we have individual contributors data, use it
+        if (data.contributors) {
+          for (const contrib of data.contributors) {
+            const name = contrib.name || 'Unknown';
+            contributorMap[name] = (contributorMap[name] || 0) + (contrib.commits || 1);
+          }
+        } else {
+          // Fallback: use repo name with unique count
+          const repoLabel = `${repo} (${data.unique_contributors} contributors)`;
+          contributorMap[repoLabel] = data.unique_contributors;
+        }
+      }
     }
 
-    // Extract real contributor data from calculations
-    const contributors = commitsData.contributors_by_commits || [];
+    // Convert to array and sort by commit count
+    const contributors = Object.entries(contributorMap)
+      .map(([name, commits]) => ({ name, commits }))
+      .sort((a, b) => b.commits - a.commits);
 
     if (contributors.length === 0) {
-      container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
-      this.addDataSourceNote(container, 'Empty dataset', 'calculations/global/commits.json');
+      // Show count if we have it
+      if (globalContributorsData && globalContributorsData.unique_contributors) {
+        container.innerHTML = `<p style="color: #999; padding: 2rem;">👥 ${globalContributorsData.unique_contributors} total contributors (breakdown not available)</p>`;
+        this.addDataSourceNote(container, `${globalContributorsData.unique_contributors} unique contributors total`, 'calculations/global/contributors.json');
+      } else {
+        container.innerHTML = '<p style="color: #999; padding: 2rem;">👥 N/A - No contributor data available</p>';
+        this.addDataSourceNote(container, 'No breakdown data', 'calculations/per_repo/*/contributors.json');
+      }
       return;
     }
 
     // Take top 10 contributors
     const topContributors = contributors.slice(0, 10);
-    const labels = topContributors.map(c => c.name || 'Unknown');
-    const data = topContributors.map(c => c.commits || 0);
+    const labels = topContributors.map(c => c.name);
+    const data = topContributors.map(c => c.commits);
 
-    console.log('✅ Contributors Chart - Real data loaded:', { contributors: topContributors.length, totalCommits: data.reduce((a, b) => a + b, 0) });
+    console.log('✅ Contributors Chart - Real data loaded from GitHub:', { contributors: topContributors.length, totalCommits: data.reduce((a, b) => a + b, 0) });
 
     new Chart(ctx, {
       type: 'bar',
@@ -1047,7 +1082,7 @@ class MetricsReport {
       }
     });
 
-    this.addDataSourceNote(container, `Top ${topContributors.length} contributors`, 'calculations/global/commits.json');
+    this.addDataSourceNote(container, `Top ${topContributors.length} contributors from GitHub`, 'calculations/per_repo/*/contributors.json');
   }
 
   addDataSourceNote(container, description, source) {
