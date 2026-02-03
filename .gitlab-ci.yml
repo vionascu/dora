@@ -88,6 +88,7 @@ pages:
   stage: deploy
   image: python:3.9
   dependencies:
+    - collect_git
     - calculate_metrics
   before_script:
     - echo "Installing dependencies..."
