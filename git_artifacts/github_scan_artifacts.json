@@ -137,8 +137,8 @@
   "test_frameworks": {
     "RnDMetrics": [],
     "TrailEquip": [
-      "JUnit",
-      "Jest/Mocha"
+      "Jest/Mocha",
+      "JUnit"
     ],
     "TrailWaze": []
   },

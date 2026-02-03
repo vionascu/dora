@@ -13,8 +13,8 @@
   },
   "test_files": 8,
   "test_frameworks": [
-    "JUnit",
-    "Jest/Mocha"
+    "Jest/Mocha",
+    "JUnit"
   ],
   "epics": 0,
   "user_stories": 22,
@@ -25,5 +25,5 @@
   ],
   "method": "Scan git_artifacts repositories for test files and epic/story references",
   "reason": null,
-  "calculated_at": "2026-02-03T09:27:56.559341Z"
+  "calculated_at": "2026-02-03T09:31:53.452319Z"
 }
