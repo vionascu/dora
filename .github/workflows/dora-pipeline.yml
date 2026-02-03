@@ -27,6 +27,9 @@ jobs:
       with:
         python-version: '3.9'
 
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
+
     - name: Create required directories
       run: |
         mkdir -p git_artifacts
@@ -39,7 +42,7 @@ jobs:
         echo "======================================================================"
         echo "DORA COLLECTION LAYER - Parsing ReposInput.md"
         echo "======================================================================"
-        python3 src/collection/collect_git.py --print-repos
+        PYTHONPATH=${{ github.workspace }} python3 src/collection/collect_git.py --print-repos
 
     - name: "📥 Collect Git Artifacts"
       run: |
@@ -47,7 +50,7 @@ jobs:
         echo "======================================================================"
         echo "DORA COLLECTION LAYER - Git Data Extraction"
         echo "======================================================================"
-        python3 src/collection/collect_git.py
+        PYTHONPATH=${{ github.workspace }} python3 src/collection/collect_git.py
 
     - name: "🔧 Collect CI Artifacts"
       run: |
@@ -55,7 +58,7 @@ jobs:
         echo "======================================================================"
         echo "DORA COLLECTION LAYER - CI Artifacts Extraction"
         echo "======================================================================"
-        python3 src/collection/collect_ci.py
+        PYTHONPATH=${{ github.workspace }} python3 src/collection/collect_ci.py
 
     - name: "🔎 Scan GitHub for Epics & Tests"
       run: |
@@ -63,7 +66,7 @@ jobs:
         echo "======================================================================"
         echo "DORA COLLECTION LAYER - GitHub Artifact Scanning"
         echo "======================================================================"
-        python3 src/collection/scan_github_artifacts.py
+        PYTHONPATH=${{ github.workspace }} python3 src/collection/scan_github_artifacts.py
 
     - name: "🧮 Calculate Metrics"
       run: |
@@ -71,10 +74,10 @@ jobs:
         echo "======================================================================"
         echo "DORA CALCULATION LAYER - Metrics Computation"
         echo "======================================================================"
-        python3 src/calculations/calculate.py
+        PYTHONPATH=${{ github.workspace }} python3 src/calculations/calculate.py
 
     - name: "📈 Calculate Test Metrics"
-      run: python3 src/calculations/calculate_test_metrics.py
+      run: PYTHONPATH=${{ github.workspace }} python3 src/calculations/calculate_test_metrics.py
 
     - name: "📈 Calculate Evolution Metrics"
       run: |
@@ -82,7 +85,7 @@ jobs:
         echo "======================================================================"
         echo "DORA EVOLUTION LAYER - Velocity, Quality & AI Indicators"
         echo "======================================================================"
-        python3 src/calculations/calculate_evolution_metrics.py
+        PYTHONPATH=${{ github.workspace }} python3 src/calculations/calculate_evolution_metrics.py
 
     - name: "🤖 Detect AI Usage Patterns"
       run: |
@@ -90,7 +93,7 @@ jobs:
         echo "======================================================================"
         echo "DORA AI DETECTION - Analyzing for AI-Assisted Development"
         echo "======================================================================"
-        python3 src/calculations/detect_ai_patterns.py
+        PYTHONPATH=${{ github.workspace }} python3 src/calculations/detect_ai_patterns.py
 
     - name: "✅ Validate Data Quality"
       run: |
@@ -98,10 +101,10 @@ jobs:
         echo "======================================================================"
         echo "DORA VALIDATION LAYER - Quality Gates"
         echo "======================================================================"
-        python3 src/validation/validate.py
+        PYTHONPATH=${{ github.workspace }} python3 src/validation/validate.py
 
     - name: "📋 Generate Validation Manifest"
-      run: python3 src/calculations/calculate_test_metrics.py
+      run: PYTHONPATH=${{ github.workspace }} python3 src/calculations/calculate_test_metrics.py
 
     - name: Upload artifacts
       if: always()
