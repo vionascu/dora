@@ -1,0 +1,16 @@
+# DORA Metrics Collection System - Python Dependencies
+# Generated: February 3, 2026
+
+# Core dependencies
+PyYAML>=6.0          # YAML configuration parsing (config_parser.py)
+
+# All other imports are from Python standard library:
+# - json (standard library)
+# - subprocess (standard library)
+# - re (standard library)
+# - xml.etree.ElementTree (standard library)
+# - pathlib (standard library)
+# - datetime (standard library)
+# - collections (standard library)
+# - dataclasses (standard library - Python 3.7+)
+# - typing (standard library)
