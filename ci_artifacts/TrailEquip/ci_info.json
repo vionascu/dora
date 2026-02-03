@@ -2,8 +2,55 @@
   "metric_id": "ci.info.raw",
   "repo": "TrailEquip",
   "language": "java",
-  "coverage_tool": "jacoco",
-  "status": "initialized",
-  "note": "Run local tests to populate coverage data",
-  "collected_at": "2026-02-01T11:23:14.034327"
+  "environment_validation": {
+    "status": "missing_dependencies",
+    "available_tools": {
+      "java": {
+        "installed": false,
+        "version": null
+      },
+      "mvn": {
+        "installed": false,
+        "version": null
+      },
+      "gradle": {
+        "installed": false,
+        "version": null
+      },
+      "docker": {
+        "installed": false,
+        "version": null
+      }
+    },
+    "missing_tools": [
+      "java",
+      "mvn"
+    ],
+    "warnings": [
+      "Optional tool gradle not found",
+      "Optional tool docker not found"
+    ]
+  },
+  "framework_detection": {
+    "test_framework": "JUnit",
+    "coverage_tool": "jacoco"
+  },
+  "coverage_results": [
+    {
+      "tool": "jacoco",
+      "language": "java",
+      "success": false,
+      "coverage_percentage": null,
+      "files_covered": 0,
+      "lines_covered": 0,
+      "lines_total": 0,
+      "report_path": null,
+      "status_message": "Error running JaCoCo: [Errno 2] No such file or directory: 'mvn'",
+      "errors": [
+        "[Errno 2] No such file or directory: 'mvn'"
+      ],
+      "collected_at": "2026-02-03T10:03:14.779954"
+    }
+  ],
+  "collected_at": "2026-02-03T10:03:14.779976"
 }

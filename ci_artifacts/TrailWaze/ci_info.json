@@ -2,8 +2,77 @@
   "metric_id": "ci.info.raw",
   "repo": "TrailWaze",
   "language": "mixed",
-  "coverage_tool": "lcov",
-  "status": "initialized",
-  "note": "Run local tests to populate coverage data",
-  "collected_at": "2026-02-01T11:23:17.599563"
+  "environment_validation": {
+    "status": "missing_dependencies",
+    "available_tools": {
+      "java": {
+        "installed": false,
+        "version": null
+      },
+      "python3": {
+        "installed": true,
+        "version": null
+      },
+      "node": {
+        "installed": true,
+        "version": null
+      },
+      "mvn": {
+        "installed": false,
+        "version": null
+      },
+      "npm": {
+        "installed": true,
+        "version": "11.7.0"
+      },
+      "docker": {
+        "installed": false,
+        "version": null
+      }
+    },
+    "missing_tools": [
+      "java"
+    ],
+    "warnings": [
+      "Optional tool mvn not found",
+      "Optional tool docker not found"
+    ]
+  },
+  "framework_detection": {
+    "test_framework": null,
+    "coverage_tool": null
+  },
+  "coverage_results": [
+    {
+      "tool": "lcov",
+      "language": "javascript",
+      "success": false,
+      "coverage_percentage": null,
+      "files_covered": 0,
+      "lines_covered": 0,
+      "lines_total": 0,
+      "report_path": null,
+      "status_message": "npm test execution completed but no coverage report found",
+      "errors": [
+        "No lcov.info file generated"
+      ],
+      "collected_at": "2026-02-03T10:03:29.874246"
+    },
+    {
+      "tool": "jacoco",
+      "language": "java",
+      "success": false,
+      "coverage_percentage": null,
+      "files_covered": 0,
+      "lines_covered": 0,
+      "lines_total": 0,
+      "report_path": null,
+      "status_message": "Error running JaCoCo: [Errno 2] No such file or directory: 'mvn'",
+      "errors": [
+        "[Errno 2] No such file or directory: 'mvn'"
+      ],
+      "collected_at": "2026-02-03T10:03:29.874264"
+    }
+  ],
+  "collected_at": "2026-02-03T10:03:29.874266"
 }

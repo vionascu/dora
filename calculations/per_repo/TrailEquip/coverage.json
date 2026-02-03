@@ -4,16 +4,13 @@
   "repos": [
     "TrailEquip"
   ],
-  "inputs": [
-    "ci_artifacts/TrailEquip/coverage/jacoco/services_recommendation-service.jacoco.xml",
-    "ci_artifacts/TrailEquip/coverage/jacoco/services_recommendation-service.jacoco.xml"
-  ],
+  "inputs": [],
   "time_range": {
     "start": null,
     "end": null
   },
-  "value": 100.0,
-  "reason": null,
-  "method": "Parse jacoco output",
-  "calculated_at": "2026-02-01T11:23:42.383941"
+  "value": null,
+  "reason": "Coverage data not available (tool: , requires local test run)",
+  "method": "Parse  output",
+  "calculated_at": "2026-02-03T10:04:06.794325"
 }
