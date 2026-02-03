@@ -9,6 +9,18 @@ stages:
 variables:
   PYTHONPATH: "$CI_PROJECT_DIR"
 
+# Default configuration for all jobs
+default:
+  tags:
+    - docker
+    - linux
+  retry:
+    max: 2
+    when:
+      - script_failure
+      - stuck_or_timeout_failure
+      - runner_system_failure
+
 # Stage 1: Collect Git Data
 collect_git:
   stage: collect
@@ -16,8 +28,10 @@ collect_git:
   variables:
     GIT_DEPTH: 0
   before_script:
-    - pip install --upgrade pip
+    - echo "📦 Installing Python dependencies..."
+    - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
+    - echo "✅ Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA COLLECTION LAYER - Git Data Extraction"
@@ -31,10 +45,7 @@ collect_git:
     - main
     - master
     - schedules
-  retry:
-    max: 2
-    when:
-      - script_failure
+  allow_failure: false
 
 # Stage 2: Calculate Metrics
 calculate_metrics:
@@ -43,8 +54,10 @@ calculate_metrics:
   dependencies:
     - collect_git
   before_script:
-    - pip install --upgrade pip
+    - echo "📦 Installing Python dependencies..."
+    - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
+    - echo "✅ Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA CALCULATION LAYER - Metrics Computation"
@@ -60,6 +73,7 @@ calculate_metrics:
     - echo "DORA EVOLUTION LAYER - Velocity & Quality Indicators"
     - echo "======================================================================"
     - python3 src/calculations/calculate_evolution_metrics.py
+    - echo "✅ All calculations complete"
   artifacts:
     paths:
       - calculations/
@@ -69,10 +83,6 @@ calculate_metrics:
     - main
     - master
     - schedules
-  retry:
-    max: 2
-    when:
-      - script_failure
 
 # Stage 3: Deploy to GitLab Pages
 pages:
@@ -81,27 +91,36 @@ pages:
   dependencies:
     - calculate_metrics
   before_script:
-    - pip install --upgrade pip
+    - echo "📦 Installing dependencies..."
+    - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
+    - echo "✅ Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA DEPLOYMENT - Preparing GitLab Pages"
     - echo "======================================================================"
     - |
-      mkdir -p public
-      # Copy dashboard
-      cp -r public/* public_output/ 2>/dev/null || true
       mkdir -p public_output
-      cp -r public/* public_output/ 2>/dev/null || true
-      cp public/index.html public_output/index.html 2>/dev/null || true
-      cp public/report.js public_output/report.js 2>/dev/null || true
-      cp public/report.css public_output/report.css 2>/dev/null || true
+      # Copy dashboard files
+      if [ -d "public" ]; then
+        echo "📋 Copying dashboard files..."
+        cp -v public/*.html public_output/ 2>/dev/null || true
+        cp -v public/*.js public_output/ 2>/dev/null || true
+        cp -v public/*.css public_output/ 2>/dev/null || true
+      fi
       # Copy calculations
-      cp -r calculations public_output/
+      if [ -d "calculations" ]; then
+        echo "📊 Copying calculations..."
+        cp -r calculations public_output/
+      fi
       # Copy documentation
-      cp -r docs public_output/
+      if [ -d "docs" ]; then
+        echo "📚 Copying documentation..."
+        cp -r docs public_output/
+      fi
     - |
       # Move to public folder for GitLab Pages
+      echo "🚀 Finalizing deployment..."
       rm -rf public
       mv public_output public
     - echo "✅ Dashboard ready for deployment"
@@ -117,10 +136,6 @@ pages:
     - main
     - master
     - schedules
-  retry:
-    max: 2
-    when:
-      - script_failure
 
 # Scheduled job: Daily metrics collection
 scheduled_collection:
@@ -129,20 +144,19 @@ scheduled_collection:
   variables:
     GIT_DEPTH: 0
   before_script:
-    - pip install --upgrade pip
+    - echo "📦 Installing Python dependencies..."
+    - pip install --upgrade pip setuptools wheel
     - pip install -r requirements.txt
+    - echo "✅ Dependencies installed"
   script:
     - echo "======================================================================"
     - echo "DORA SCHEDULED COLLECTION - Daily Metrics Update"
     - echo "======================================================================"
     - python3 src/collection/collect_git.py
+    - echo "✅ Scheduled collection complete"
   artifacts:
     paths:
       - git_artifacts/
     expire_in: 1 day
   only:
     - schedules
-  retry:
-    max: 2
-    when:
-      - script_failure
