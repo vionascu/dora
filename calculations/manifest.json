@@ -1,6 +1,6 @@
 {
   "manifest_id": "dora.manifest",
-  "generated_at": "2026-02-03T09:31:53.414674Z",
+  "generated_at": "2026-02-03T09:38:07.326117Z",
   "validation_status": "PASS",
   "summary": {
     "total_metrics": 48,
@@ -52,7 +52,7 @@
         }
       ],
       "method": "Aggregate AI analysis across all repositories",
-      "calculated_at": "2026-02-03T09:31:53.365084Z",
+      "calculated_at": "2026-02-03T09:38:07.271206Z",
       "calculation_path": "calculations/global/ai_usage_analysis.json"
     },
     "commits.json": {
@@ -74,7 +74,7 @@
       "total_commits": 247,
       "repos_count": 3,
       "method": "Sum commits across all analyzed repos",
-      "calculated_at": "2026-02-03T09:31:53.228986",
+      "calculated_at": "2026-02-03T09:38:07.120097",
       "calculation_path": "calculations/global/commits.json"
     },
     "contributors.json": {
@@ -92,7 +92,7 @@
       "unique_contributors": null,
       "method": "Union of author emails across repos",
       "reason": "No authors.json inputs available",
-      "calculated_at": "2026-02-03T09:31:53.229107",
+      "calculated_at": "2026-02-03T09:38:07.120264",
       "calculation_path": "calculations/global/contributors.json"
     },
     "summary.json": {
@@ -121,7 +121,7 @@
       "total_commits": 247,
       "unique_contributors": null,
       "method": "Aggregate per-repo commit totals and contributors",
-      "calculated_at": "2026-02-03T09:31:53.229502",
+      "calculated_at": "2026-02-03T09:38:07.120784",
       "calculation_path": "calculations/global/summary.json"
     },
     "tests.json": {
@@ -144,7 +144,7 @@
       "description": "Total test files across all repositories",
       "method": "Scan git_artifacts repositories for test files and epic/story references",
       "reason": null,
-      "calculated_at": "2026-02-03T09:31:53.265520Z",
+      "calculated_at": "2026-02-03T09:38:07.160054Z",
       "calculation_path": "calculations/global/tests.json"
     },
     "untested_epics.json": {
@@ -281,7 +281,7 @@
       },
       "method": "List epics/user stories for repos with missing or null coverage",
       "reason": null,
-      "calculated_at": "2026-02-03T09:31:53.265712Z",
+      "calculated_at": "2026-02-03T09:38:07.160233Z",
       "calculation_path": "calculations/global/untested_epics.json"
     },
     "velocity.json": {
@@ -304,7 +304,7 @@
       "unit": "commits/day",
       "method": "Average per-repo avg_commits_per_day",
       "reason": null,
-      "calculated_at": "2026-02-03T09:31:53.229364",
+      "calculated_at": "2026-02-03T09:38:07.120611",
       "calculation_path": "calculations/global/velocity.json"
     }
   },
@@ -360,7 +360,7 @@
         "total_commits_analyzed": 62,
         "method": "Detect AI mentions, code patterns, and commit clustering behavior",
         "note": "AI score is speculative; explicit mentions in commits are more reliable",
-        "calculated_at": "2026-02-03T09:31:53.353693Z",
+        "calculated_at": "2026-02-03T09:38:07.259359Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/ai_analysis.json"
       },
       "ai_usage_indicators": {
@@ -385,7 +385,7 @@
         "feature_percentage": 32.26,
         "note": "Explicit AI mentions detected from commit messages",
         "method": "Analyze commit messages for AI framework mentions and work pattern indicators",
-        "calculated_at": "2026-02-03T09:31:53.309618Z",
+        "calculated_at": "2026-02-03T09:38:07.209113Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/ai_usage_indicators.json"
       },
       "code_quality_evolution": {
@@ -433,7 +433,7 @@
         "period_end": "2026-01-31",
         "days_active": 8,
         "method": "Count commits; average by unique active dates; active period from first to last commit date",
-        "calculated_at": "2026-02-03T09:31:53.225574",
+        "calculated_at": "2026-02-03T09:38:07.115746",
         "calculation_path": "calculations/per_repo/RnDMetrics/commits.json"
       },
       "contributor_growth": {
@@ -457,7 +457,7 @@
         "latest_contributor_date": "2026-01-31",
         "avg_new_contributors_per_month": 1.0,
         "method": "Track unique contributors cumulative growth over time",
-        "calculated_at": "2026-02-03T09:31:53.308898Z",
+        "calculated_at": "2026-02-03T09:38:07.208280Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/contributor_growth.json"
       },
       "contributors": {
@@ -474,7 +474,7 @@
         "unique_contributors": null,
         "method": "Count unique author emails in git_artifacts authors.json",
         "reason": "Missing git_artifacts authors.json",
-        "calculated_at": "2026-02-03T09:31:53.225618",
+        "calculated_at": "2026-02-03T09:38:07.115805",
         "calculation_path": "calculations/per_repo/RnDMetrics/contributors.json"
       },
       "coverage": {
@@ -491,7 +491,7 @@
         "value": null,
         "reason": "Coverage data not available (tool: , requires local test run)",
         "method": "Parse  output",
-        "calculated_at": "2026-02-03T09:31:53.225628",
+        "calculated_at": "2026-02-03T09:38:07.115817",
         "calculation_path": "calculations/per_repo/RnDMetrics/coverage.json"
       },
       "dora_frequency": {
@@ -511,7 +511,7 @@
         "unit": "commits/day",
         "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
         "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-        "calculated_at": "2026-02-03T09:31:53.225737",
+        "calculated_at": "2026-02-03T09:38:07.115964",
         "calculation_path": "calculations/per_repo/RnDMetrics/dora_frequency.json"
       },
       "lead_time": {
@@ -531,7 +531,7 @@
         "unit": "hours",
         "method": "Average time between consecutive commits",
         "note": "Proxy metric. True DORA measures code commit to deployment",
-        "calculated_at": "2026-02-03T09:31:53.225932",
+        "calculated_at": "2026-02-03T09:38:07.116209",
         "calculation_path": "calculations/per_repo/RnDMetrics/lead_time.json"
       },
       "refactorization_activity": {
@@ -567,7 +567,7 @@
           ]
         },
         "method": "Analyze commit messages for refactorization-related keywords",
-        "calculated_at": "2026-02-03T09:31:53.309206Z",
+        "calculated_at": "2026-02-03T09:38:07.208658Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/refactorization_activity.json"
       },
       "tests": {
@@ -590,7 +590,7 @@
         "sample_test_files": [],
         "method": "Scan git_artifacts repositories for test files and epic/story references",
         "reason": null,
-        "calculated_at": "2026-02-03T09:31:53.265779Z",
+        "calculated_at": "2026-02-03T09:38:07.160315Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/tests.json"
       },
       "untested_epics": {
@@ -650,7 +650,7 @@
         ],
         "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
         "reason": null,
-        "calculated_at": "2026-02-03T09:31:53.265786Z",
+        "calculated_at": "2026-02-03T09:38:07.160323Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/untested_epics.json"
       },
       "velocity_trend": {
@@ -674,7 +674,7 @@
         "weeks_active": 2,
         "avg_commits_per_week": 31.0,
         "method": "Count commits by ISO week to show velocity trends over time",
-        "calculated_at": "2026-02-03T09:31:53.308482Z",
+        "calculated_at": "2026-02-03T09:38:07.207899Z",
         "calculation_path": "calculations/per_repo/RnDMetrics/velocity_trend.json"
       }
     },
@@ -759,7 +759,7 @@
         "total_commits_analyzed": 163,
         "method": "Detect AI mentions, code patterns, and commit clustering behavior",
         "note": "AI score is speculative; explicit mentions in commits are more reliable",
-        "calculated_at": "2026-02-03T09:31:53.363370Z",
+        "calculated_at": "2026-02-03T09:38:07.269440Z",
         "calculation_path": "calculations/per_repo/TrailEquip/ai_analysis.json"
       },
       "ai_usage_indicators": {
@@ -784,7 +784,7 @@
         "feature_percentage": 40.49,
         "note": "Explicit AI mentions detected from commit messages",
         "method": "Analyze commit messages for AI framework mentions and work pattern indicators",
-        "calculated_at": "2026-02-03T09:31:53.311958Z",
+        "calculated_at": "2026-02-03T09:38:07.211849Z",
         "calculation_path": "calculations/per_repo/TrailEquip/ai_usage_indicators.json"
       },
       "code_quality_evolution": {
@@ -832,7 +832,7 @@
         "period_end": "2026-02-01",
         "days_active": 5,
         "method": "Count commits; average by unique active dates; active period from first to last commit date",
-        "calculated_at": "2026-02-03T09:31:53.226778",
+        "calculated_at": "2026-02-03T09:38:07.117264",
         "calculation_path": "calculations/per_repo/TrailEquip/commits.json"
       },
       "contributor_growth": {
@@ -856,7 +856,7 @@
         "latest_contributor_date": "2026-02-01",
         "avg_new_contributors_per_month": 0.5,
         "method": "Track unique contributors cumulative growth over time",
-        "calculated_at": "2026-02-03T09:31:53.310696Z",
+        "calculated_at": "2026-02-03T09:38:07.210441Z",
         "calculation_path": "calculations/per_repo/TrailEquip/contributor_growth.json"
       },
       "contributors": {
@@ -873,7 +873,7 @@
         "unique_contributors": null,
         "method": "Count unique author emails in git_artifacts authors.json",
         "reason": "Missing git_artifacts authors.json",
-        "calculated_at": "2026-02-03T09:31:53.226818",
+        "calculated_at": "2026-02-03T09:38:07.117311",
         "calculation_path": "calculations/per_repo/TrailEquip/contributors.json"
       },
       "coverage": {
@@ -890,7 +890,7 @@
         "value": null,
         "reason": "Coverage data not available (tool: , requires local test run)",
         "method": "Parse  output",
-        "calculated_at": "2026-02-03T09:31:53.226826",
+        "calculated_at": "2026-02-03T09:38:07.117321",
         "calculation_path": "calculations/per_repo/TrailEquip/coverage.json"
       },
       "dora_frequency": {
@@ -910,7 +910,7 @@
         "unit": "commits/day",
         "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
         "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-        "calculated_at": "2026-02-03T09:31:53.227029",
+        "calculated_at": "2026-02-03T09:38:07.117595",
         "calculation_path": "calculations/per_repo/TrailEquip/dora_frequency.json"
       },
       "lead_time": {
@@ -930,7 +930,7 @@
         "unit": "hours",
         "method": "Average time between consecutive commits",
         "note": "Proxy metric. True DORA measures code commit to deployment",
-        "calculated_at": "2026-02-03T09:31:53.227462",
+        "calculated_at": "2026-02-03T09:38:07.118057",
         "calculation_path": "calculations/per_repo/TrailEquip/lead_time.json"
       },
       "refactorization_activity": {
@@ -961,7 +961,7 @@
           ]
         },
         "method": "Analyze commit messages for refactorization-related keywords",
-        "calculated_at": "2026-02-03T09:31:53.311170Z",
+        "calculated_at": "2026-02-03T09:38:07.210975Z",
         "calculation_path": "calculations/per_repo/TrailEquip/refactorization_activity.json"
       },
       "tests": {
@@ -991,7 +991,7 @@
         ],
         "method": "Scan git_artifacts repositories for test files and epic/story references",
         "reason": null,
-        "calculated_at": "2026-02-03T09:31:53.266092Z",
+        "calculated_at": "2026-02-03T09:38:07.160747Z",
         "calculation_path": "calculations/per_repo/TrailEquip/tests.json"
       },
       "untested_epics": {
@@ -1037,7 +1037,7 @@
         ],
         "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
         "reason": null,
-        "calculated_at": "2026-02-03T09:31:53.266100Z",
+        "calculated_at": "2026-02-03T09:38:07.160756Z",
         "calculation_path": "calculations/per_repo/TrailEquip/untested_epics.json"
       },
       "velocity_trend": {
@@ -1060,7 +1060,7 @@
         "weeks_active": 1,
         "avg_commits_per_week": 163.0,
         "method": "Count commits by ISO week to show velocity trends over time",
-        "calculated_at": "2026-02-03T09:31:53.310226Z",
+        "calculated_at": "2026-02-03T09:38:07.209879Z",
         "calculation_path": "calculations/per_repo/TrailEquip/velocity_trend.json"
       }
     },
@@ -1116,7 +1116,7 @@
         "total_commits_analyzed": 22,
         "method": "Detect AI mentions, code patterns, and commit clustering behavior",
         "note": "AI score is speculative; explicit mentions in commits are more reliable",
-        "calculated_at": "2026-02-03T09:31:53.364883Z",
+        "calculated_at": "2026-02-03T09:38:07.270958Z",
         "calculation_path": "calculations/per_repo/TrailWaze/ai_analysis.json"
       },
       "ai_usage_indicators": {
@@ -1141,7 +1141,7 @@
         "feature_percentage": 45.45,
         "note": "Explicit AI mentions detected from commit messages",
         "method": "Analyze commit messages for AI framework mentions and work pattern indicators",
-        "calculated_at": "2026-02-03T09:31:53.313176Z",
+        "calculated_at": "2026-02-03T09:38:07.213406Z",
         "calculation_path": "calculations/per_repo/TrailWaze/ai_usage_indicators.json"
       },
       "code_quality_evolution": {
@@ -1189,7 +1189,7 @@
         "period_end": "2026-02-01",
         "days_active": 13,
         "method": "Count commits; average by unique active dates; active period from first to last commit date",
-        "calculated_at": "2026-02-03T09:31:53.228102",
+        "calculated_at": "2026-02-03T09:38:07.118944",
         "calculation_path": "calculations/per_repo/TrailWaze/commits.json"
       },
       "contributor_growth": {
@@ -1213,7 +1213,7 @@
         "latest_contributor_date": "2026-02-01",
         "avg_new_contributors_per_month": 0.5,
         "method": "Track unique contributors cumulative growth over time",
-        "calculated_at": "2026-02-03T09:31:53.312740Z",
+        "calculated_at": "2026-02-03T09:38:07.212817Z",
         "calculation_path": "calculations/per_repo/TrailWaze/contributor_growth.json"
       },
       "contributors": {
@@ -1230,7 +1230,7 @@
         "unique_contributors": null,
         "method": "Count unique author emails in git_artifacts authors.json",
         "reason": "Missing git_artifacts authors.json",
-        "calculated_at": "2026-02-03T09:31:53.228130",
+        "calculated_at": "2026-02-03T09:38:07.118979",
         "calculation_path": "calculations/per_repo/TrailWaze/contributors.json"
       },
       "coverage": {
@@ -1247,7 +1247,7 @@
         "value": null,
         "reason": "Coverage data not available (tool: , requires local test run)",
         "method": "Parse  output",
-        "calculated_at": "2026-02-03T09:31:53.228137",
+        "calculated_at": "2026-02-03T09:38:07.118988",
         "calculation_path": "calculations/per_repo/TrailWaze/coverage.json"
       },
       "dora_frequency": {
@@ -1267,7 +1267,7 @@
         "unit": "commits/day",
         "method": "Total commits / days in history (proxy: requires git tags for accuracy)",
         "note": "Proxy metric using commit frequency. For true DORA, analyze deployment tags",
-        "calculated_at": "2026-02-03T09:31:53.228200",
+        "calculated_at": "2026-02-03T09:38:07.119071",
         "calculation_path": "calculations/per_repo/TrailWaze/dora_frequency.json"
       },
       "lead_time": {
@@ -1287,7 +1287,7 @@
         "unit": "hours",
         "method": "Average time between consecutive commits",
         "note": "Proxy metric. True DORA measures code commit to deployment",
-        "calculated_at": "2026-02-03T09:31:53.228295",
+        "calculated_at": "2026-02-03T09:38:07.119190",
         "calculation_path": "calculations/per_repo/TrailWaze/lead_time.json"
       },
       "refactorization_activity": {
@@ -1314,7 +1314,7 @@
           ]
         },
         "method": "Analyze commit messages for refactorization-related keywords",
-        "calculated_at": "2026-02-03T09:31:53.312939Z",
+        "calculated_at": "2026-02-03T09:38:07.213071Z",
         "calculation_path": "calculations/per_repo/TrailWaze/refactorization_activity.json"
       },
       "tests": {
@@ -1337,7 +1337,7 @@
         "sample_test_files": [],
         "method": "Scan git_artifacts repositories for test files and epic/story references",
         "reason": null,
-        "calculated_at": "2026-02-03T09:31:53.266368Z",
+        "calculated_at": "2026-02-03T09:38:07.161122Z",
         "calculation_path": "calculations/per_repo/TrailWaze/tests.json"
       },
       "untested_epics": {
@@ -1403,7 +1403,7 @@
         ],
         "method": "Use scan artifacts and coverage availability to flag untested epics/user stories",
         "reason": null,
-        "calculated_at": "2026-02-03T09:31:53.266375Z",
+        "calculated_at": "2026-02-03T09:38:07.161131Z",
         "calculation_path": "calculations/per_repo/TrailWaze/untested_epics.json"
       },
       "velocity_trend": {
@@ -1427,7 +1427,7 @@
         "weeks_active": 2,
         "avg_commits_per_week": 11.0,
         "method": "Count commits by ISO week to show velocity trends over time",
-        "calculated_at": "2026-02-03T09:31:53.312511Z",
+        "calculated_at": "2026-02-03T09:38:07.212525Z",
         "calculation_path": "calculations/per_repo/TrailWaze/velocity_trend.json"
       }
     }
