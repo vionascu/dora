@@ -27,6 +27,12 @@ class MetricsReport {
     const hostname = window.location.hostname;
     console.log('Current pathname:', pathname, 'hostname:', hostname);
 
+    // GitLab Artifact Preview: /-/dora/-/jobs/JOBID/artifacts/public/index.html
+    // Files are relative to public/ folder, so calculations/ is at ./calculations/
+    if (pathname.includes('/-/') && pathname.includes('/artifacts/')) {
+      console.log('🔧 Detected GitLab artifact preview URL');
+      return './';
+    }
     // GitHub Pages: /dora/public/index.html -> /dora/
     if (pathname.includes('/dora/public')) {
       return '/dora/';
@@ -916,12 +922,6 @@ class MetricsReport {
     if (container) {
       container.innerHTML = `<p style="color: red;">Error: ${message}</p>`;
     }
-  }
-
-  async loadJSON(path) {
-    const response = await fetch(path, { cache: 'no-cache' });
-    if (!response.ok) throw new Error(`Failed to load ${path}: ${response.status}`);
-    return await response.json();
   }
 
   async renderCharts() {
