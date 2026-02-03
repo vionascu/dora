@@ -737,10 +737,12 @@ class MetricsReport {
     // Handle git_artifacts paths separately - they should load from root, not calculations/
     if (path.includes('git_artifacts/')) {
       // git_artifacts paths load directly from root
+      // Normalize to start with /
+      const normalizedPath = path.startsWith('/') ? path : '/' + path;
+
       const paths = [
-        path.startsWith('/') ? path : '/' + path,     // Absolute path from root
-        path,                                           // Original path
-        this.basePath + path,                           // With basePath prefix
+        normalizedPath,                               // Absolute path from root: /git_artifacts/...
+        path,                                           // Original path (fallback)
       ];
 
       for (const p of paths) {
