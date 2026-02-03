@@ -102,27 +102,27 @@ pages:
       mkdir -p public_output
       # Copy dashboard files
       if [ -d "public" ]; then
-        echo "📋 Copying dashboard files..."
+        echo "Copying dashboard files..."
         cp -v public/*.html public_output/ 2>/dev/null || true
         cp -v public/*.js public_output/ 2>/dev/null || true
         cp -v public/*.css public_output/ 2>/dev/null || true
       fi
       # Copy calculations
       if [ -d "calculations" ]; then
-        echo "📊 Copying calculations..."
+        echo "Copying calculations..."
         cp -r calculations public_output/
       fi
       # Copy documentation
       if [ -d "docs" ]; then
-        echo "📚 Copying documentation..."
+        echo "Copying documentation..."
         cp -r docs public_output/
       fi
     - |
       # Move to public folder for GitLab Pages
-      echo "🚀 Finalizing deployment..."
+      echo "Finalizing deployment..."
       rm -rf public
       mv public_output public
-    - echo "✅ Dashboard ready for deployment"
+    - echo "Dashboard ready for deployment"
     - ls -la public/
   artifacts:
     paths:
