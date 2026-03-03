@@ -545,7 +545,9 @@ This system follows:
 
 ## Documentation
 
-For detailed information, see:
+**Start here:** **[📖 COMPLETE BEGINNER'S GUIDE](./docs/COMPLETE_BEGINNER_GUIDE.md)** - Comprehensive guide with architecture, setup, usage, and DoraReplicatePROMPT
+
+For specific topics:
 
 1. **[Non-Intrusive Architecture](./docs/NON_INTRUSIVE_ARCHITECTURE.md)** - Complete system design, principles, and data flow
 2. **[JIRA Export Guide](./docs/JIRA_EXPORT_GUIDE.md)** - How to export JIRA data (CSV/JSON) and use with DORA
